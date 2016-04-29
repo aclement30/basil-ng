@@ -1,0 +1,30 @@
+.md-button {
+  height: 36px;
+
+  &.md-primary {
+    color: $base-color;
+
+    &.md-raised {
+      background-color: $base-color;
+
+      &:not([disabled]):hover {
+        background-color: $base-color;
+      }
+    }
+  }
+
+  &.with-icon {
+    padding-right: 10px;
+  }
+
+  md-icon {
+    height: auto;
+  }
+
+  &.md-icon-button {
+    span.icon {
+      position: relative;
+      top: 2px;
+    }
+  }
+}

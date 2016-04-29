@@ -1,0 +1,9 @@
+<ul class="ingredients">
+    <li ng-repeat="ingredient in recipe.ingredients" layout="row" ng-class="{'with-unit': ingredient.unit, 'with-quantity': ingredient.quantity}">
+        <div flex="15">
+            <span class="quantity" data-ng-if="ingredient.quantity">{{ingredient.quantity * (yield / recipe.recipeYield) | ingredientQuantity}}</span><br>
+            <span class="unit" data-ng-if="ingredient.quantity">{{ingredient.unit | ingredientUnit}}</span>
+        </div>
+        <div flex="85"><span class="ingredient-name">{{ingredient.name || ingredient.description | capitalize}}</span> {{ingredient.type}}</div>
+    </li>
+</ul>

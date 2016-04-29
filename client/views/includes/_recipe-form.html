@@ -1,0 +1,111 @@
+<form name="recipeForm">
+    <md-content layout-padding class="section">
+
+        <md-input-container flex>
+            <label>Titre</label>
+            <input ng-model="recipe.title">
+        </md-input-container>
+
+    </md-content>
+
+    <md-divider></md-divider>
+
+    <md-content layout-padding class="section">
+
+        <div layout layout-sm="column">
+            <md-input-container flex="50">
+                <label>Ingrédients</label>
+                <textarea ng-model="recipe.combinedIngredients" ng-change="parseIngredients()" columns="1"></textarea>
+            </md-input-container>
+
+            <div flex="50">
+                <ng-include src="'/kitchen/views/includes/_ingredients-list.html'"></ng-include>
+            </div>
+        </div>
+
+        <!--<div class="ingredients">
+            <div class="ingredient" layout layout-sm="column" ng-repeat="ingredient in recipe.ingredients">
+                <md-input-container flex="50">
+                    <label>Ingrédient</label>
+                    <input ng-model="ingredient.description" ng-change="parseIngredient(ingredient)">
+                </md-input-container>
+                <md-button class="md-icon-button" aria-label="Enlever" ng-click="removeIngredient($index)">
+                    <md-icon class="icon-remove"></md-icon>
+                </md-button>
+            </div>
+            <md-button class="md-raised with-icon" ng-click="addIngredient()">
+                <md-icon class="icon-plus"></md-icon>
+                Ajouter
+            </md-button>
+        </div>-->
+
+    </md-content>
+
+    <md-divider></md-divider>
+
+    <md-content layout-padding class="section">
+
+        <div layout layout-sm="column">
+            <md-input-container flex="50">
+                <label>Étapes de préparation</label>
+                <textarea ng-model="recipe.combinedInstructions" ng-change="parseInstructions()" columns="1"></textarea>
+            </md-input-container>
+        </div>
+        <!--<div class="steps">
+            <div class="step" ng-repeat="step in recipe.recipeInstructions" layout="row">
+                <md-input-container flex>
+                    <label>Étape {{$index + 1}}</label>
+                    <textarea ng-model="step.description" columns="1"></textarea>
+                </md-input-container>
+                <md-button class="md-icon-button" aria-label="Enlever" ng-click="removeStep($index)">
+                    <md-icon class="icon-remove"></md-icon>
+                </md-button>
+            </div>
+            <md-button class="md-raised with-icon" ng-click="addStep()">
+                <md-icon class="icon-plus"></md-icon>
+                Ajouter
+            </md-button>
+        </div>-->
+
+    </md-content>
+
+    <md-divider></md-divider>
+
+    <md-content layout-padding class="section">
+
+        <h4>Temps et rendement</h4>
+        <div layout layout-sm="column">
+            <div flex="50">
+                <div layout layout-sm="column">
+                    <md-input-container flex="30">
+                        <label>Préparation</label>
+                        <input type="number" ng-model="recipe.prepTime">
+                    </md-input-container>
+                    <md-input-container flex="30">
+                        <label>Cuisson</label>
+                        <input type="number" ng-model="recipe.cookTime">
+                    </md-input-container>
+                </div>
+            </div>
+            <md-input-container flex="10">
+                <label>Portions</label>
+                <input type="number" ng-model="recipe.recipeYield">
+            </md-input-container>
+        </div>
+
+    </md-content>
+
+    <md-divider></md-divider>
+
+    <md-content layout-padding class="section">
+
+        <h4>Autres informations</h4>
+        <div layout layout-sm="column">
+            <md-input-container flex="50">
+                <label>Photo</label>
+                <input type="url" ng-model="recipe.image">
+            </md-input-container>
+        </div>
+
+    </md-content>
+</form>

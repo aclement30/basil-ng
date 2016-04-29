@@ -1,0 +1,29 @@
+form {
+  .section {
+    padding: 20px 42px 20px;
+
+    h4 {
+      &:first-of-type {
+        margin-top: 10px;
+      }
+    }
+
+    .ingredient, .step {
+      md-input-container {
+        padding-bottom: 15px;
+      }
+
+      .md-icon-button {
+        position: relative;
+        top: 15px;
+      }
+    }
+
+    .ingredients, .steps {
+      > button {
+        margin: 15px 0 10px;
+      }
+    }
+  }
+}
+

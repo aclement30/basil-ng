@@ -1,0 +1,396 @@
+/* line 1, /Users/alexandre/Projets/basil/client/sass/partials/_buttons.scss */
+.md-button {
+  height: 36px;
+}
+
+/* line 4, /Users/alexandre/Projets/basil/client/sass/partials/_buttons.scss */
+.md-button.md-primary {
+  color: #009600;
+}
+
+/* line 7, /Users/alexandre/Projets/basil/client/sass/partials/_buttons.scss */
+.md-button.md-primary.md-raised {
+  background-color: #009600;
+}
+
+/* line 10, /Users/alexandre/Projets/basil/client/sass/partials/_buttons.scss */
+.md-button.md-primary.md-raised:not([disabled]):hover {
+  background-color: #009600;
+}
+
+/* line 16, /Users/alexandre/Projets/basil/client/sass/partials/_buttons.scss */
+.md-button.with-icon {
+  padding-right: 10px;
+}
+
+/* line 20, /Users/alexandre/Projets/basil/client/sass/partials/_buttons.scss */
+.md-button md-icon {
+  height: auto;
+}
+
+/* line 25, /Users/alexandre/Projets/basil/client/sass/partials/_buttons.scss */
+.md-button.md-icon-button span.icon {
+  position: relative;
+  top: 2px;
+}
+
+/* line 2, /Users/alexandre/Projets/basil/client/sass/partials/_index.scss */
+.recipes-index md-card {
+  margin: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* line 9, /Users/alexandre/Projets/basil/client/sass/partials/_index.scss */
+.recipes-index md-card .recipe-image {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  -webkit-transition: all 0.3s;
+          transition: all 0.3s;
+}
+
+/* line 19, /Users/alexandre/Projets/basil/client/sass/partials/_index.scss */
+.recipes-index md-card:hover .recipe-image {
+  width: 105%;
+  height: 105%;
+}
+
+/* line 2, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .header {
+  width: 100%;
+  height: 250px;
+}
+
+/* line 6, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .header .recipe-image {
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* line 11, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .header .recipe-image img {
+  height: auto;
+  width: 100%;
+}
+
+/* line 17, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .header .recipe-title {
+  position: relative;
+  top: -78px;
+  color: white;
+  font-size: 24px;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 15px 15px;
+  padding-left: 5px;
+}
+
+/* line 26, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .header .recipe-title h2.title {
+  margin: 0;
+  font-family: Roboto, 'Quando', serif;
+  font-size: 22px;
+  font-weight: lighter;
+}
+
+/* line 33, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .header .recipe-title .buttons {
+  text-align: right;
+}
+
+/* line 36, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .header .recipe-title .buttons button:last-of-type {
+  margin-left: 0;
+}
+
+/* line 40, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .header .recipe-title .buttons .md-icon-button {
+  margin: 0;
+}
+
+/* line 44, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .header .recipe-title .buttons md-icon.favorite {
+  color: silver;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+/* line 55, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .header .recipe-title .buttons md-icon.favorite:hover {
+  color: orange;
+}
+
+/* line 59, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .header .recipe-title .buttons md-icon.favorite:hover.active {
+  color: silver;
+}
+
+/* line 68, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .header.cookmode {
+  height: 78px;
+}
+
+/* line 73, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail h3 {
+  font-family: Roboto;
+  font-weight: lighter;
+  color: #009600;
+}
+
+/* line 79, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .recipe-info {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* line 82, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .recipe-info .yield, .recipe-detail .recipe-info .time {
+  text-align: center;
+  font-size: small;
+  font-weight: lighter;
+  margin: 10px 0;
+}
+
+/* line 88, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .recipe-info .yield span, .recipe-detail .recipe-info .time span {
+  font-size: 24px;
+}
+
+/* line 94, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .ingredients-container {
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* line 97, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .ingredients-container h3 {
+  margin-left: 20px;
+}
+
+/* line 104, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .ingredients-container .actions md-menu {
+  float: right;
+}
+
+/* line 111, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .instructions-container h3 {
+  margin-left: 80px;
+}
+
+/* line 116, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .instructions {
+  list-style-type: none;
+  padding-left: 60px;
+  margin: 0 20px 30px;
+}
+
+/* line 121, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .instructions li {
+  counter-increment: step-counter;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* line 126, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+.recipe-detail .instructions li:before {
+  content: counter(step-counter);
+  margin-right: 20px;
+  margin-left: -50px;
+  font-size: 16px;
+  border: 1px solid #009600;
+  color: #009600;
+  padding: 4px 9px;
+  border-radius: 50%;
+}
+
+/* line 141, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+ul.ingredients {
+  list-style-type: none;
+  padding-left: 0;
+  margin-top: 0;
+}
+
+/* line 146, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+ul.ingredients li {
+  padding: 10px 10px 10px 0;
+  margin-left: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* line 151, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+ul.ingredients li:last-of-type {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* line 156, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+ul.ingredients li.with-quantity > div:first-of-type {
+  text-align: center;
+  height: 32px;
+  padding-top: 5px;
+}
+
+/* line 163, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+ul.ingredients li > div:last-of-type {
+  padding-top: 8px;
+  padding-left: 10px;
+  font-size: 12px;
+  color: #666;
+}
+
+/* line 170, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+ul.ingredients li .quantity {
+  font-weight: bold;
+  color: #009600;
+  font-size: 20px;
+  display: inline-block;
+}
+
+/* line 177, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+ul.ingredients li .unit {
+  font-size: 10px;
+  font-weight: bold;
+  color: #666666;
+  display: inline-block;
+  position: relative;
+  top: -8px;
+}
+
+/* line 186, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+ul.ingredients li .ingredient-name {
+  font-size: 16px;
+  color: #333;
+}
+
+/* line 192, /Users/alexandre/Projets/basil/client/sass/partials/_detail.scss */
+ul.ingredients li.with-unit > div:first-of-type {
+  padding-top: 0;
+}
+
+/* line 2, /Users/alexandre/Projets/basil/client/sass/partials/_new.scss */
+form .section {
+  padding: 20px 42px 20px;
+}
+
+/* line 6, /Users/alexandre/Projets/basil/client/sass/partials/_new.scss */
+form .section h4:first-of-type {
+  margin-top: 10px;
+}
+
+/* line 12, /Users/alexandre/Projets/basil/client/sass/partials/_new.scss */
+form .section .ingredient md-input-container, form .section .step md-input-container {
+  padding-bottom: 15px;
+}
+
+/* line 16, /Users/alexandre/Projets/basil/client/sass/partials/_new.scss */
+form .section .ingredient .md-icon-button, form .section .step .md-icon-button {
+  position: relative;
+  top: 15px;
+}
+
+/* line 23, /Users/alexandre/Projets/basil/client/sass/partials/_new.scss */
+form .section .ingredients > button, form .section .steps > button {
+  margin: 15px 0 10px;
+}
+
+/* line 13, /Users/alexandre/Projets/basil/client/sass/kitchen.scss */
+.clearfix:after, .recipe-detail .ingredients-container .actions:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
+
+/* line 21, /Users/alexandre/Projets/basil/client/sass/kitchen.scss */
+.clearfix, .recipe-detail .ingredients-container .actions {
+  display: inline-block;
+}
+
+/* start commented backslash hack \*/
+/* line 23, /Users/alexandre/Projets/basil/client/sass/kitchen.scss */
+* html .clearfix, * html .recipe-detail .ingredients-container .actions, .recipe-detail .ingredients-container * html .actions {
+  height: 1%;
+}
+
+/* line 24, /Users/alexandre/Projets/basil/client/sass/kitchen.scss */
+.clearfix, .recipe-detail .ingredients-container .actions {
+  display: block;
+}
+
+/* line 26, /Users/alexandre/Projets/basil/client/sass/kitchen.scss */
+* {
+  box-sizing: border-box;
+}
+
+/* line 32, /Users/alexandre/Projets/basil/client/sass/kitchen.scss */
+[ng-click]:hover {
+  cursor: pointer;
+}
+
+/* line 44, /Users/alexandre/Projets/basil/client/sass/kitchen.scss */
+md-sidenav > md-toolbar {
+  padding: 15px;
+  height: 150px;
+  max-height: 150px;
+}
+
+/* line 49, /Users/alexandre/Projets/basil/client/sass/kitchen.scss */
+md-sidenav md-list-item.md-2-line .md-list-item-text {
+  padding-top: 14px;
+  padding-bottom: 12px;
+}
+
+/* line 53, /Users/alexandre/Projets/basil/client/sass/kitchen.scss */
+md-sidenav md-divider {
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+/* line 62, /Users/alexandre/Projets/basil/client/sass/kitchen.scss */
+md-sidenav md-icon {
+  fill: #737373;
+  position: relative;
+}
+
+/* line 66, /Users/alexandre/Projets/basil/client/sass/kitchen.scss */
+md-sidenav .md-avatar {
+  height: 64px;
+  width: 64px;
+}
+
+/* line 71, /Users/alexandre/Projets/basil/client/sass/kitchen.scss */
+md-sidenav md-list-item {
+  cursor: pointer;
+}
+
+/* More closely matches https://www.google.com/design/spec/components/lists.html#lists-specs */
+/* line 79, /Users/alexandre/Projets/basil/client/sass/kitchen.scss */
+md-list-item.md-3-line md-divider[md-inset] {
+  left: 70px;
+}
+
+/* line 87, /Users/alexandre/Projets/basil/client/sass/kitchen.scss */
+.md-avatar > svg {
+  border-radius: 50%;
+}
+
+/* fade animation */
+/* line 93, /Users/alexandre/Projets/basil/client/sass/kitchen.scss */
+.animate-show {
+  -webkit-transition: 0.75s ease-out opacity;
+          transition: 0.75s ease-out opacity;
+  opacity: 1;
+}
+
+/* line 96, /Users/alexandre/Projets/basil/client/sass/kitchen.scss */
+.animate-show.ng-hide {
+  height: 0;
+  min-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
