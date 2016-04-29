@@ -1,5 +1,4 @@
-'use strict';
-
+//'use strict';
 // Declare app level module which depends on filters, and services
 angular.module('basilApp', [
         'basilApp.controllers',
@@ -43,10 +42,10 @@ angular.module('basilApp', [
                  USER_ROLES,
                  localStorageServiceProvider) {
 
-            localStorageServiceProvider
-                .setPrefix('basil');
+            /*localStorageServiceProvider
+                .setPrefix('basil');*/
 
-            $urlRouterProvider.otherwise('/dashboard');
+            $urlRouterProvider.otherwise('/recipes');
 
             $stateProvider
                 .state('recipes', {
@@ -143,7 +142,7 @@ angular.module('basilApp', [
 
             $rootScope.$on(AUTH_EVENTS.loginFailed, function(event){
                 $state.go('login');
-            })
+            });
         }
     ]);
 

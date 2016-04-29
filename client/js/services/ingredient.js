@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.kitchen').factory('Ingredient', ['$filter',
+angular.module('basilApp').factory('Ingredient', ['$filter',
     function($filter) {
         //-- Methods --//
         return {

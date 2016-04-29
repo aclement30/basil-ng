@@ -1,7 +1,11 @@
-'use strict';
+(function () {
+    'use strict';
+    angular
+        .module('basilApp.services')
+        .factory('Kitchen', Kitchen);
 
-angular.module('mean.kitchen').service('Kitchen', [
-    function() {
+    function Kitchen (Recipe){
+        var Kitchen = {};
 
         //-- Variables --//
         var _recipes = [
@@ -336,95 +340,58 @@ angular.module('mean.kitchen').service('Kitchen', [
             }
         ];
 
-        var _cookingRecipes = [];
+        Kitchen.recipes = {};
+        Kitchen.favoriteRecipes = {};
+        Kitchen.cookingRecipes = {};
 
-        var Recipe = {
-            set: function(data){
-                _recipes = data;
-            },
+        Kitchen.toggleCooking = function(id) {
+            var recipe = Kitchen.recipes[id];
+            recipe.isCooking = !recipe.isCooking;
 
-            get: function(id){
-                if (!id) {
-                    return _recipes;
-                } else {
-                    var recipeKey = null;
-
-                    angular.forEach(_recipes, function(recipe, key) {
-                        if (recipe.id == id) {
-                            recipeKey = key;
-                            return;
-                        }
-                    });
-
-                    if (recipeKey !== null) {
-                        return _recipes[recipeKey];
-                    } else {
-                        return null;
-                    }
-                }
-            },
-
-            add: function(recipe) {
-                recipe.totalTime = parseInt(recipe.cookTime) + parseInt(recipe.prepTime);
-                recipe.id = _recipes[_recipes.length - 1].id + 1;
-
-                _recipes.push(recipe);
-
-                return Recipe.get(recipe.id);
-            },
-
-            getFavorites: function() {
-                var favorites = [];
-
-                angular.forEach(_recipes, function(recipe, key) {
-                    if (recipe.isFavorite) {
-                        favorites.push(recipe);
-                    }
-                });
-
-                return favorites;
-            },
-
-            // Start cooking a recipe
-            startCooking: function(id) {
-                if (_cookingRecipes.indexOf(id) == -1) {
-                    _cookingRecipes.push(id);
-                }
-            },
-
-            stopCooking: function(id) {
-                var index = _cookingRecipes.indexOf(id);
-
-                if (index != -1) {
-                    _cookingRecipes.splice(index, 1);
-                }
-            },
-
-            toggleFavorite: function(id) {
-                var recipe = Recipe.get(id);
-                recipe.isFavorite = !recipe.isFavorite;
-            },
-
-            getCooking: function() {
-                var recipes = [];
-
-                angular.forEach(_cookingRecipes, function(id, key) {
-                    recipes.push(Recipe.get(id));
-                });
-
-                return recipes;
-            },
-
-            isCooking: function(id) {
-                return _cookingRecipes.indexOf(id) > -1;
-            },
-
-            getCookingIds: function() {
-                return _cookingRecipes;
+            if (recipe.isCooking) {
+                Kitchen.cookingRecipes[id] = recipe;
+            } else {
+                delete Kitchen.recipes[id];
             }
         };
 
-        //-- Methods --//
-        return Recipe;
+        Kitchen.toggleFavorite = function(id) {
+            var recipe = Kitchen.recipes[id];
+            recipe.isFavorite = !recipe.isFavorite;
+
+            if (recipe.isFavorite) {
+                Kitchen.cookingRecipes[id] = recipe;
+            } else {
+                delete Kitchen.recipes[id];
+            }
+        };
+
+        Kitchen.isCooking = function(id) {
+            return Kitchen.cookingRecipes.indexOf(id) > -1;
+        };
+
+        Kitchen.init = function() {
+            var promise = Recipe.query().$promise;
+
+            promise.then(function(objects){
+                angular.forEach(objects, function(recipe, id){
+                    if (id != '$promise' && id != '$resolved') {
+                        Kitchen.recipes[id] = recipe;
+
+                        if (recipe.isFavorite) {
+                            Kitchen.favoriteRecipes[id] = Kitchen.recipes[id];
+                        }
+
+                        if (recipe.isCooking) {
+                            Kitchen.cookingRecipes[id] = Kitchen.recipes[id];
+                        }
+                    }
+                });
+            });
+
+            return promise;
+        };
+
+        return Kitchen;
     }
-]);
+})();

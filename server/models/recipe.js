@@ -35,10 +35,6 @@ var schema = new mongoose.Schema({
         type: String,
         trim: true
     },
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    },
     ingredientsUnit: {
         type: String,
         required: true
@@ -64,6 +60,10 @@ var schema = new mongoose.Schema({
     originalUrl: {
         type: String,
         trim: true
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     },
     created: {
         type: Date,

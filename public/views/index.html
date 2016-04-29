@@ -25,6 +25,10 @@
 
     <link rel="stylesheet" href="../css/kitchen.min.css">
 
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <script type="text/javascript" src="../js/vendors.min.js"></script>
+
     <script type="text/javascript" src="../js/app.js"></script>
     <script type="text/javascript" src="../js/controllers.js"></script>
     <script type="text/javascript" src="../js/filters.js"></script>
@@ -35,7 +39,7 @@
     <![endif]-->
 </head>
 
-<body data-ng-controller="KitchenController" layout="row">
+<body data-ng-app="basilApp" data-ng-controller="KitchenController" layout="row">
 
 <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="true">
     <md-list>
@@ -57,7 +61,7 @@
 
 <div layout="column" class="relative" layout-fill data-ui-view role="main"></div>
 <script type="text/javascript">
-    window.user = {{user|json|safe}};
+    //window.user = {{user|json|safe}};
     window.modules = null;
 </script>
 

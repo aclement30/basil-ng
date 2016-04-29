@@ -1,92 +1,207 @@
-'use strict';
+(function () {
+    'use strict';
+    angular
+        .module('basilApp.services')
+        .factory('Auth', AuthService);
 
-angular.module('mean.kitchen').factory('Category', [
-        function() {
+    function AuthService($rootScope, $http, AUTH_EVENTS, localStorageService) {
+        var AuthService = {
+            user: null,
+            authenticated: false
+        };
 
-            //-- Variables --//
-            var _categories = [
-                {
-                    name: 'Déjeuner',
-                    alias: 'dejeuner'
-                },
-                {
-                    name: 'Boissons & cocktails',
-                    alias: 'boissons'
-                },
-                {
-                    name: 'Collations',
-                    alias: 'collations'
-                },
-                {
-                    name: 'Bouchées & entrées',
-                    alias: 'bouchees'
-                },
-                {
-                    name: 'Soupes & potages',
-                    alias: 'soupes'
-                },
-                {
-                    name: 'Lunch & salade',
-                    alias: 'lunch'
-                },
-                {
-                    name: 'Sandwichs',
-                    alias: 'sandwichs'
-                },
-                {
-                    name: 'Légumes & gratins',
-                    alias: 'légumes'
-                },
-                {
-                    name: 'Pâtes & riz',
-                    alias: 'pates'
-                },
-                {
-                    name: 'Poisson & fruit de mer',
-                    alias: 'poisson'
-                },
-                {
-                    name: 'Viande',
-                    alias: 'viande'
-                },
-                {
-                    name: 'Dessert',
-                    alias: 'dessert'
-                }
-            ];
-
-            //-- Methods --//
-            return {
-                set: function(data){
-                    _categories = data;
-                },
-
-                get: function(id){
-                    if (!id) {
-                        return _categories;
-                    } else {
-                        var categoryKey = null;
-
-                        angular.forEach(_categories, function(category, key) {
-                            if (category.id == id) {
-                                categoryKey = key;
-                                return;
-                            }
-                        });
-
-                        if (categoryKey !== null) {
-                            return _categories[categoryKey];
-                        } else {
-                            return null;
-                        }
-                    }
-                }
-            };
+        // Retrieve user auth details from local storage
+        if (localStorageService.isSupported) {
+            var user = localStorageService.get('user');
+            if (user) {
+                AuthService.user = user;
+                AuthService.authenticated = true;
+            }
         }
-    ]);
+
+        AuthService.login = function(callback) {
+            $http({ method: 'GET', url: '/api/user' })
+
+            // User successfully authenticates
+                .success(function(data, status, headers, config) {
+                    AuthService.authenticated = true;
+                    AuthService.user = data;
+
+                    // Store user auth details in local storage
+                    if (localStorageService.isSupported) {
+                        localStorageService.set('user', data);
+                    }
+
+                    $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+
+                    if (typeof(callback) === typeof(Function)) callback();
+                })
+
+                // Not logged in
+                .error(function(data, status, headers, config) {
+                    AuthService.authenticated = false;
+                    AuthService.user = null;
+
+                    if (localStorageService.isSupported) {
+                        localStorageService.remove('user');
+                    }
+
+                    if (typeof(callback) === typeof(Function)) callback();
+
+                    $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+
+                    if (typeof(callback) === typeof(Function)) callback();
+                });
+        };
+
+        AuthService.logout = function(callback) {
+            AuthService.authenticated = false;
+            AuthService.user = null;
+
+            $http({ method: 'GET', url: '/logout' })
+
+            // User successfully logged out
+                .success(function(data, status, headers, config) {
+                    if (localStorageService.isSupported) {
+                        localStorageService.remove('user');
+                    }
+
+                    if (typeof(callback) === typeof(Function)) callback();
+                })
+
+                // Sign out error
+                .error(function(data, status, headers, config) {
+                    if (typeof(callback) === typeof(Function)) callback();
+                });
+        };
+
+        AuthService.isAuthenticated = function () {
+            return AuthService.authenticated;
+        };
+
+        return AuthService;
+    }
+})();
+(function () {
+    'use strict';
+    angular
+        .module('basilApp.services')
+        .factory('AuthInterceptor', AuthInterceptor);
+
+    function AuthInterceptor($rootScope, $q, AUTH_EVENTS) {
+        return {
+            responseError: function (response) {
+                $rootScope.$broadcast({
+                    401: AUTH_EVENTS.notAuthenticated,
+                    403: AUTH_EVENTS.notAuthorized,
+                    419: AUTH_EVENTS.sessionTimeout,
+                    440: AUTH_EVENTS.sessionTimeout
+                }[response.status], response);
+                return $q.reject(response);
+            }
+        };
+    }
+})();
+(function () {
+    'use strict';
+    angular
+        .module('basilApp.services')
+        .factory('AuthResolver', AuthResolver);
+
+    function AuthResolver($q, $rootScope, $state) {
+        return {
+            resolve: function () {
+                var deferred = $q.defer();
+                var unwatch = $rootScope.$watch('currentUser', function (currentUser) {
+                    if (angular.isDefined(currentUser)) {
+                        if (currentUser) {
+                            deferred.resolve(currentUser);
+                        } else {
+                            deferred.reject();
+                            $state.go('login');
+                        }
+
+                        unwatch();
+                    }
+                });
+                return deferred.promise;
+            }
+        };
+    }
+})();
+(function () {
+    'use strict';
+    angular
+        .module('basilApp.services')
+        .factory('Category', Category);
+
+    function Category (){
+        var Category = {};
+
+        //-- Variables --//
+        var _categories = [
+            {
+                name: 'Déjeuner',
+                alias: 'dejeuner'
+            },
+            {
+                name: 'Boissons & cocktails',
+                alias: 'boissons'
+            },
+            {
+                name: 'Collations',
+                alias: 'collations'
+            },
+            {
+                name: 'Bouchées & entrées',
+                alias: 'bouchees'
+            },
+            {
+                name: 'Soupes & potages',
+                alias: 'soupes'
+            },
+            {
+                name: 'Lunch & salade',
+                alias: 'lunch'
+            },
+            {
+                name: 'Sandwichs',
+                alias: 'sandwichs'
+            },
+            {
+                name: 'Légumes & gratins',
+                alias: 'légumes'
+            },
+            {
+                name: 'Pâtes & riz',
+                alias: 'pates'
+            },
+            {
+                name: 'Poisson & fruit de mer',
+                alias: 'poisson'
+            },
+            {
+                name: 'Viande',
+                alias: 'viande'
+            },
+            {
+                name: 'Dessert',
+                alias: 'dessert'
+            }
+        ];
+
+        Category.list = {};
+
+        angular.forEach(_categories, function(category){
+            Category.list[category.alias] = category;
+        });
+
+        return Category;
+    }
+})();
 'use strict';
 
-angular.module('mean.kitchen').factory('Ingredient', ['$filter',
+angular.module('basilApp').factory('Ingredient', ['$filter',
     function($filter) {
         //-- Methods --//
         return {
@@ -170,10 +285,14 @@ angular.module('mean.kitchen').factory('Ingredient', ['$filter',
         };
     }
 ]);
-'use strict';
+(function () {
+    'use strict';
+    angular
+        .module('basilApp.services')
+        .factory('Kitchen', Kitchen);
 
-angular.module('mean.kitchen').service('Kitchen', [
-    function() {
+    function Kitchen (Recipe){
+        var Kitchen = {};
 
         //-- Variables --//
         var _recipes = [
@@ -508,109 +627,87 @@ angular.module('mean.kitchen').service('Kitchen', [
             }
         ];
 
-        var _cookingRecipes = [];
+        Kitchen.recipes = {};
+        Kitchen.favoriteRecipes = {};
+        Kitchen.cookingRecipes = {};
 
-        var Recipe = {
-            set: function(data){
-                _recipes = data;
-            },
+        Kitchen.toggleCooking = function(id) {
+            var recipe = Kitchen.recipes[id];
+            recipe.isCooking = !recipe.isCooking;
 
-            get: function(id){
-                if (!id) {
-                    return _recipes;
-                } else {
-                    var recipeKey = null;
-
-                    angular.forEach(_recipes, function(recipe, key) {
-                        if (recipe.id == id) {
-                            recipeKey = key;
-                            return;
-                        }
-                    });
-
-                    if (recipeKey !== null) {
-                        return _recipes[recipeKey];
-                    } else {
-                        return null;
-                    }
-                }
-            },
-
-            add: function(recipe) {
-                recipe.totalTime = parseInt(recipe.cookTime) + parseInt(recipe.prepTime);
-                recipe.id = _recipes[_recipes.length - 1].id + 1;
-
-                _recipes.push(recipe);
-
-                return Recipe.get(recipe.id);
-            },
-
-            getFavorites: function() {
-                var favorites = [];
-
-                angular.forEach(_recipes, function(recipe, key) {
-                    if (recipe.isFavorite) {
-                        favorites.push(recipe);
-                    }
-                });
-
-                return favorites;
-            },
-
-            // Start cooking a recipe
-            startCooking: function(id) {
-                if (_cookingRecipes.indexOf(id) == -1) {
-                    _cookingRecipes.push(id);
-                }
-            },
-
-            stopCooking: function(id) {
-                var index = _cookingRecipes.indexOf(id);
-
-                if (index != -1) {
-                    _cookingRecipes.splice(index, 1);
-                }
-            },
-
-            toggleFavorite: function(id) {
-                var recipe = Recipe.get(id);
-                recipe.isFavorite = !recipe.isFavorite;
-            },
-
-            getCooking: function() {
-                var recipes = [];
-
-                angular.forEach(_cookingRecipes, function(id, key) {
-                    recipes.push(Recipe.get(id));
-                });
-
-                return recipes;
-            },
-
-            isCooking: function(id) {
-                return _cookingRecipes.indexOf(id) > -1;
-            },
-
-            getCookingIds: function() {
-                return _cookingRecipes;
+            if (recipe.isCooking) {
+                Kitchen.cookingRecipes[id] = recipe;
+            } else {
+                delete Kitchen.recipes[id];
             }
         };
 
-        //-- Methods --//
-        return Recipe;
-    }
-]);
-'use strict';
+        Kitchen.toggleFavorite = function(id) {
+            var recipe = Kitchen.recipes[id];
+            recipe.isFavorite = !recipe.isFavorite;
 
-// Recipes service used for recipes REST endpoint
-angular.module('mean.kitchen').factory('Recipes', ['$resource',
-    function ($resource) {
-        return $resource('api/recipes/:recipeId', {
-            recipeId: '@_id'
-        }, {
+            if (recipe.isFavorite) {
+                Kitchen.cookingRecipes[id] = recipe;
+            } else {
+                delete Kitchen.recipes[id];
+            }
+        };
+
+        Kitchen.isCooking = function(id) {
+            return Kitchen.cookingRecipes.indexOf(id) > -1;
+        };
+
+        Kitchen.init = function() {
+            var promise = Recipe.query().$promise;
+
+            promise.then(function(objects){
+                angular.forEach(objects, function(recipe, id){
+                    if (id != '$promise' && id != '$resolved') {
+                        Kitchen.recipes[id] = recipe;
+
+                        if (recipe.isFavorite) {
+                            Kitchen.favoriteRecipes[id] = Kitchen.recipes[id];
+                        }
+
+                        if (recipe.isCooking) {
+                            Kitchen.cookingRecipes[id] = Kitchen.recipes[id];
+                        }
+                    }
+                });
+            });
+
+            return promise;
+        };
+
+        return Kitchen;
+    }
+})();
+(function () {
+    'use strict';
+    angular
+        .module('basilApp.services')
+        .factory('Recipe', Recipe);
+
+    function Recipe ($resource){
+        var resource =  $resource('/api/recipes/:id', {id:'@_id'}, {
+            query: {
+                method: 'GET',
+                isArray: false,
+                transformResponse: [function(data, headersGetter) {
+                    if( headersGetter('X-Total-Count') ) {
+                        resource.totalCount = Number(headersGetter('X-Total-Count'));
+                    }
+
+                    return angular.fromJson(data);
+                }]
+            },
             update: {
                 method: 'PUT'
             }
         });
+
+        resource.totalCount = 0;
+
+        return resource;
     }
-]);
+})();

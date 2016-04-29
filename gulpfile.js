@@ -94,6 +94,19 @@ gulp.task('build:scripts', ['clean:dist'], function() {
         .pipe(jsTasks());
 });
 
+// Concatenate vendor scripts
+gulp.task('build:vendors', ['clean:dist'], function() {
+    var jsTasks = lazypipe()
+        .pipe(gulp.dest, paths.vendors.output)
+        .pipe(rename, { suffix: '.min' })
+        .pipe(gulp.dest, paths.vendors.output);
+
+    return gulp.src(paths.vendors.input)
+        .pipe(plumber())
+        .pipe(concat(paths.vendors.filename))
+        .pipe(jsTasks());
+});
+
 // Process, lint, and minify Sass files
 gulp.task('build:styles', ['clean:dist'], function() {
     return gulp.src(paths.styles.input)
@@ -247,6 +260,7 @@ gulp.task('compile', [
     'lint:scripts',
     'clean:dist',
     'build:scripts',
+    'build:vendors',
     'build:styles',
     'build:images',
     'build:static',

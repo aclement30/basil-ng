@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.kitchen')
+angular.module('basilApp')
     .filter('ingredientUnit', function() {
         return function (input) {
             switch (input) {

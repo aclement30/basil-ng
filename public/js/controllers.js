@@ -1,9 +1,69 @@
-'use strict';
+(function () {
+    'use strict';
+    angular
+        .module('basilApp.controllers')
+        .controller('AppController', AppController);
 
-/* jshint -W098 */
-angular.module('mean.kitchen').controller('DetailController', ['$scope', '$state', '$stateParams', 'Recipes', 'Kitchen', function($scope, $state, $stateParams, Recipes, Kitchen){
+    function AppController ($mdSidenav, $rootScope, Auth, $scope, $state, Kitchen) {
+        var self = this;
 
-        $scope.units = {
+        var _defaultUI = {
+            section: null,
+            addButton: true,
+            backButton: true
+        };
+
+        self.ui = angular.extend({}, _defaultUI);
+
+        $rootScope.$on('$stateChangeStart', function(event, toState){
+            if (toState.data) {
+                self.ui = angular.extend({}, _defaultUI, toState.data.ui);
+            } else {
+                self.ui = angular.extend({}, _defaultUI);
+            }
+        });
+
+        self.closeMenu = closeMenu;
+        self.toggleMenu = toggleMenu;
+        self.logout = logout;
+
+        self.cookingRecipes = Kitchen.cookingRecipes;
+
+        function toggleMenu() {
+            $mdSidenav('left').toggle();
+        }
+
+        function closeMenu() {
+            $mdSidenav('left').close();
+        }
+
+        function logout() {
+            Auth.logout(function(){
+                $scope.setCurrentUser(null);
+            });
+
+            $state.go('login');
+        }
+
+        Auth.login(function() {
+            $scope.setCurrentUser(Auth.user);
+        });
+
+        $scope.setCurrentUser = function (user) {
+            $rootScope.currentUser = user;
+        };
+    }
+})();
+(function () {
+    'use strict';
+    angular
+        .module('basilApp.controllers')
+        .controller('DetailController', DetailController);
+
+    function DetailController($state, $stateParams, Recipes, Kitchen) {
+        var self = this;
+
+        self.units = {
             m: {
                 code: 'metric',
                 name: 'Métrique',
@@ -16,59 +76,59 @@ angular.module('mean.kitchen').controller('DetailController', ['$scope', '$state
             }
         };
 
-        $scope.unit = $scope.units.m;
-        $scope.recipeId = $stateParams.id;
+        self.unit = $scope.units.m;
+        self.recipeId = $stateParams.id;
 
         // Retrieve current recipe
         Recipes.get({
-            recipeId: $scope.recipeId
+            recipeId: self.recipeId
         }, function(recipe) {
-            $scope.recipe = recipe;
+            self.recipe = recipe;
 
-            $scope.yield = $scope.recipe.recipeYield;
+            self.yield = self.recipe.recipeYield;
         });
 
         var originatorEv;
 
-        $scope.openMenu = function($mdOpenMenu, ev) {
+        self.openMenu = function($mdOpenMenu, ev) {
             originatorEv = ev;
             $mdOpenMenu(ev);
         };
 
-        $scope.selectUnit = function(unit)  {
-            $scope.unit = $scope.units[unit];
+        self.selectUnit = function(unit)  {
+            self.unit = self.units[unit];
         };
 
-        $scope.selectYield = function(portions)  {
-            $scope.yield = portions;
+        self.selectYield = function(portions)  {
+            self.yield = portions;
         };
 
-        $scope.isCooking = function() {
-            return Kitchen.isCooking($scope.recipeId)
+        self.isCooking = function() {
+            return Kitchen.isCooking(self.recipeId)
         };
 
-        $scope.startCooking = function() {
-            Kitchen.startCooking($scope.recipeId);
+        self.startCooking = function() {
+            Kitchen.startCooking(self.recipeId);
         };
 
-        $scope.stopCooking = function() {
-            Kitchen.stopCooking($scope.recipeId);
+        self.stopCooking = function() {
+            Kitchen.stopCooking(self.recipeId);
         };
 
-        $scope.toggleFavorite = function() {
-            Kitchen.toggleFavorite($scope.recipeId);
+        self.toggleFavorite = function() {
+            Kitchen.toggleFavorite(self.recipeId);
         };
 
-        $scope.edit = function() {
-            $state.go('edit', {id: $scope.recipeId});
+        self.edit = function() {
+            $state.go('edit', {id: self.recipeId});
         };
 
-        $scope.getConvertedIngredient = function(originalIngredient) {
+        self.getConvertedIngredient = function(originalIngredient) {
             var originalUnit = 'metric';
             var convertedIngredient;
 
-            if ($scope.recipe.ingredientsUnit) {
-                originalUnit = $scope.recipe.ingredientsUnit;
+            if (self.recipe.ingredientsUnit) {
+                originalUnit = self.recipe.ingredientsUnit;
             }
 
             if (originalIngredient.unit) {
@@ -92,171 +152,81 @@ angular.module('mean.kitchen').controller('DetailController', ['$scope', '$state
                 convertedIngredient = originalIngredient;
             }
         };
-    }]);
-'use strict';
-
-/* jshint -W098 */
-angular.module('mean.kitchen').controller('EditController', ['$scope', '$state', '$stateParams', 'Recipes', 'Ingredient', '$filter', function($scope, $state, $stateParams, Recipes, Ingredient, $filter){
-
-    $scope.recipeId = $stateParams.id;
-
-    // Retrieve current recipe
-    Recipes.get({
-        recipeId: $scope.recipeId
-    }, function(recipe) {
-        angular.forEach(recipe.ingredients, function(ingredient, key){
-            if (!ingredient.description) {
-                ingredient.description = $filter('ingredientQuantity')(ingredient.quantity, 'text');
-                if (ingredient.unit) ingredient.description += ' ' + $filter('ingredientUnit')(ingredient.unit);
-                ingredient.description += ' ' + ingredient.name;
-                if (ingredient.type) ingredient.description += ' ' + ingredient.type;
-            }
-        });
-
-        recipe.combinedIngredients = $scope.combineIngredients(recipe.ingredients);
-        recipe.combinedInstructions = $scope.combineInstructions(recipe.recipeInstructions);
-        $scope.recipe = recipe;
-
-        $scope.yield = $scope.recipe.recipeYield;
-    });
-
-    /*$scope.addIngredient = function() {
-        $scope.recipe.ingredients.push({});
-    };
-
-    $scope.removeIngredient = function(index) {
-        $scope.recipe.ingredients.splice(index, 1);
-    };*/
-
-    $scope.combineIngredients = function(ingredients) {
-        var combinedIngredients = [];
-
-        angular.forEach(ingredients, function(ingredient, key) {
-            combinedIngredients.push(ingredient.description);
-        });
-
-        return combinedIngredients.join("\n");
-    };
-
-    $scope.parseIngredients = function() {
-        $scope.recipe.ingredients = Ingredient.parseCombined($scope.recipe.combinedIngredients);
-    };
-
-    /*$scope.addStep = function() {
-        $scope.recipe.recipeInstructions.push({description: null});
-    };
-
-    $scope.removeStep = function(index) {
-        $scope.recipe.recipeInstructions.splice(index, 1);
-    };*/
-
-    $scope.combineInstructions = function(instructions) {
-        var combinedInstructions = [];
-
-        angular.forEach(instructions, function(instruction, key) {
-            combinedInstructions.push(instruction.description);
-        });
-
-        return combinedInstructions.join("\n");
-    };
-
-    $scope.parseInstructions = function() {
-        var instructionsList = $scope.recipe.combinedInstructions.split("\n"),
-            instructions = [];
-
-        angular.forEach(instructionsList, function(instruction, key) {
-            instructions.push({
-                description: instruction
-            });
-        });
-
-        $scope.recipe.recipeInstructions = instructions;
-    };
-
-    $scope.delete = function() {
-        if (confirm("Voulez-vous vraiment supprimer cette recette?")) {
-            $scope.recipe.$remove(function(response) {
-                $state.go('recipes');
-            });
-        }
-    };
-
-    $scope.save = function() {
-        var recipe = $scope.recipe;
-        recipe.updated = new Date().getTime();
-
-        recipe.$update(function() {
-            $state.go('detail', {id: $scope.recipe._id});
-        });
-    };
-}]);
-'use strict';
-
-/* jshint -W098 */
-angular.module('mean.kitchen').controller('IndexController', ['$scope', 'Global', 'Kitchen', '$mdBottomSheet','$mdSidenav', '$mdDialog', 'Recipes', 'Category', '$timeout',
-    function($scope, Global, Kitchen, $mdBottomSheet, $mdSidenav, $mdDialog, Recipes, Category, $timeout) {
-        $scope.global = Global;
-
-        Recipes.query(function(recipes) {
-            $scope.recipes = recipes;
-        });
-
-        $scope.favoriteRecipes = Kitchen.getFavorites();
-
-        $scope.categories = Category.get();
     }
-]);
-'use strict';
+})();
+(function () {
+    'use strict';
+    angular
+        .module('basilApp.controllers')
+        .controller('EditController', EditController);
 
-/* jshint -W098 */
-angular.module('mean.kitchen').controller('KitchenController', ['$scope', 'Global', 'Kitchen',
-  function($scope, Global, Kitchen) {
-    $scope.global = Global;
+    function EditController($state, $stateParams, Recipe, Ingredient, $filter) {
+        var self = this;
 
-    $scope.cookingRecipes = Kitchen.getCooking;
-  }
-]);
+        self.recipeId = $stateParams.id;
 
-'use strict';
+        // Retrieve current recipe
+        Recipe.get({
+            recipeId: self.recipeId
+        }, function(recipe) {
+            angular.forEach(recipe.ingredients, function(ingredient, key){
+                if (!ingredient.description) {
+                    ingredient.description = $filter('ingredientQuantity')(ingredient.quantity, 'text');
+                    if (ingredient.unit) ingredient.description += ' ' + $filter('ingredientUnit')(ingredient.unit);
+                    ingredient.description += ' ' + ingredient.name;
+                    if (ingredient.type) ingredient.description += ' ' + ingredient.type;
+                }
+            });
 
-/* jshint -W098 */
-angular.module('mean.kitchen').controller('NewController', ['$scope', '$state', 'Recipes', 'Ingredient', '$http', function($scope, $state, Recipes, Ingredient, $http){
+            recipe.combinedIngredients = self.combineIngredients(recipe.ingredients);
+            recipe.combinedInstructions = self.combineInstructions(recipe.recipeInstructions);
+            self.recipe = recipe;
 
-        $scope.selectedTabIndex = 0;
+            self.yield = self.recipe.recipeYield;
+        });
 
-        $scope.recipe = {
-            ingredients: [],
-            combinedIngredients: null,
-            ingredientsUnit: 'metric',
-            recipeInstructions: [],
-            combinedInstructions: null,
-            recipeYield: 1,
+        /*self.addIngredient = function() {
+         self.recipe.ingredients.push({});
+         };
+
+         self.removeIngredient = function(index) {
+         self.recipe.ingredients.splice(index, 1);
+         };*/
+
+        self.combineIngredients = function(ingredients) {
+            var combinedIngredients = [];
+
+            angular.forEach(ingredients, function(ingredient, key) {
+                combinedIngredients.push(ingredient.description);
+            });
+
+            return combinedIngredients.join("\n");
         };
 
-        $scope.yield = $scope.recipe.recipeYield;
-
-        /*$scope.addIngredient = function() {
-            $scope.recipe.ingredients.push({});
+        self.parseIngredients = function() {
+            self.recipe.ingredients = Ingredient.parseCombined(self.recipe.combinedIngredients);
         };
 
-        $scope.removeIngredient = function(index) {
-            $scope.recipe.ingredients.splice(index, 1);
-        };*/
+        /*self.addStep = function() {
+         self.recipe.recipeInstructions.push({description: null});
+         };
 
-        $scope.parseIngredients = function() {
-            $scope.recipe.ingredients = Ingredient.parseCombined($scope.recipe.combinedIngredients);
+         self.removeStep = function(index) {
+         self.recipe.recipeInstructions.splice(index, 1);
+         };*/
+
+        self.combineInstructions = function(instructions) {
+            var combinedInstructions = [];
+
+            angular.forEach(instructions, function(instruction, key) {
+                combinedInstructions.push(instruction.description);
+            });
+
+            return combinedInstructions.join("\n");
         };
 
-        /*$scope.addStep = function() {
-            $scope.recipe.recipeInstructions.push({description: null});
-        };
-
-        $scope.removeStep = function(index) {
-            $scope.recipe.recipeInstructions.splice(index, 1);
-        };*/
-
-        $scope.parseInstructions = function() {
-            var instructionsList = $scope.recipe.combinedInstructions.split("\n"),
+        self.parseInstructions = function() {
+            var instructionsList = self.recipe.combinedInstructions.split("\n"),
                 instructions = [];
 
             angular.forEach(instructionsList, function(instruction, key) {
@@ -265,30 +235,58 @@ angular.module('mean.kitchen').controller('NewController', ['$scope', '$state', 
                 });
             });
 
-            $scope.recipe.recipeInstructions = instructions;
+            self.recipe.recipeInstructions = instructions;
         };
 
-        $scope.parseUrl = function() {
-            $http.post('/api/recipes/parseUrl/', {
-                url: $scope.remoteUrl
-            }).then(function successCallback(response) {
-                $scope.recipe = response.data;
+        self.delete = function() {
+            if (confirm("Voulez-vous vraiment supprimer cette recette?")) {
+                self.recipe.$remove(function(response) {
+                    $state.go('recipes');
+                });
+            }
+        };
 
-                $scope.selectedTabIndex = 1;
-            }, function errorCallback(response) {
-                debugger;
-                // called asynchronously if an error occurs
-                // or server returns response with an error status.
+        self.save = function() {
+            var recipe = self.recipe;
+            recipe.updated = new Date().getTime();
+
+            recipe.$update(function() {
+                $state.go('detail', {id: self.recipe._id});
             });
         };
+    }
+})();
+(function () {
+    'use strict';
+    angular
+        .module('basilApp.controllers')
+        .controller('IndexController', IndexController);
 
-        $scope.save = function() {
-            var recipe = new Recipes($scope.recipe);
+    function IndexController(Global, Kitchen, $mdBottomSheet, $mdSidenav, $mdDialog, Recipe, Category) {
+        var self = this;
 
-            recipe.$save(function(response) {
-                $state.go('detail', {id: response._id});
-            });
+        self.global = Global;
 
-            $scope.recipe = {};
-        };
-    }]);
+        Recipe.query(function(recipes) {
+            self.recipes = recipes;
+        });
+
+        self.favoriteRecipes = Kitchen.favoriteRecipes;
+
+        self.categories = Category.list;
+    }
+})();
+(function () {
+    'use strict';
+    angular
+        .module('basilApp.controllers')
+        .controller('KitchenController', KitchenController);
+
+    function KitchenController(Kitchen) {
+        var self = this;
+
+        //self.global = Global;
+
+        self.cookingRecipes = Kitchen.getCooking;
+    }
+})();

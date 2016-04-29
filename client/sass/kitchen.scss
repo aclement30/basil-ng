@@ -3,6 +3,8 @@ $gray: #eee;
 
 $base-color: #009600;
 
+@import 'angular-material';
+@import 'md-data-table.css';
 @import 'partials/icons';
 @import 'partials/buttons';
 @import 'partials/index';

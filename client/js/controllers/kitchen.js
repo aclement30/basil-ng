@@ -1,10 +1,14 @@
-'use strict';
+(function () {
+    'use strict';
+    angular
+        .module('basilApp.controllers')
+        .controller('KitchenController', KitchenController);
 
-/* jshint -W098 */
-angular.module('mean.kitchen').controller('KitchenController', ['$scope', 'Global', 'Kitchen',
-  function($scope, Global, Kitchen) {
-    $scope.global = Global;
+    function KitchenController(Kitchen) {
+        var self = this;
 
-    $scope.cookingRecipes = Kitchen.getCooking;
-  }
-]);
+        //self.global = Global;
+
+        self.cookingRecipes = Kitchen.getCooking;
+    }
+})();

@@ -1,16 +1,20 @@
-'use strict';
+(function () {
+    'use strict';
+    angular
+        .module('basilApp.controllers')
+        .controller('IndexController', IndexController);
 
-/* jshint -W098 */
-angular.module('mean.kitchen').controller('IndexController', ['$scope', 'Global', 'Kitchen', '$mdBottomSheet','$mdSidenav', '$mdDialog', 'Recipes', 'Category', '$timeout',
-    function($scope, Global, Kitchen, $mdBottomSheet, $mdSidenav, $mdDialog, Recipes, Category, $timeout) {
-        $scope.global = Global;
+    function IndexController(Global, Kitchen, $mdBottomSheet, $mdSidenav, $mdDialog, Recipe, Category) {
+        var self = this;
 
-        Recipes.query(function(recipes) {
-            $scope.recipes = recipes;
+        self.global = Global;
+
+        Recipe.query(function(recipes) {
+            self.recipes = recipes;
         });
 
-        $scope.favoriteRecipes = Kitchen.getFavorites();
+        self.favoriteRecipes = Kitchen.favoriteRecipes;
 
-        $scope.categories = Category.get();
+        self.categories = Category.list;
     }
-]);
+})();

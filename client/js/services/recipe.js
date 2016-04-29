@@ -1,14 +1,29 @@
-'use strict';
+(function () {
+    'use strict';
+    angular
+        .module('basilApp.services')
+        .factory('Recipe', Recipe);
 
-// Recipes service used for recipes REST endpoint
-angular.module('mean.kitchen').factory('Recipes', ['$resource',
-    function ($resource) {
-        return $resource('api/recipes/:recipeId', {
-            recipeId: '@_id'
-        }, {
+    function Recipe ($resource){
+        var resource =  $resource('/api/recipes/:id', {id:'@_id'}, {
+            query: {
+                method: 'GET',
+                isArray: false,
+                transformResponse: [function(data, headersGetter) {
+                    if( headersGetter('X-Total-Count') ) {
+                        resource.totalCount = Number(headersGetter('X-Total-Count'));
+                    }
+
+                    return angular.fromJson(data);
+                }]
+            },
             update: {
                 method: 'PUT'
             }
         });
+
+        resource.totalCount = 0;
+
+        return resource;
     }
-]);
+})();

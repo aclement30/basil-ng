@@ -1,9 +1,13 @@
-'use strict';
+(function () {
+    'use strict';
+    angular
+        .module('basilApp.controllers')
+        .controller('DetailController', DetailController);
 
-/* jshint -W098 */
-angular.module('mean.kitchen').controller('DetailController', ['$scope', '$state', '$stateParams', 'Recipes', 'Kitchen', function($scope, $state, $stateParams, Recipes, Kitchen){
+    function DetailController($state, $stateParams, Recipes, Kitchen) {
+        var self = this;
 
-        $scope.units = {
+        self.units = {
             m: {
                 code: 'metric',
                 name: 'Métrique',
@@ -16,59 +20,59 @@ angular.module('mean.kitchen').controller('DetailController', ['$scope', '$state
             }
         };
 
-        $scope.unit = $scope.units.m;
-        $scope.recipeId = $stateParams.id;
+        self.unit = $scope.units.m;
+        self.recipeId = $stateParams.id;
 
         // Retrieve current recipe
         Recipes.get({
-            recipeId: $scope.recipeId
+            recipeId: self.recipeId
         }, function(recipe) {
-            $scope.recipe = recipe;
+            self.recipe = recipe;
 
-            $scope.yield = $scope.recipe.recipeYield;
+            self.yield = self.recipe.recipeYield;
         });
 
         var originatorEv;
 
-        $scope.openMenu = function($mdOpenMenu, ev) {
+        self.openMenu = function($mdOpenMenu, ev) {
             originatorEv = ev;
             $mdOpenMenu(ev);
         };
 
-        $scope.selectUnit = function(unit)  {
-            $scope.unit = $scope.units[unit];
+        self.selectUnit = function(unit)  {
+            self.unit = self.units[unit];
         };
 
-        $scope.selectYield = function(portions)  {
-            $scope.yield = portions;
+        self.selectYield = function(portions)  {
+            self.yield = portions;
         };
 
-        $scope.isCooking = function() {
-            return Kitchen.isCooking($scope.recipeId)
+        self.isCooking = function() {
+            return Kitchen.isCooking(self.recipeId)
         };
 
-        $scope.startCooking = function() {
-            Kitchen.startCooking($scope.recipeId);
+        self.startCooking = function() {
+            Kitchen.startCooking(self.recipeId);
         };
 
-        $scope.stopCooking = function() {
-            Kitchen.stopCooking($scope.recipeId);
+        self.stopCooking = function() {
+            Kitchen.stopCooking(self.recipeId);
         };
 
-        $scope.toggleFavorite = function() {
-            Kitchen.toggleFavorite($scope.recipeId);
+        self.toggleFavorite = function() {
+            Kitchen.toggleFavorite(self.recipeId);
         };
 
-        $scope.edit = function() {
-            $state.go('edit', {id: $scope.recipeId});
+        self.edit = function() {
+            $state.go('edit', {id: self.recipeId});
         };
 
-        $scope.getConvertedIngredient = function(originalIngredient) {
+        self.getConvertedIngredient = function(originalIngredient) {
             var originalUnit = 'metric';
             var convertedIngredient;
 
-            if ($scope.recipe.ingredientsUnit) {
-                originalUnit = $scope.recipe.ingredientsUnit;
+            if (self.recipe.ingredientsUnit) {
+                originalUnit = self.recipe.ingredientsUnit;
             }
 
             if (originalIngredient.unit) {
@@ -92,4 +96,5 @@ angular.module('mean.kitchen').controller('DetailController', ['$scope', '$state
                 convertedIngredient = originalIngredient;
             }
         };
-    }]);
+    }
+})();
