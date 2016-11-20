@@ -48,7 +48,7 @@ module.exports = {
                                     token: token
                                 },
                                 name: profile.displayName,
-                                email: email
+                                email: profile.emails[0].value // User's first email
                             });
 
                             // Save the user

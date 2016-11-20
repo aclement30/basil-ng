@@ -37,13 +37,10 @@ var schema = new mongoose.Schema({
     },
     ingredientsUnit: {
         type: String,
-        required: true
+        required: true,
+        default: 'imperial'
     },
-    /*ingredients: {
-        type: [{
-            type: ingredientSchema
-        }]
-    },*/
+    ingredients: [ingredientSchema],
     recipeInstructions: {
         type: [{
             type: String

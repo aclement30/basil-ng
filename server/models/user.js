@@ -21,6 +21,10 @@ var schema = new mongoose.Schema({
         type: String,
         required: true
     },
+    cookingRecipes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Recipe'
+    }],
     google: googleSchema,
     isDeleted: { type: Boolean, default: false }
 });

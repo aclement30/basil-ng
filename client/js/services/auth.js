@@ -22,7 +22,7 @@
         AuthService.login = function(callback) {
             $http({ method: 'GET', url: '/api/user' })
 
-            // User successfully authenticates
+                // User successfully authenticates
                 .success(function(data, status, headers, config) {
                     AuthService.authenticated = true;
                     AuthService.user = data;

@@ -27,39 +27,42 @@
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <script type="text/javascript" src="../js/vendors.min.js"></script>
-
+    <script type="text/javascript" src="../js/vendors.js"></script>
     <script type="text/javascript" src="../js/app.js"></script>
-    <script type="text/javascript" src="../js/controllers.js"></script>
-    <script type="text/javascript" src="../js/filters.js"></script>
-    <script type="text/javascript" src="../js/services.js"></script>
 
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 </head>
 
-<body data-ng-app="basilApp" data-ng-controller="KitchenController" layout="row">
+<body data-ng-app="basilApp" data-ng-controller="AppController as appCtrl" layout="row">
 
-<md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="true">
+<md-sidenav
+        layout="column"
+        class="md-sidenav-left md-whiteframe-z2"
+        md-component-id="left"
+        md-is-locked-open="true"
+        ng-show="currentUser"
+        ng-cloak>
     <md-list>
         <md-list-item class="md-2-line" role="link" md-ink-ripple>
-            <md-icon md-svg-icon="action:ic_dashboard_24px" aria-label="Recettes"></md-icon>
+            <md-icon>dashboard</md-icon>
             <div class="md-list-item-text" ui-sref="recipes">
                 <span class="md-body-2">Recettes</span>
             </div>
         </md-list-item>
         <md-divider></md-divider>
         <md-subheader  class="md-no-sticky">Cuisine</md-subheader>
-        <md-list-item class="md-2-line" ng-repeat="recipe in cookingRecipes()" role="link" md-ink-ripple>
-            <div class="md-list-item-text" ui-sref="detail({ id: recipe.id })">
+        <md-list-item class="md-2-line" ng-repeat="recipe in cookingRecipes" role="link" md-ink-ripple>
+            <div class="md-list-item-text" ui-sref="detail({ id: recipe._id })">
                 <span class="md-body-2">{{recipe.title}}</span>
             </div>
         </md-list-item>
     </md-list>
 </md-sidenav>
 
-<div layout="column" class="relative" layout-fill data-ui-view role="main"></div>
+<div layout="column" class="relative content-wrapper" layout-fill data-ui-view role="main"></div>
+
 <script type="text/javascript">
     //window.user = {{user|json|safe}};
     window.modules = null;

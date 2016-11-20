@@ -22,6 +22,9 @@ angular.module('basilApp', [
         notAuthenticated: 'auth-not-authenticated',
         notAuthorized: 'auth-not-authorized'
     })
+    .constant('KITCHEN_EVENTS', {
+        cookingRecipesUpdate: 'cooking-recipes-update'
+    })
     .config([
         '$stateProvider',
         '$urlRouterProvider',
@@ -51,26 +54,30 @@ angular.module('basilApp', [
                 .state('recipes', {
                     url: '/recipes',
                     templateUrl: 'views/index/index.html',
-                    controller: 'IndexController'
+                    controller: 'IndexController',
+                    controllerAs: 'ctrl'
                 })
                 .state('new', {
                     url: '/recipes/add',
-                    templateUrl: 'views/new/new.html',
-                    controller: 'NewController'
+                    templateUrl: 'views/edit/edit.html',
+                    controller: 'EditController',
+                    controllerAs: 'ctrl'
                 })
                 .state('detail', {
                     url: '/recipes/{id}',
                     templateUrl: 'views/detail/detail.html',
-                    controller: 'DetailController'
+                    controller: 'DetailController',
+                    controllerAs: 'ctrl'
                 })
                 .state('edit', {
                     url: '/recipes/{id}/edit',
                     templateUrl: 'views/edit/edit.html',
-                    controller: 'EditController'
+                    controller: 'EditController',
+                    controllerAs: 'ctrl'
                 })
                 .state('login', {
                     url: '/login',
-                    templateUrl: '/js/Login/_login.html',
+                    templateUrl: 'views/login.html',
                     controller: 'LoginController',
                     data: {
                         currentSection: {
@@ -125,8 +132,7 @@ angular.module('basilApp', [
             $rootScope.serverIsOnline = true;
             $rootScope.tasks = {};
 
-            $rootScope.$on('$stateChangeStart', function (event, next) {
-                 event.preventDefault();
+            /*$rootScope.$on('$stateChangeStart', function (event, next) {
                 if (!Auth.isAuthenticated()) {
                     event.preventDefault();
 
@@ -136,9 +142,9 @@ angular.module('basilApp', [
 
                 if (next.name == 'login' && Auth.isAuthenticated()) {
                     event.preventDefault();
-                    $state.go('dashboard');
+                    $state.go('recipes');
                 }
-            });
+            });*/
 
             $rootScope.$on(AUTH_EVENTS.loginFailed, function(event){
                 $state.go('login');

@@ -1,0 +1,69 @@
+<md-button class="md-fab md-fab-bottom-right" aria-label="Add" ui-sref="new">
+    <md-icon>add</md-icon>
+</md-button>
+<md-toolbar class="animate-show md-whiteframe-z1" ng-show="!showSearch">
+    <div class="md-toolbar-tools">
+        <md-button class="md-icon-button" ng-click="toggleSidenav('left')" hide-gt-md aria-label="Menu">
+            <md-icon>menu</md-icon>
+        </md-button>
+        <h3>
+            Recettes
+        </h3>
+        <!--<span flex></span>
+        <md-button class="md-icon-button" aria-label="Search" ng-click="toggleSearch()">
+            <md-icon>search</md-icon>
+        </md-button>
+        <md-button class="md-icon-button" aria-label="Open Settings" ng-click="showListBottomSheet($event)">
+            <md-icon>more_vert</md-icon>
+        </md-button>-->
+    </div>
+</md-toolbar>
+<md-toolbar ng-show="showSearch" class="animate-show md-hue-1 md-whiteframe-z1">
+    <div class="md-toolbar-tools">
+        <md-button class="md-icon-button" ng-click="toggleSearch()" aria-label="Menu">
+            <md-icon>arrow_back</md-icon>
+        </md-button>
+        <h3 role="button" ng-click="toggleSearch()">
+            Back
+        </h3>
+        <span flex="5"></span>
+          <!--<span ng-controller="DemoCtrl as ctrl" flex>
+            <md-autocomplete md-theme="input"
+                             md-input-name="autocompleteField"
+                             md-no-cache="ctrl.noCache"
+                             md-selected-item="ctrl.selectedItem"
+                             md-search-text="ctrl.searchText"
+                             md-items="item in ctrl.querySearch(ctrl.searchText)"
+                             md-item-text="item.display"
+                             placeholder="Search">
+                <md-item-template>
+                    <span md-highlight-text="ctrl.searchText">{{item.display}}</span>
+                </md-item-template>
+                <div ng-messages="searchForm.autocompleteField.$error" ng-if="searchForm.autocompleteField.$touched">
+                    <div ng-message="required">You <b>must</b> have a favorite state.</div>
+                    <div ng-message="minlength">Your entry is not long enough.</div>
+                    <div ng-message="maxlength">Your entry is too long.</div>
+                </div>
+            </md-autocomplete>
+          </span>-->
+    </div>
+</md-toolbar>
+<md-content flex>
+    <div layout="column" layout-fill layout-padding>
+
+        <md-grid-list
+                md-cols-sm="1" md-cols-md="3" md-cols-gt-md="10"
+                md-row-height-gt-md="1:1" md-row-height="2:1"
+                md-gutter="12px" md-gutter-gt-sm="8px" class="recipes-index">
+            <md-grid-tile ng-repeat="recipe in ctrl.recipes" md-rowspan="1" md-colspan="1" ui-sref="detail({ id: recipe._id })">
+                <md-card>
+                    <div class="recipe-image" ng-style="{'background-image': 'url(' + recipe.image + ')'}"></div>
+                    <md-grid-tile-footer>
+                        <h3>{{recipe.title}}</h3>
+                    </md-grid-tile-footer>
+                </md-card>
+            </md-grid-tile>
+        </md-grid-list>
+
+    </div>
+</md-content>

@@ -4,7 +4,7 @@
         .module('basilApp.services')
         .factory('Kitchen', Kitchen);
 
-    function Kitchen (Recipe){
+    function Kitchen (Recipe, $rootScope, $http, KITCHEN_EVENTS){
         var Kitchen = {};
 
         //-- Variables --//
@@ -345,13 +345,16 @@
         Kitchen.cookingRecipes = {};
 
         Kitchen.toggleCooking = function(id) {
-            var recipe = Kitchen.recipes[id];
-            recipe.isCooking = !recipe.isCooking;
-
-            if (recipe.isCooking) {
-                Kitchen.cookingRecipes[id] = recipe;
+            if (!Kitchen.cookingRecipes[id]) {
+                $http({ method: 'PATCH', url: '/api/recipes/' + id + '/startCooking' })
+                    .success(function(data, status, headers, config) {
+                        $rootScope.$broadcast(KITCHEN_EVENTS.cookingRecipesUpdate);
+                    });
             } else {
-                delete Kitchen.recipes[id];
+                $http({ method: 'PATCH', url: '/api/recipes/' + id + '/stopCooking' })
+                    .success(function(data, status, headers, config) {
+                        $rootScope.$broadcast(KITCHEN_EVENTS.cookingRecipesUpdate);
+                    });
             }
         };
 
@@ -367,30 +370,21 @@
         };
 
         Kitchen.isCooking = function(id) {
-            return Kitchen.cookingRecipes.indexOf(id) > -1;
+            return !!Kitchen.cookingRecipes[id];
         };
 
-        Kitchen.init = function() {
-            var promise = Recipe.query().$promise;
-
-            promise.then(function(objects){
-                angular.forEach(objects, function(recipe, id){
-                    if (id != '$promise' && id != '$resolved') {
-                        Kitchen.recipes[id] = recipe;
-
-                        if (recipe.isFavorite) {
-                            Kitchen.favoriteRecipes[id] = Kitchen.recipes[id];
-                        }
-
-                        if (recipe.isCooking) {
-                            Kitchen.cookingRecipes[id] = Kitchen.recipes[id];
-                        }
-                    }
+        var fetchCookingRecipes = function() {
+            $http({ method: 'GET', url: '/api/cookingRecipes' })
+                .success(function(data, status, headers, config) {
+                    $rootScope.cookingRecipes = Kitchen.cookingRecipes = data;
                 });
-            });
-
-            return promise;
         };
+
+        fetchCookingRecipes();
+
+        $rootScope.$on(KITCHEN_EVENTS.cookingRecipesUpdate, function(event){
+            fetchCookingRecipes();
+        });
 
         return Kitchen;
     }

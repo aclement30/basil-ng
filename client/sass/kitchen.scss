@@ -2,15 +2,44 @@
 $gray: #eee;
 
 $base-color: #009600;
+$background-color: #edecec;
 
 @import 'angular-material';
-@import 'md-data-table.css';
+//@import 'md-data-table.css';
 @import 'partials/icons';
 @import 'partials/buttons';
 @import 'partials/index';
 @import 'partials/detail';
 @import 'partials/new';
+@import 'partials/recipe-form';
 
+body {
+  background-color: $background-color;
+  color: #5e5e5e;
+  height: auto;
+}
+
+.content-wrapper {
+  height: 100%;
+
+  .page-view {
+    max-width: 1170px;
+    margin: 0 auto;
+    padding-bottom: 30px;
+
+    .content-header {
+      padding: 0 15px;
+
+      md-input-container {
+        margin-bottom: 0;
+      }
+    }
+
+    &.form {
+      max-width: 600px;
+    }
+  }
+}
 
 .clearfix:after {
   visibility: hidden;

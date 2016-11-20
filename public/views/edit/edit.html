@@ -1,0 +1,114 @@
+<form novalidate name="ctrl.recipeForm" ng-submit="ctrl.recipeForm.$valid && ctrl.save()">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <span>Modifier la recette</span>
+            <!-- fill up the space between left and right area -->
+            <span flex></span>
+            <md-button type="submit">
+                <md-icon>check</md-icon>
+                {{ ctrl.editMode ? 'Enregistrer' : 'Ajouter' }}
+            </md-button>
+        </div>
+    </md-toolbar>
+
+    <div class="page-view form recipe-form-page">
+        <md-content layout-padding>
+
+            <div layout="column">
+                <md-input-container flex>
+                    <label>Titre</label>
+                    <input ng-model="ctrl.recipe.title" name="title" required>
+                    <div ng-messages="ctrl.recipeForm.title.$error" ng-cloak>
+                        <div ng-message="required">Champ requis</div>
+                    </div>
+                </md-input-container>
+            </div>
+
+        </md-content>
+
+        <md-divider></md-divider>
+
+        <md-content layout-padding>
+
+            <div layout="column">
+                <md-input-container flex>
+                    <label>Ingrédients</label>
+                    <textarea ng-model="ctrl.recipe.combinedIngredients" name="ingredients" ng-change="ctrl.parseIngredients()" columns="1" required></textarea>
+                    <div ng-messages="ctrl.recipeForm.ingredients.$error" ng-cloak>
+                        <div ng-message="required">Champ requis</div>
+                    </div>
+                </md-input-container>
+            </div>
+
+        </md-content>
+
+        <md-divider></md-divider>
+
+        <md-content layout-padding>
+
+            <div layout="column">
+                <md-input-container flex>
+                    <label>Étapes de préparation</label>
+                    <textarea ng-model="ctrl.recipe.combinedInstructions" name="instructions" ng-change="ctrl.parseInstructions()" columns="1" required></textarea>
+                    <div ng-messages="ctrl.recipeForm.instructions.$error" ng-cloak>
+                        <div ng-message="required">Champ requis</div>
+                    </div>
+                </md-input-container>
+            </div>
+
+        </md-content>
+
+        <md-divider></md-divider>
+
+        <md-content layout-padding layout="column">
+
+            <h4>Temps et rendement</h4>
+            <div layout="row">
+                <md-input-container flex="30">
+                    <label>Préparation</label>
+                    <input type="number" min="0" ng-model="ctrl.recipe.prepTime" name="prepTime" required>
+                    <div ng-messages="ctrl.recipeForm.prepTime.$error" ng-cloak>
+                        <div ng-message="required">Champ requis</div>
+                    </div>
+                </md-input-container>
+                <md-input-container flex="30" flex-offset="5">
+                    <label>Cuisson</label>
+                    <input type="number" min="0" ng-model="ctrl.recipe.cookTime" name="cookTime">
+                </md-input-container>
+                <md-input-container flex="30" flex-offset="5">
+                    <label>Portions</label>
+                    <input type="number" ng-model="ctrl.recipe.recipeYield" name="yield" required>
+                    <div ng-messages="ctrl.recipeForm.yield.$error" ng-cloak>
+                        <div ng-message="required">Champ requis</div>
+                    </div>
+                </md-input-container>
+            </div>
+
+        </md-content>
+
+        <md-divider></md-divider>
+
+        <md-content layout-padding>
+
+            <h4>Autres informations</h4>
+            <div layout="column">
+                <md-input-container flex="50">
+                    <label>Photo</label>
+                    <input type="url" ng-model="ctrl.recipe.image">
+                </md-input-container>
+
+                <md-input-container flex="50">
+                    <label>URL originale</label>
+                    <input type="url" ng-model="ctrl.recipe.originalUrl">
+                </md-input-container>
+            </div>
+
+        </md-content>
+
+        <md-progress-linear ng-show="ctrl.isSaving" md-mode="indeterminate"></md-progress-linear>
+
+        <div layout="column" layout-align="center center">
+            <md-button class="md-button md-warn" ng-click="ctrl.delete()" ng-if="ctrl.editMode">Supprimer la recette</md-button>
+        </div>
+    </div>
+</form>

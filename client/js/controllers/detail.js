@@ -4,7 +4,7 @@
         .module('basilApp.controllers')
         .controller('DetailController', DetailController);
 
-    function DetailController($state, $stateParams, Recipes, Kitchen) {
+    function DetailController($state, $stateParams, Recipe, Kitchen) {
         var self = this;
 
         self.units = {
@@ -20,12 +20,12 @@
             }
         };
 
-        self.unit = $scope.units.m;
+        self.unit = self.units.m;
         self.recipeId = $stateParams.id;
 
         // Retrieve current recipe
-        Recipes.get({
-            recipeId: self.recipeId
+        Recipe.get({
+            id: self.recipeId
         }, function(recipe) {
             self.recipe = recipe;
 
@@ -52,11 +52,11 @@
         };
 
         self.startCooking = function() {
-            Kitchen.startCooking(self.recipeId);
+            Kitchen.toggleCooking(self.recipeId);
         };
 
         self.stopCooking = function() {
-            Kitchen.stopCooking(self.recipeId);
+            Kitchen.toggleCooking(self.recipeId);
         };
 
         self.toggleFavorite = function() {

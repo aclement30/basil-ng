@@ -27,8 +27,6 @@
         self.toggleMenu = toggleMenu;
         self.logout = logout;
 
-        self.cookingRecipes = Kitchen.cookingRecipes;
-
         function toggleMenu() {
             $mdSidenav('left').toggle();
         }

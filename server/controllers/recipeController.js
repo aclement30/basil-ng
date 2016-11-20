@@ -6,7 +6,7 @@ function init(app) {
     app.get('/api/recipes/:recipeId', requireAuth, function (req, res) {
         var recipeId = req.params.recipeId;
 
-        Recipe.findById(recipeId).exec(function (err, object) {
+        Recipe.findOne({_id: recipeId, user: req.user._id}).exec(function (err, object) {
             res.send(object);
         });
     });
@@ -24,10 +24,10 @@ function init(app) {
 
         res.header('X-Page', page);
 
-        Recipe.count({isDeleted: false}).exec(function(countError, count){
+        Recipe.count({isDeleted: false, user: req.user._id}).exec(function(countError, count){
             res.header('X-Total-Count', count);
 
-            Recipe.find({isDeleted: false}).skip(offset).limit(limit).sort({date: -1}).exec(function (err, objects) {
+            Recipe.find({isDeleted: false, user: req.user._id}).skip(offset).limit(limit).sort({date: -1}).exec(function (err, objects) {
                 var objectMap = {};
 
                 objects.forEach(function (object) {
@@ -39,16 +39,39 @@ function init(app) {
         });
     });
 
+    app.get('/api/cookingRecipes', requireAuth, function (req, res){
+        if (req.user) {
+            User.findById(req.user._id).exec(function(error, user){
+                Recipe.find({isDeleted: false, _id: {$in: user.cookingRecipes}}).exec(function (err, objects){
+                    var objectMap = {};
+
+                    objects.forEach(function (object) {
+                        objectMap[object._id] = object;
+                    });
+
+                    res.send(objectMap);
+                });
+            });
+        } else {
+            res.status(403).send();
+        }
+    });
+
     app.post('/api/recipes', requireAuth, function (req, res) {
         var data = req.body;
 
         // Construct a new Recipe object
         var recipeData = {
-            date: data['date'],
-            team1: data['team1'],
-            team2: data['team2'],
-            balls: parseInt(data['balls']),
-            comments: data['comments']
+            title: data['title'],
+            ingredients: data['ingredients'],
+            recipeInstructions: data['recipeInstructions'],
+            cookTime: parseInt(data['cookTime']),
+            prepTime: parseInt(data['prepTime']),
+            totalTime: parseInt(data['cookTime']) + parseInt(data['prepTime']),
+            recipeYield: parseInt(data['recipeYield']),
+            image: data['image'],
+            originalUrl: data['originalUrl'],
+            user: req.user._id
         };
 
         // Create a new model instance with our object
@@ -73,18 +96,22 @@ function init(app) {
             return;
         }
 
-        Recipe.findById(recipeId, function (err, recipe) {
+        Recipe.findOne({_id: recipeId, user: req.user._id}, function (err, recipe) {
             if (err) {
-                errorHandler.client("Recipe not found (" + recipeId + ')', res);
+                errorHandler.client("Recipe not found (#" + recipeId + ')', res);
 
                 return;
             }
 
-            //match.date = data['date'];
-            //match.team1 = data['team1'];
-            //match.team2 = data['team2'];
-            //match.balls = parseInt(data['balls']);
-            //match.comments = data['comments'];
+            recipe.title = data['title'];
+            recipe.ingredients = data['ingredients'];
+            recipe.recipeInstructions = data['recipeInstructions'];
+            recipe.cookTime = parseInt(data['cookTime']);
+            recipe.prepTime = parseInt(data['prepTime']);
+            recipe.totalTime = parseInt(data['cookTime']) + parseInt(data['prepTime']);
+            recipe.recipeYield = parseInt(data['recipeYield']);
+            recipe.image = data['image'];
+            recipe.originalUrl = data['originalUrl'];
 
             recipe.save(function (error) {
                 if (!error) {
@@ -96,10 +123,52 @@ function init(app) {
         });
     });
 
+    app.patch('/api/recipes/:recipeId/startCooking', requireAuth, function (req, res) {
+        var recipeId = req.params.recipeId;
+
+        if (req.user) {
+            User.findById(req.user._id).exec(function(error, user){
+                var index = user.cookingRecipes.indexOf(recipeId);
+                if (index < 0) {
+                    user.cookingRecipes.push(recipeId);
+                }
+
+                User.update({_id: req.user._id}, {$set: {cookingRecipes: user.cookingRecipes}}, function (err) {
+                    if (!err) {
+                        res.sendStatus(200);
+                    }
+                });
+            });
+        } else {
+            res.status(403).send();
+        }
+    });
+
+    app.patch('/api/recipes/:recipeId/stopCooking', requireAuth, function (req, res) {
+        var recipeId = req.params.recipeId;
+
+        if (req.user) {
+            User.findById(req.user._id).exec(function(error, user){
+                var index = user.cookingRecipes.indexOf(recipeId);
+                if (index > -1) {
+                    user.cookingRecipes.splice(index, 1);
+                }
+
+                User.update({_id: req.user._id}, {$set: {cookingRecipes: user.cookingRecipes}}, function (err) {
+                    if (!err) {
+                        res.sendStatus(200);
+                    }
+                });
+            });
+        } else {
+            res.status(403).send();
+        }
+    });
+
     app.delete('/api/recipes/:recipeId', requireAuth, function (req, res) {
         var recipeId = req.params.recipeId;
 
-        Recipe.update({_id: recipeId}, {$set: {isDeleted: true}}, function (err) {
+        Recipe.update({_id: recipeId, user: req.user._id}, {$set: {isDeleted: true}}, function (err) {
             if (!err) {
                 res.sendStatus(200);
             }
