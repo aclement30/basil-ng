@@ -28,13 +28,7 @@ function init(app) {
             res.header('X-Total-Count', count);
 
             Recipe.find({isDeleted: false, user: req.user._id}).skip(offset).limit(limit).sort({date: -1}).exec(function (err, objects) {
-                var objectMap = {};
-
-                objects.forEach(function (object) {
-                    objectMap[object._id] = object;
-                });
-
-                res.send(objectMap);
+                res.send(objects);
             });
         });
     });
@@ -43,13 +37,17 @@ function init(app) {
         if (req.user) {
             User.findById(req.user._id).exec(function(error, user){
                 Recipe.find({isDeleted: false, _id: {$in: user.cookingRecipes}}).exec(function (err, objects){
-                    var objectMap = {};
+                    const recipeIds = objects.reduce((cookingRecipes, recipe) => {
+                        cookingRecipes.push({
+                            _id: recipe._id,
+                            title: recipe.title,
+                            image: recipe.image,
+                        });
 
-                    objects.forEach(function (object) {
-                        objectMap[object._id] = object;
-                    });
+                        return cookingRecipes;
+                    }, []);
 
-                    res.send(objectMap);
+                    res.send(recipeIds);
                 });
             });
         } else {
@@ -65,12 +63,13 @@ function init(app) {
             title: data['title'],
             ingredients: data['ingredients'],
             recipeInstructions: data['recipeInstructions'],
-            cookTime: parseInt(data['cookTime']),
-            prepTime: parseInt(data['prepTime']),
-            totalTime: parseInt(data['cookTime']) + parseInt(data['prepTime']),
-            recipeYield: parseInt(data['recipeYield']),
+            cookTime: data['cookTime'] ? parseInt(data['cookTime']) : null,
+            prepTime: data['prepTime'] ? parseInt(data['prepTime']) : null,
+            totalTime: data['cookTime'] || data['prepTime'] ? parseInt(data['cookTime']) + parseInt(data['prepTime']) : null,
+            recipeYield: data['recipeYield'] ? parseInt(data['recipeYield']) : null,
             image: data['image'],
             originalUrl: data['originalUrl'],
+            notes: data['notes'],
             user: req.user._id
         };
 
@@ -106,12 +105,14 @@ function init(app) {
             recipe.title = data['title'];
             recipe.ingredients = data['ingredients'];
             recipe.recipeInstructions = data['recipeInstructions'];
-            recipe.cookTime = parseInt(data['cookTime']);
-            recipe.prepTime = parseInt(data['prepTime']);
-            recipe.totalTime = parseInt(data['cookTime']) + parseInt(data['prepTime']);
-            recipe.recipeYield = parseInt(data['recipeYield']);
+            recipe.cookTime = data['cookTime'] ? parseInt(data['cookTime']) : null;
+            recipe.prepTime = data['prepTime'] ? parseInt(data['prepTime']) : null;
+            recipe.totalTime = data['cookTime'] || data['prepTime'] ? parseInt(data['cookTime']) + parseInt(data['prepTime']) : null;
+            recipe.recipeYield = data['recipeYield'] ? parseInt(data['recipeYield']) : null;
+            recipe.recipeYield = data['recipeYield'] ? parseInt(data['recipeYield']) : null;
             recipe.image = data['image'];
             recipe.originalUrl = data['originalUrl'];
+            recipe.notes = data['notes'];
 
             recipe.save(function (error) {
                 if (!error) {

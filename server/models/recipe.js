@@ -17,19 +17,19 @@ var schema = new mongoose.Schema({
     },
     cookTime: {
         type: Number,
-        default: 0
+        default: null
     },
     prepTime: {
         type: Number,
-        default: 0
+        default: null
     },
     totalTime: {
         type: Number,
-        default: 0
+        default: null
     },
     recipeYield: {
         type: Number,
-        default: 0
+        default: null
     },
     image: {
         type: String,

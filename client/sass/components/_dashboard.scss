@@ -1,0 +1,21 @@
+dashboard {
+  .card.recipe {
+    background-size: cover;
+    height: 200px;
+    cursor: pointer;
+
+    .card-header {
+      padding: 12px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(0,0,0,0.8);
+
+      h2 {
+        font-size: em(16);
+        color: #fff;
+      }
+    }
+  }
+}

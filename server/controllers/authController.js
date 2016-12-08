@@ -9,19 +9,19 @@ function init(app, passport) {
     app.get('/auth/google/callback', function(req, res, next) {
         passport.authenticate('google', function(error, user, info) {
             if (error) {
-                return res.redirect('/?error=' + error + '#/login');
+                return res.redirect('/login?error=' + error);
             }
 
             if (!user) {
-                return res.redirect('/#/login');
+                return res.redirect('/login');
             }
 
             req.logIn(user, function(err) {
                 if (err) {
-                    return res.redirect('/?error=' + err + '#/login');
+                    return res.redirect('/login?error=' + err);
                 }
 
-                return res.redirect('/');
+                return res.redirect('/?uid=' + user._id);
             });
 
         })(req, res, next);
@@ -41,7 +41,7 @@ function init(app, passport) {
     });
 
     // User logout
-    app.get('/logout', function(req, res) {
+    app.get('/auth/logout', function(req, res) {
         req.logout();
         res.redirect('/');
     });
