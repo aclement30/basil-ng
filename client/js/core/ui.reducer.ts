@@ -6,6 +6,10 @@ export const INITIAL_STATE: IUI = {
     kitchenSidebar: {
         displayed: false,
     },
+    voiceAssistant: {
+        enabled: false,
+        listening: false,
+    },
 }
 
 export function uiReducer(state: IUI = INITIAL_STATE, action: any): IUI {
@@ -30,6 +34,22 @@ export function uiReducer(state: IUI = INITIAL_STATE, action: any): IUI {
 
         case UIActions.DISABLE_COOKMODE:
             newState.cookmode = false;
+            return newState;
+
+        case UIActions.ENABLE_VOICE_ASSISTANT:
+            newState.voiceAssistant.enabled = true;
+            return newState;
+
+        case UIActions.DISABLE_VOICE_ASSISTANT:
+            newState.voiceAssistant.enabled = false;
+            return newState;
+
+        case UIActions.START_LISTENING:
+            newState.voiceAssistant.listening = true;
+            return newState;
+
+        case UIActions.STOP_LISTENING:
+            newState.voiceAssistant.listening = false;
             return newState;
 
         default:

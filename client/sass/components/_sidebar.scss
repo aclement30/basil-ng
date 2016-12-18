@@ -74,7 +74,7 @@ sidebar,
 .quick-actions {
   list-style: none;
   padding: 0;
-  margin: 30px 0 60px;
+  margin: 30px 0 40px;
   padding-left: 40px;
 
   & > li {
@@ -84,7 +84,6 @@ sidebar,
     border-radius: 50%;
     text-align: center;
     line-height: 43px;
-    background-color: rgba(255, 255, 255, 0.2);
     margin-right: 13px;
     color: #fff;
     font-size: 20px;
@@ -92,6 +91,14 @@ sidebar,
     cursor: pointer;
     @include transition(background-color);
     @include transition-duration(250ms);
+
+    .btn {
+      background-color: rgba(255, 255, 255, 0.2);
+
+      &:hover:not(.active) {
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+    }
 
     &.active {
       background-color: #fff;
@@ -115,16 +122,6 @@ sidebar,
         bottom: -10px;
         left: 19px;
       }
-    }
-
-    &:hover:not(.active) {
-      background-color: rgba(255, 255, 255, 0.3);
-    }
-
-    button {
-      background-color: transparent;
-      border: none;
-      padding: 0;
     }
   }
 

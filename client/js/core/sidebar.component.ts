@@ -4,6 +4,7 @@ import { select } from 'ng2-redux';
 
 import { IUI } from '../redux';
 import { UIActions } from './redux.actions';
+import { Timer } from './timer.model';
 
 @Component({
     selector: 'sidebar',
@@ -15,10 +16,17 @@ import { UIActions } from './redux.actions';
 
             <ul class="quick-actions">
                 <li>
-                    <button (click)="enableCookmode()" *ngIf="!(cookmodeEnabled$ | async)">
+                    <button class="btn btn-primary btn-icon waves-effect waves-circle waves-float" (click)="toggleVoiceAssistant()">
+                        <i class="zmdi zmdi-mic-off" *ngIf="!(voiceAssistantEnabled$ | async)"></i>
+                        <i class="zmdi zmdi-mic" *ngIf="(voiceAssistantEnabled$ | async) && !(voiceAssistantListening$ | async)"></i>
+                        <i class="zmdi zmdi-spinner zmdi-hc-spin" *ngIf="voiceAssistantListening$ | async"></i>
+                    </button>
+                </li>
+                <li>
+                    <button class="btn btn-icon waves-effect waves-circle waves-float" (click)="enableCookmode()" *ngIf="!(cookmodeEnabled$ | async)">
                         <i class="zmdi zmdi-fullscreen-alt"></i>
                     </button>
-                    <button (click)="disableCookmode()" *ngIf="cookmodeEnabled$ | async">
+                    <button class="btn btn-icon waves-effect waves-circle waves-float" (click)="disableCookmode()" *ngIf="cookmodeEnabled$ | async">
                         <i class="zmdi zmdi-fullscreen-exit"></i>
                     </button>
                 </li>
@@ -26,12 +34,16 @@ import { UIActions } from './redux.actions';
                     <i class="zmdi zmdi-notifications"></i>
                 </li>-->
                 <li>
-                    <button (click)="toggleKitchenSidebar()">
+                    <button class="btn btn-icon waves-effect waves-circle waves-float" (click)="toggleKitchenSidebar()">
                         <i class="zmdi zmdi-view-list-alt"></i>
                     </button>
                 </li>
             </ul>
 
+            <div class="timers">
+                    <timer *ngFor="let timer of timers$ | async" [timer]="timer"></timer>
+            </div>
+            
             <!--<ul class="main-menu">
                 <li class="active">
                     <a href="index.html"><i class="zmdi zmdi-home"></i> Home</a>
@@ -129,9 +141,11 @@ import { UIActions } from './redux.actions';
 })
 
 export class SidebarComponent {
+    @select('timers') timers$: Observable<Timer>;
     @select('ui') ui$: Observable<IUI>;
 
-    constructor(private uiActions: UIActions) {}
+    constructor(private uiActions: UIActions) {
+    }
 
     enableCookmode() {
         this.uiActions.enableCookmode();
@@ -143,6 +157,28 @@ export class SidebarComponent {
 
     toggleKitchenSidebar() {
         this.uiActions.showKitchenSidebar();
+    }
+
+    toggleVoiceAssistant() {
+        this.voiceAssistantEnabled$.first().subscribe(isEnabled => {
+            if (isEnabled) {
+                this.uiActions.disableVoiceAssistant();
+            } else {
+                this.uiActions.enableVoiceAssistant();
+            }
+        });
+    }
+
+    get voiceAssistantEnabled$(): Observable<boolean> {
+        return this.ui$.map((ui: IUI) => {
+            return ui.voiceAssistant.enabled;
+        });
+    }
+
+    get voiceAssistantListening$(): Observable<boolean> {
+        return this.ui$.map((ui: IUI) => {
+            return ui.voiceAssistant.listening;
+        });
     }
 
     get cookmodeEnabled$(): Observable<boolean> {

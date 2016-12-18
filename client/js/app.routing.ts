@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent }   from './core/dashboard.component';
 import { LoginComponent } from "./login/login.component";
 import { MainComponent }   from './core/main.component';
-import { RecipeDetailComponent }   from './recipes/recipe-detail.component';
+import { RecipeDetailComponent, CanDeactivateRecipeDetail }   from './recipes/recipe-detail.component';
 import { RecipeFormComponent }   from './recipes/recipe-form.component';
 import { Gatekeeper } from './core/gatekeeper.service';
 
@@ -21,7 +21,7 @@ const routes: Routes = [
         children: [
             { path: '', component: DashboardComponent },
             { path: 'add', component: RecipeFormComponent },
-            { path: 'detail/:id', component: RecipeDetailComponent },
+            { path: 'detail/:id', component: RecipeDetailComponent, canDeactivate: [CanDeactivateRecipeDetail] },
             { path: 'edit/:id', component: RecipeFormComponent },
         ]
     },

@@ -1,10 +1,11 @@
 import { ICookingRecipes } from '../redux';
 import { RecipesActions } from '../core/redux.actions';
 
-import { RecipeSummary } from './recipe.model';
+import { Recipe, RecipeSummary } from './recipe.model';
 
 export const INITIAL_STATE: ICookingRecipes = {
     list: [],
+    current: null,
 }
 
 export function cookingRecipesReducer(state: ICookingRecipes = INITIAL_STATE, action: any): ICookingRecipes {
@@ -38,6 +39,17 @@ export function cookingRecipesReducer(state: ICookingRecipes = INITIAL_STATE, ac
 
             return newState;
         }
+
+        case RecipesActions.SET_CURRENT_RECIPE: {
+            newState.current = action.payload.recipe;
+
+            return newState;
+        }
+
+        case RecipesActions.RESET_CURRENT_RECIPE:
+            newState.current = null;
+
+            return newState;
 
         default:
             return state;

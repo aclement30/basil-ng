@@ -12,7 +12,7 @@ export class Recipe {
     image: string;
     ingredientsUnit: string;
     ingredients: Ingredient[];
-    recipeInstructions: String[];
+    recipeInstructions: string[];
     notes: string;
     rating: number;
     originalUrl: string;

@@ -26,4 +26,17 @@ export class DialogService {
             });
         });
     }
+
+    show(title: string, text: string) {
+        swal({
+            customClass: 'announcement',
+            title,
+            text,
+            showConfirmButton: false
+        });
+    }
+
+    close() {
+        swal.close();
+    }
 }

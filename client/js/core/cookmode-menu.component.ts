@@ -16,18 +16,23 @@ import { UIActions } from './redux.actions';
                 </button>
             </li>-->
             <li>
-                <button (click)="enableCookmode()" *ngIf="!(cookmodeEnabled$ | async)">
-                    <i class="zmdi zmdi-fullscreen-alt"></i>
+                <button class="btn btn-primary btn-icon waves-effect waves-circle waves-float" (click)="toggleVoiceAssistant()">
+                    <i class="zmdi zmdi-mic-off" *ngIf="!(voiceAssistantEnabled$ | async)"></i>
+                    <i class="zmdi zmdi-mic" *ngIf="(voiceAssistantEnabled$ | async) && !(voiceAssistantListening$ | async)"></i>
+                    <i class="zmdi zmdi-spinner zmdi-hc-spin" *ngIf="voiceAssistantListening$ | async"></i>
                 </button>
-                <button (click)="disableCookmode()" *ngIf="cookmodeEnabled$ | async">
-                    <i class="zmdi zmdi-fullscreen-exit"></i>
+            </li>
+            <li>
+                <button class="btn btn-primary btn-icon waves-effect waves-circle waves-float" (click)="toggleCookmode()">
+                    <i class="zmdi zmdi-fullscreen-alt" *ngIf="!(cookmodeEnabled$ | async)"></i>
+                    <i class="zmdi zmdi-fullscreen-exit" *ngIf="cookmodeEnabled$ | async"></i>
                 </button>
             </li>
             <!--<li data-user-alert="sua-notifications" data-ma-action="sidebar-open" data-ma-target="user-alerts">
                 <i class="zmdi zmdi-notifications"></i>
             </li>-->
             <li>
-                <button (click)="toggleKitchenSidebar()">
+                <button class="btn btn-primary btn-icon waves-effect waves-circle waves-float" (click)="toggleKitchenSidebar()">
                     <i class="zmdi zmdi-view-list-alt"></i>
                 </button>
             </li>
@@ -46,12 +51,24 @@ export class CookmodeMenuComponent {
 
     }
 
-    enableCookmode() {
-        this.uiActions.enableCookmode();
+    toggleCookmode() {
+        this.cookmodeEnabled$.first().subscribe(isEnabled => {
+            if (isEnabled) {
+                this.uiActions.disableCookmode();
+            } else {
+                this.uiActions.enableCookmode();
+            }
+        });
     }
 
-    disableCookmode() {
-        this.uiActions.disableCookmode();
+    toggleVoiceAssistant() {
+        this.voiceAssistantEnabled$.first().subscribe(isEnabled => {
+            if (isEnabled) {
+                this.uiActions.disableVoiceAssistant();
+            } else {
+                this.uiActions.enableVoiceAssistant();
+            }
+        });
     }
 
     toggleKitchenSidebar() {
@@ -67,6 +84,18 @@ export class CookmodeMenuComponent {
     get cookmodeEnabled$(): Observable<boolean> {
         return this.ui$.map((ui: IUI) => {
             return ui.cookmode;
+        });
+    }
+
+    get voiceAssistantEnabled$(): Observable<boolean> {
+        return this.ui$.map((ui: IUI) => {
+            return ui.voiceAssistant.enabled;
+        });
+    }
+
+    get voiceAssistantListening$(): Observable<boolean> {
+        return this.ui$.map((ui: IUI) => {
+            return ui.voiceAssistant.listening;
         });
     }
 

@@ -1,11 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { Component, OnInit, Injectable } from '@angular/core';
+import { ActivatedRoute, CanDeactivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { select } from 'ng2-redux';
 
+import { DialogService } from '../core/dialog.service';
 import { ICookingRecipes } from '../redux';
+import { RecipesActions } from '../core/redux.actions';
 import { RecipeService } from './recipe.service';
 import { Recipe } from './recipe.model';
+import { Timer } from '../core/timer.model';
+import { TimerService } from '../core/timer.service';
 
 @Component({
     selector: 'recipe-detail',
@@ -78,17 +82,24 @@ import { Recipe } from './recipe.model';
 
 export class RecipeDetailComponent implements OnInit {
     @select('cookingRecipes') cookingRecipes$: Observable<ICookingRecipes>;
+    @select('timers') timers$: Observable<Timer[]>;
     paramsSubscriber: any;
     recipe: Recipe;
 
     constructor(
+        private dialogService: DialogService,
         private route: ActivatedRoute,
-        private recipeService: RecipeService) {}
+        private recipesActions: RecipesActions,
+        private recipeService: RecipeService,
+        private timerService: TimerService) {}
 
     ngOnInit(): void {
         this.paramsSubscriber = this.route.params.subscribe(params => {
             const id = params['id'];
-            this.recipeService.get(id).then(recipe => this.recipe = recipe);
+            this.recipeService.get(id).then((recipe) => {
+                this.recipe = recipe;
+                this.recipesActions.setCurrentRecipe(recipe);
+            });
         });
     }
 
@@ -101,12 +112,45 @@ export class RecipeDetailComponent implements OnInit {
     }
 
     stopCooking() {
+        this.activeTimers$.first().subscribe((activeTimers: Timer[]) => {
+            if (activeTimers.length) {
+                const message = activeTimers.length > 1 ? `Il y a ${activeTimers.length} minuteries en cours pour cette recette. Voulez-vous les arrêter maintenant ?` : 'Il y a 1 minuterie en cours pour cette recette. Voulez-vous l\'arrêter maintenant ?';
+                this.dialogService.confirm(message)
+                    .then(() => {
+                        activeTimers.forEach(timer => {
+                            this.timerService.remove(timer);
+                        })
+                    }, () => {
+                    })
+            }
+        });
+
         this.recipeService.stopCooking(this.recipe);
+    }
+
+    get activeTimers$(): Observable<Timer[]> {
+        return this.timers$.map((timers: Timer[]) => {
+            return timers.filter(timer => (timer.recipeId === this.recipe._id && !timer.completed));
+        });
     }
 
     get isCooking$(): Observable<boolean> {
         return this.cookingRecipes$.map((cookingRecipes: ICookingRecipes) => {
             return cookingRecipes.list.some(recipe => (recipe._id === this.recipe._id));
         });
+    }
+}
+
+@Injectable()
+export class CanDeactivateRecipeDetail implements CanDeactivate<RecipeDetailComponent> {
+    constructor(private recipesActions: RecipesActions) {}
+
+    canDeactivate(
+        component: RecipeDetailComponent,
+        route: ActivatedRouteSnapshot,
+        state: RouterStateSnapshot
+    ): boolean {
+        this.recipesActions.resetCurrentRecipe();
+        return true;
     }
 }

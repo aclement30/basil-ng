@@ -6,13 +6,14 @@ import { RouterModule } from '@angular/router';
 import { RecipeService } from './recipe.service';
 
 import { KitchenSidebarComponent } from './kitchen-sidebar.component';
-import { RecipeDetailComponent } from './recipe-detail.component';
+import { RecipeDetailComponent, CanDeactivateRecipeDetail } from './recipe-detail.component';
 import { RecipeFormComponent } from './recipe-form.component';
+import { RecipesActions } from '../core/redux.actions';
 
 @NgModule({
     imports: [ CommonModule, FormsModule, RouterModule ],
     declarations: [ KitchenSidebarComponent, RecipeDetailComponent, RecipeFormComponent ],
-    providers: [ RecipeService ],
+    providers: [ CanDeactivateRecipeDetail, RecipesActions, RecipeService ],
     exports: [ KitchenSidebarComponent ]
 })
 

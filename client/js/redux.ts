@@ -1,13 +1,14 @@
 import { combineReducers } from 'redux';
-const persistState = require('redux-localstorage');
 
 // Reducers
 import { cookingRecipesReducer } from './recipes/recipes.reducer';
 import { sessionReducer } from './core/session.reducer';
+import { timersReducer } from './core/timers.reducer';
 import { uiReducer } from './core/ui.reducer';
 
+import { Timer } from './core/timer.model';
 import User from './core/user.model';
-import { RecipeSummary } from "./recipes/recipe.model";
+import { Recipe, RecipeSummary } from "./recipes/recipe.model";
 
 export interface ISession {
     user?: User;
@@ -18,27 +19,33 @@ export interface IKitchenSidebar {
     displayed: boolean;
 
 }
+
+export interface IVoiceAssistant {
+    enabled: boolean;
+    listening: boolean;
+}
+
 export interface IUI {
     cookmode: boolean;
     kitchenSidebar: IKitchenSidebar;
+    voiceAssistant: IVoiceAssistant;
 }
 
 export interface ICookingRecipes {
     list: RecipeSummary[];
+    current: Recipe;
 }
 
 export interface IAppState {
     cookingRecipes: ICookingRecipes;
     session: ISession;
+    timers: Timer[];
     ui: IUI;
 };
 
 export const rootReducer = combineReducers<IAppState>({
     cookingRecipes: cookingRecipesReducer,
     session: sessionReducer,
+    timers: timersReducer,
     ui: uiReducer,
 });
-
-export const enhancers = [
-    persistState('session', { key: 'basil.session' })
-];

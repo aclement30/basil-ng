@@ -33,3 +33,20 @@
     box-shadow: none !important;
   }
 }
+
+.sweet-alert.announcement {
+  border-radius: 5px;
+  padding: 10px 50px;
+  @include z-depth-6dp;
+
+  h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .lead {
+    font-size: 16px;
+    margin-bottom: 5px;
+    line-height: 1.5;
+  }
+}

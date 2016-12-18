@@ -3,6 +3,7 @@ import { NgRedux } from 'ng2-redux';
 import { IAppState } from '../redux';
 
 import { Recipe, RecipeSummary } from '../recipes/recipe.model';
+import { Timer } from './timer.model';
 import User from './user.model';
 
 @Injectable()
@@ -41,6 +42,8 @@ export class RecipesActions {
     static SET_COOKING_RECIPES: string = 'SET_COOKING_RECIPES';
     static START_COOKING: string = 'START_COOKING';
     static STOP_COOKING: string = 'STOP_COOKING';
+    static SET_CURRENT_RECIPE: string = 'SET_CURRENT_RECIPE';
+    static RESET_CURRENT_RECIPE: string = 'RESET_CURRENT_RECIPE';
 
     setCookingRecipes = (recipes: RecipeSummary[]): void => {
         this.ngRedux.dispatch({
@@ -63,6 +66,76 @@ export class RecipesActions {
             type: RecipesActions.STOP_COOKING,
             payload: { recipe }
         });
+
+        let state = this.ngRedux.getState();
+        if (state.ui.cookmode && !state.cookingRecipes.list.length) {
+            this.ngRedux.dispatch({ type: UIActions.DISABLE_COOKMODE });
+        }
+    }
+
+    setCurrentRecipe = (recipe: Recipe): void => {
+        this.ngRedux.dispatch({
+            type: RecipesActions.SET_CURRENT_RECIPE,
+            payload: { recipe }
+        });
+    }
+
+    resetCurrentRecipe = (): void => {
+        this.ngRedux.dispatch({ type: RecipesActions.RESET_CURRENT_RECIPE });
+    }
+}
+
+@Injectable()
+export class TimersActions {
+    constructor (private ngRedux: NgRedux<IAppState>) {}
+
+    static SET_TIMERS: string = 'SET_TIMERS';
+    static ADD_TIMER: string = 'ADD_TIMER';
+    static START_TIMER: string = 'START_TIMER';
+    static UPDATE_TIMER: string = 'UPDATE_TIMER';
+    static COMPLETE_TIMER: string = 'COMPLETE_TIMER';
+    static REMOVE_TIMER: string = 'REMOVE_TIMER';
+
+    setTimers = (timers: Timer[]): void => {
+        this.ngRedux.dispatch({
+            type: TimersActions.SET_TIMERS,
+            payload: { timers }
+        });
+    }
+
+    addTimer = (timer: Timer): void => {
+        this.ngRedux.dispatch({
+            type: TimersActions.ADD_TIMER,
+            payload: { timer }
+        });
+    }
+
+    startTimer = (timer: Timer): void => {
+        this.ngRedux.dispatch({
+            type: TimersActions.START_TIMER,
+            payload: { timer }
+        });
+    }
+
+    updateTimer = (timer: Timer): void => {
+        this.ngRedux.dispatch({
+            type: TimersActions.UPDATE_TIMER,
+            payload: { timer }
+        });
+    }
+
+    completeTimer = (timer: Timer): void => {
+        this.ngRedux.dispatch({
+            type: TimersActions.COMPLETE_TIMER,
+            payload: { timer }
+        });
+    }
+
+    removeTimer = (timer: Timer): void => {
+        this.ngRedux.dispatch({
+            type: TimersActions.REMOVE_TIMER,
+            payload: { timer }
+        });
     }
 }
 
@@ -74,6 +147,10 @@ export class UIActions {
     static HIDE_KITCHEN_SIDEBAR: string = 'HIDE_KITCHEN_SIDEBAR';
     static ENABLE_COOKMODE: string = 'ENABLE_COOKMODE';
     static DISABLE_COOKMODE: string = 'DISABLE_COOKMODE';
+    static ENABLE_VOICE_ASSISTANT: string = 'ENABLE_VOICE_ASSISTANT';
+    static DISABLE_VOICE_ASSISTANT: string = 'DISABLE_VOICE_ASSISTANT';
+    static START_LISTENING: string = 'START_LISTENING';
+    static STOP_LISTENING: string = 'STOP_LISTENING';
 
     showKitchenSidebar = (): void => {
         this.ngRedux.dispatch({ type: UIActions.SHOW_KITCHEN_SIDEBAR });
@@ -89,5 +166,21 @@ export class UIActions {
 
     disableCookmode = (): void => {
         this.ngRedux.dispatch({ type: UIActions.DISABLE_COOKMODE });
+    }
+
+    enableVoiceAssistant = (): void => {
+        this.ngRedux.dispatch({ type: UIActions.ENABLE_VOICE_ASSISTANT });
+    }
+
+    disableVoiceAssistant = (): void => {
+        this.ngRedux.dispatch({ type: UIActions.DISABLE_VOICE_ASSISTANT });
+    }
+
+    startListening = (): void => {
+        this.ngRedux.dispatch({ type: UIActions.START_LISTENING });
+    }
+
+    stopListening = (): void => {
+        this.ngRedux.dispatch({ type: UIActions.STOP_LISTENING });
     }
 }
