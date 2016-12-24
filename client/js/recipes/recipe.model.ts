@@ -1,5 +1,12 @@
+const ingredientParser = require('../ingredient.grammar.peg');
+
 export class Ingredient {
     description: string;
+    quantity?: number;
+    container?: any;
+    name?: string;
+    unit?: string;
+    type?: string;
 }
 
 export class Recipe {
@@ -41,7 +48,11 @@ export class Recipe {
         const ingredients: Ingredient[] = [];
 
         ingredientsList.forEach((ingredient: string) => {
-            if (ingredient && ingredient != '') ingredients.push({ description: ingredient });
+            if (ingredient && ingredient != '') {
+                ingredients.push(Object.assign({
+                    description: ingredient
+                }, this.parseIngredient(ingredient)));
+            }
         });
 
         this.ingredients = ingredients;
@@ -68,6 +79,21 @@ export class Recipe {
         });
 
         this.recipeInstructions = instructions;
+    }
+
+    parseIngredient(description: string): Ingredient {
+        let parsedIngredient: Ingredient;
+
+        try {
+            parsedIngredient = ingredientParser.parse(description.trim());
+            if (parsedIngredient.quantity) {
+                parsedIngredient.quantity = parsedIngredient.quantity;
+            }
+        } catch(error) {
+            console.warn(error);
+        }
+
+        return parsedIngredient;
     }
 }
 

@@ -5,6 +5,22 @@ var ingredientSchema = new mongoose.Schema({
     description: {
         type: String,
         required: true
+    },
+    quantity: {
+        type: String,
+        default: null
+    },
+    name: {
+        type: String,
+        default: null
+    },
+    unit: {
+        type: String,
+        default: null
+    },
+    type: {
+        type: String,
+        default: null
     }
 });
 ingredientSchema.plugin(idValidator);

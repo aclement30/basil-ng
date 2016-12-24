@@ -5,7 +5,7 @@ import 'rxjs/add/operator/toPromise';
 import { NgRedux } from 'ng2-redux';
 import { IAppState } from '../redux';
 
-import { Recipe, RecipeSummary } from './recipe.model';
+import {Recipe, RecipeSummary, Ingredient} from './recipe.model';
 import { RecipesActions } from '../core/redux.actions';
 
 @Injectable()

@@ -1,0 +1,266 @@
+start
+    = ingredient_addition
+
+ingredient_additions
+    = ingredient_addition+
+
+ingredient_addition
+    = amount:amount (ws+)? ("de" ws+)? unit:unit? (ws+)? container:container? (ws+)? ("de" ws+ / "d'")? ingredient:ingredient? type:type? [\n]?  {
+    var result = {
+        quantity: amount,
+        container: container,
+        name: ingredient,
+        unit: unit,
+        type: type
+    };
+
+for(var i in result) {
+    if(result[i] === null || result[i] === undefined) {
+        delete result[i];
+    }
+}
+
+return result;
+}
+
+amount
+    = float
+    / mixed_number
+    / fraction
+    / integer
+
+container
+    = "("? amount:amount ws+ unit:unit")"? {
+    return { quantity: amount, unit: unit };
+}
+
+type
+    = ","? (ws+)? phrase:phrase {
+    return phrase;
+}
+
+ws
+    = " "
+    / [\t]
+
+space
+    = " "
+
+ingredient
+    = phrase
+
+phrase
+    = $(word (space word)*)
+
+word
+    = letters:letter+ { return letters.join(''); }
+
+float
+    = $(integer? [.] integer)
+
+mixed_number
+    = $(integer space fraction)
+
+fraction
+    = $((integer ws+)? integer [/] integer)
+
+integer
+    = digits:[0-9]+ { return digits.join(''); }
+
+letter
+    = [a-zA-ZàÀâÂäÄèÈêÊëËéÉîÎïÏôÔöÖùÙüÜûÛçÇ\-'’]
+
+unit
+    = english_unit:english_unit !word { return english_unit; }
+    / metric_unit:metric_unit !word { return metric_unit; }
+    / imprecise_unit:imprecise_unit !word { return imprecise_unit; }
+
+english_unit
+    = cup { return 'cup'; }
+    / fluid_ounce { return 'fluid_ounce'; }
+    / gallon { return 'gallon'; }
+    / ounce { return 'ounce'; }
+    / pint { return 'pint'; }
+    / pound { return 'pound'; }
+    / quart { return 'quart'; }
+    / tablespoon { return 'tbsp'; }
+    / teaspoon { return 'tsp'; }
+
+cup
+    = 'cups'i
+    / 'cup'i
+    / 'tasses'i
+    / 'tasse'i
+
+fluid_ounce
+    = fluid ws ounce
+
+fluid
+    = 'fluid'i
+    / 'fl'i '.'?
+
+    gallon
+        = 'gallons'i
+        / 'gallon'i
+        / 'gal.'i
+        / 'gal'i
+
+ounce
+    = 'ounces'i
+    / 'ounce'i
+    / 'oz.'i
+    / 'oz'i
+    / 'onces'i
+    / 'once'i
+
+pint
+    = 'pints'i
+    / 'pint'i
+    / 'pt.'i
+    / 'pt'i
+
+pound
+    = 'pounds'i
+    / 'pound'i
+    / 'lbs.'i
+    / 'lbs'i
+    / 'lb.'i
+    / 'lb'i
+    / 'livres'i
+    / 'livre'i
+
+quart
+    = 'quarts'i
+    / 'quart'i
+    / 'qts.'i
+    / 'qts'i
+    / 'qt.'i
+    / 'qt'i
+
+tablespoon
+    = 'tablespoons'i
+    / 'tablespoon'i
+    / 'tbsp.'i
+    / 'tbsp'i
+    / 'tbs.'i
+    / 'tbs'i
+    / 'T.'
+    / 'T'
+    / 'c. à s.'
+    / 'c. à soupe'
+
+teaspoon
+    = 'teaspoons'i
+    / 'teaspoon'i
+    / 'tsp.'i
+    / 'tsp'i
+    / 't.'
+    / 't'
+    / 'c. à c.'i
+    / 'c. à café'i
+    / 'c. à thé'i
+    / 'c à thé'i
+    / 'cuillères à café'i
+    / 'cuillère à café'i
+    / 'cuillères à thé'i
+    / 'cuillère à thé'i
+
+metric_unit
+    = gram { return 'g'; }
+    / kilogram { return 'kg'; }
+    / liter { return 'l'; }
+    / deciliter { return 'dl'; }
+    / centiliter { return 'cl'; }
+    / milligram { return 'mg'; }
+    / milliliter { return 'ml'; }
+
+gram
+    = 'grams'i
+    / 'grammes'i
+    / 'gramme'i
+    / 'gram'i
+    / 'gr.'i
+    / 'gr'i
+    / 'g.'i
+    / 'g'i
+
+kilogram
+    = 'kilograms'i
+    / 'kilogram'i
+    / 'kg.'i
+    / 'kg'i
+    / 'kilogrammes'i
+    / 'kilogramme'i
+
+liter
+    = 'liters'i
+    / 'liter'i
+    / 'litres'i
+    / 'litre'i
+    / 'l.'i
+    / 'l'i
+
+deciliter
+    = 'deciliters'i
+    / 'deciliter'i
+    / 'dl.'i
+    / 'dl'i
+    / 'décilitres'i
+    / 'décilitre'i
+
+centiliter
+    = 'centiliters'i
+    / 'centiliter'i
+    / 'cl.'i
+    / 'cl'i
+    / 'centilitres'i
+    / 'centilitre'i
+
+milligram
+    = 'milligrams'i
+    / 'milligram'i
+    / 'mg.'i
+    / 'mg'i
+    / 'milligrammes'i
+    / 'milligramme'i
+
+milliliter
+    = 'milliliters'i
+    / 'milliliter'i
+    / 'ml.'i
+    / 'ml'i
+    / 'millilitres'i
+    / 'millilitre'i
+
+imprecise_unit
+    = dash { return 'cup'; }
+    / handful { return 'handful'; }
+    / pinch { return 'pinch'; }
+    / touch { return 'touch'; }
+    / box { return 'box'; }
+
+box
+    = 'boîtes'i
+    / 'boîte'i
+    / 'contenants'i
+    / 'contenant'i
+
+dash
+    = 'dashes'i
+    / 'dash'i
+
+handful
+    = 'handfuls'i
+    / 'handful'i
+    / 'poignées'i
+    / 'poignée'i
+
+pinch
+    = 'pinches'i
+    / 'pinch'i
+    / 'pincées'i
+    / 'pincée'i
+
+touch
+    = 'touches'i
+    / 'touch'i

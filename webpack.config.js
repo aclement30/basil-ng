@@ -123,6 +123,9 @@ module.exports = function makeWebpackConfig () {
       // Allow loading html through js
       test: /\.html$/,
       loader: 'ejs-compiled'
+    }, {
+        test: /\.peg$/,
+        loader: 'pegjs-loader'
     }]
   };
 

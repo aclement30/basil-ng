@@ -1,3 +1,7 @@
+export const Ingredient = {
+    QUANTITY: 'ingredient/QUANTITY',
+};
+
 export const Recipe = {
     START: 'recipe/START',
     END: 'recipe/END',
@@ -19,6 +23,7 @@ export class CommandParser {
 
     parse(input: string) {
         const parsingMethods: Function[] = [
+            this.parseIngredient,
             this.parseRecipe,
             this.parseSteps,
             this.parseTimer,
@@ -43,6 +48,23 @@ export class CommandParser {
         } else if (input.match(/terminer la recette/)) {
             return {
                 name: Recipe.END,
+            }
+        }
+
+        return false;
+    }
+
+    private parseIngredient(input: string) {
+        let matches: any;
+        if (matches = input.match(/quelle quantité de (.+)/)) {
+            return {
+                name: Ingredient.QUANTITY,
+                ingredient: matches[1],
+            }
+        } else if (matches = input.match(/combien (de |d\')(.+)/)) {
+            return {
+                name: Ingredient.QUANTITY,
+                ingredient: matches[2],
             }
         }
 

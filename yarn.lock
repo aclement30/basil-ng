@@ -3497,6 +3497,12 @@ pbkdf2@^3.0.3:
   dependencies:
     create-hmac "^1.1.2"
 
+pegjs-loader@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/pegjs-loader/-/pegjs-loader-0.5.0.tgz#8b03693696d3ab848e7e03aafb5eb769212ea09e"
+  dependencies:
+    loader-utils "^0.2.5"
+
 pegjs@^0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/pegjs/-/pegjs-0.10.0.tgz#cf8bafae6eddff4b5a7efb185269eaaf4610ddbd"

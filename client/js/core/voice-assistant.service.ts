@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { select } from 'ng2-redux';
 import * as moment from 'moment';
 
-import { CommandParser, Recipe as RecipeCommands, Steps as StepsCommands, Timer as TimerCommands } from './command.parser';
+import { CommandParser, Ingredient as IngredientCommands, Recipe as RecipeCommands, Steps as StepsCommands, Timer as TimerCommands } from './command.parser';
 import { ICookingRecipes, IUI } from '../redux';
 import { Recipe } from '../recipes/recipe.model';
 import { RecipesActions, UIActions } from '../core/redux.actions';
@@ -121,6 +121,45 @@ export class VoiceAssistantService {
         this.currentRecipe$.first().subscribe((currentRecipe: Recipe) => {
             this.zone.run(() => {
                 switch (commandType) {
+                    case 'ingredient':
+                        if (command.name === IngredientCommands.QUANTITY) {
+                            if (currentRecipe) {
+                                const matchingIngredients = currentRecipe.ingredients.filter((ingredient) => (ingredient.name.indexOf(command.ingredient) >= 0));
+                                if (matchingIngredients.length === 1) {
+                                    const ingredient = matchingIngredients[0];
+                                    let unit: string;
+
+                                    switch (ingredient.unit) {
+                                        case 'cup':
+                                            unit = 'tasse de';
+                                            break;
+                                        case 'box':
+                                            unit = 'contenant de';
+                                            break;
+                                        case 'tsp':
+                                            unit = 'cuillère à thé de';
+                                            break;
+                                        case 'tbsp':
+                                            unit = 'cuillère à soupe de';
+                                            break;
+                                        case 'pinch':
+                                            unit = 'pincée de';
+                                            break;
+                                        default:
+                                            unit = ingredient.unit || '';
+                                    }
+
+                                    this.speakerService.speak(`${ingredient.quantity} ${unit} ${ingredient.name}`, {dialogTitle: 'Ingrédient'});
+                                } else if (matchingIngredients.length > 1) {
+                                    this.speakerService.speak(`Il y a plusieurs ${command.ingredient} dans les ingrédients. Pouvez-vous préciser ?`);
+                                } else {
+                                    this.speakerService.speak(`Je ne trouve pas l'ingrédient ${command.ingredient}. Pouvez-vous préciser ?`);
+                                }
+                            } else {
+                                this.speakerService.speak('Vous n\'avez aucune recette en cours !');
+                            }
+                        }
+                        break;
                     case 'recipe':
                         if (command.name === RecipeCommands.END) {
                             if (currentRecipe) {
