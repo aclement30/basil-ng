@@ -6,7 +6,8 @@ export class TimerData {
     startTime?: string;
     originalDuration?: number;
     duration?: number;
-    description?: string;
+    title?: string;
+    contextualDescription?: string;
     recipeId?: string;
     recipeStep?: number;
     active?: boolean;
@@ -17,7 +18,8 @@ export class Timer {
     id: string;
     duration: number;
     originalDuration: number;
-    description?: string;
+    title?: string;
+    contextualDescription?: string;
     recipeId: string;
     recipeStep: number;
     private _startTime: string;
@@ -30,7 +32,8 @@ export class Timer {
         this.duration = data.duration;
         this.originalDuration = data.originalDuration || data.duration;
         this._active = data.active !== undefined ? data.active : true;
-        this.description = data.description || null;
+        this.title = data.title || null;
+        this.contextualDescription = data.contextualDescription || null;
         this.recipeId = data.recipeId || null;
         this.recipeStep = data.recipeStep || null;
 
@@ -101,7 +104,8 @@ export class Timer {
             duration: this.duration,
             active: this.active,
             completed: this.completed,
-            description: this.description,
+            title: this.title,
+            contextualDescription: this.contextualDescription,
             recipeId: this.recipeId,
             recipeStep: this.recipeStep,
         };

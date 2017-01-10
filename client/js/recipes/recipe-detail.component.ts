@@ -82,6 +82,10 @@ import { TimerService } from '../core/timer.service';
                             {{ recipe.notes }}
                         </div>
                     </div>
+                    
+                    <div class="timers">
+                        <timer *ngFor="let timer of activeTimers$ | async" [timer]="timer"></timer>
+                    </div>
                 </div>
             </div>
         </div>

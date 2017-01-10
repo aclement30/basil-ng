@@ -25,7 +25,8 @@ import { TimerService } from './timer.service';
                 <i class="zmdi zmdi-check-circle" *ngIf="timer.completed"></i>
             </div>
             <div class="description">
-                <div class="recipe" *ngIf="timer.description">{{ timer.description }}</div>
+                <div class="title" *ngIf="timer.title">{{ timer.title }}</div>
+                <div class="contextual-description" *ngIf="timer.contextualDescription">{{ timer.contextualDescription }}</div>
                 <small *ngIf="timer.recipeStep">Étape {{ timer.recipeStep }}</small>
             </div>
         </div>

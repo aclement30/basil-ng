@@ -25,6 +25,12 @@ sidebar {
       z-index: 101;
     }
   }
+
+  timer {
+    .description .contextual-description {
+      display: none;
+    }
+  }
 }
 
 sidebar,
