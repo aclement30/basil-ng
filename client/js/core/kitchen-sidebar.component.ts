@@ -3,8 +3,8 @@ import { Observable } from 'rxjs';
 import { select } from 'ng2-redux';
 
 import { ICookingRecipes, IUI } from '../redux';
-import { RecipeSummary } from './recipe.model';
-import { UIActions } from '../core/redux.actions';
+import { RecipeSummary } from '../recipes/recipe.model';
+import { UIActions } from './redux.actions';
 
 @Component({
     selector: 'kitchen-sidebar',
