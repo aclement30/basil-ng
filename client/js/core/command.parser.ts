@@ -1,22 +1,22 @@
 export const Ingredient = {
-    QUANTITY: 'ingredient/QUANTITY',
+    QUANTITY: 'ingredient.quantity',
 };
 
 export const Recipe = {
-    START: 'recipe/START',
-    END: 'recipe/END',
+    START: 'recipe.start',
+    STOP: 'recipe.stop',
 };
 
 export const Steps = {
-    READ_STEP: 'steps/READ_STEP',
-    NEXT_STEP: 'steps/NEXT_STEP',
-    PREVIOUS_STEP: 'steps/PREVIOUS_STEP',
-    LAST_STEP: 'steps/LAST_STEP',
+    READ_STEP: 'steps.read_step',
+    NEXT_STEP: 'steps.next_step',
+    PREVIOUS_STEP: 'steps.previous_step',
+    LAST_STEP: 'steps.last_step',
 };
 
 export const Timer = {
-    START: 'timer/START',
-    STOP: 'timer/STOP',
+    START: 'timer.start',
+    STOP: 'timer.stop',
 };
 
 export class CommandParser {
@@ -43,11 +43,11 @@ export class CommandParser {
     private parseRecipe(input: string) {
         if (input.match(/finir la recette/)) {
             return {
-                name: Recipe.END,
+                name: Recipe.STOP,
             }
         } else if (input.match(/terminer la recette/)) {
             return {
-                name: Recipe.END,
+                name: Recipe.STOP,
             }
         }
 
