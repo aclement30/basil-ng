@@ -37,7 +37,10 @@ import { UIActions } from './redux.actions';
                 </button>
             </li>
         </ul>
-    `
+    `,
+    host: {
+        '(document:keydown)': 'onKeyDown($event)'
+    }
 })
 
 export class CookmodeMenuComponent {
@@ -79,6 +82,19 @@ export class CookmodeMenuComponent {
                 this.uiActions.showKitchenSidebar();
             }
         });
+    }
+
+    onKeyDown = ($event: KeyboardEvent) => {
+        const keyCode = $event.which || $event.keyCode;
+        const target: any = $event.target;
+        const targetType = target.nodeName;
+
+        if (keyCode !== 32 || targetType === 'INPUT' || targetType === 'TEXTAREA') {
+            return;
+        }
+
+        $event.preventDefault();
+        this.toggleVoiceAssistant();
     }
 
     get cookmodeEnabled$(): Observable<boolean> {
