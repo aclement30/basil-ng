@@ -4,8 +4,9 @@ sidebar {
   @media (min-width: $screen-mobile-min) {
     width: $sidebar-left-width;
     position: absolute;
-    height: 100%;
+    height: calc(100% - 110px);
     top: 0;
+    margin-top: 110px;
   }
 
   @media (max-width: $screen-mobile-max) {
@@ -45,6 +46,8 @@ sidebar,
 
   @media (max-width: $screen-mobile-max) {
     display: block;
+    background: url('../img/menu-bg.jpg');
+    background-size: cover;
     height: 80px;
     position: fixed;
     top: 0;
@@ -54,7 +57,7 @@ sidebar,
 
     i {
       font-size: 21px;
-      color: #009688;
+      color: $brand-primary;
       background: #fff;
       width: 40px;
       height: 40px;
@@ -77,65 +80,6 @@ sidebar,
   z-index: 100;
 }
 
-.quick-actions {
-  list-style: none;
-  padding: 0;
-  margin: 30px 0 40px;
-  padding-left: 40px;
-
-  & > li {
-    display: inline-block;
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    text-align: center;
-    line-height: 43px;
-    margin-right: 13px;
-    color: #fff;
-    font-size: 20px;
-    vertical-align: top;
-    cursor: pointer;
-    @include transition(background-color);
-    @include transition-duration(250ms);
-
-    .btn {
-      background-color: rgba(255, 255, 255, 0.2);
-
-      &:hover:not(.active) {
-        background-color: rgba(255, 255, 255, 0.3);
-      }
-    }
-
-    &.active {
-      background-color: #fff;
-      position: relative;
-
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.8);
-
-        &:before {
-          @include animated(shake, 500ms);
-        }
-      }
-
-      &:before {
-        content: "";
-        width: 5px;
-        height: 5px;
-        border-radius: 50%;
-        background-color: #fff;
-        position: absolute;
-        bottom: -10px;
-        left: 19px;
-      }
-    }
-  }
-
-  @media(max-width: $screen-mobile-max) {
-    display: none;
-  }
-}
-
 /*----------------------------------
     Main menu
 -----------------------------------*/
@@ -143,6 +87,7 @@ sidebar,
   list-style: none;
   padding-left: 0;
   margin: 0;
+  display: none;
 
   a {
     color: $sidebar-link-color;
@@ -174,6 +119,12 @@ sidebar,
   @media (max-width: $screen-mobile-max) {
     height: 100%;
     overflow-y: auto;
+  }
+}
+
+sidebar.toggled {
+  .main-menu {
+    display: block;
   }
 }
 
@@ -270,7 +221,7 @@ sidebar,
   }
 }
 
-.smm-alerts > li.active,
-.main-menu li.active > a {
+.smm-alerts > li a.active,
+.main-menu li a.active {
   color: $brand-primary;
 }

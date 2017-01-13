@@ -83,6 +83,9 @@ export class AppModule {
                     kitchenSidebar: {
                         displayed: false,
                     },
+                    sidebar: {
+                        displayed: false,
+                    },
                     voiceAssistant: {
                         enabled: false,
                         listening: false,

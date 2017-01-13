@@ -181,17 +181,17 @@ body {
     display: inline-block;
     vertical-align: baseline;
 
-    & > a {
-      width: 30px;
-      height: 30px;
+    & > a,
+    & > button {
       display: inline-block;
-      text-align: center;
       padding-top: 5px;
-      border-radius: 50%;
+      font-size: 14px;
+      line-height: 20px;
 
       & > i {
-        color: #adadad;
-        font-size: 20px;
+        margin-top: 0;
+        color: #ffffff;
+        font-size: 20px !important;
       }
 
       &.-with-text {
@@ -200,17 +200,20 @@ body {
         border-radius: 3px;
       }
 
-      &:hover {
-        background-color: rgba(0,0,0,0.08);
+      &.btn-icon {
+        width: 32px;
+        height: 32px;
+      }
 
-        & > i {
-          color: #000;
-        }
+      &:hover:not([disabled]) {
+        background-color: rgba(0,0,0,0.2);
       }
     }
 
     & > a,
-    & > a > i {
+    & > button,
+    & > a > i,
+    & > button > i {
       @include transition(all);
       @include transition-duration(400ms);
     }
@@ -284,6 +287,7 @@ body {
   .mcw-line{
     width: 18px;
     height: 2px;
+    background-color: white;
 
     &.center {
       margin: 3px 0;

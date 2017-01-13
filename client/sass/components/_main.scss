@@ -14,8 +14,10 @@ main {
       height: 130px;
     }
 
-    #main {
-      padding-left: 40px;
+    @media (min-width: $screen-xs) {
+      #main {
+        padding-left: 40px;
+      }
     }
 
     header {
@@ -36,40 +38,6 @@ main {
 
     cookmode-menu {
       display: block;
-    }
-
-    recipe-detail {
-      .left {
-        width: 70%;
-
-        .recipe-picture {
-          width: 40%;
-          height: 100%;
-          float: left;
-        }
-
-        .pmo-block {
-          width: 60%;
-          float: right;
-        }
-      }
-
-      .ingredients {
-        font-size: 18px;
-      }
-
-      .instructions {
-        font-size: 18px;
-        padding-right: 80px;
-      }
-
-      .timers {
-        display: block;
-      }
-
-      .start-cooking {
-        display: none !important;
-      }
     }
   }
 }

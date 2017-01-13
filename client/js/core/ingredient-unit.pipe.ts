@@ -7,7 +7,7 @@ export class IngredientUnitPipe implements PipeTransform {
             case 'cup':
                 return 'tasse';
             case 'box':
-                return 'contenant';
+                return 'boîte';
             case 'tsp':
                 return 'c. à c.';
             case 'tbsp':

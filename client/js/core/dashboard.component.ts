@@ -9,6 +9,11 @@ import { RecipeService } from '../recipes/recipe.service';
     template: `
         <div class="c-header">
             <h2>Recettes</h2>
+            <ul class="actions">
+                <li>
+                    <a [routerLink]="['add']" class="btn btn-icon-text btn-link"><i class="zmdi zmdi-plus"></i> Ajouter</a>
+                </li>
+            </ul>
         </div>
 
         <div class="row">

@@ -37,6 +37,7 @@ timer {
       color: $m-green;
     }
   }
+
   .description {
     width: auto;
     overflow: hidden;
@@ -56,5 +57,10 @@ timer {
     margin-top: 10px;
     margin-bottom: 10px;
     height: 5px;
+  }
+
+  @media(max-width: $screen-mobile-max) {
+    border-bottom: 0;
+    border-top: 1px solid #ddd;
   }
 }

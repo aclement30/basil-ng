@@ -19,9 +19,7 @@ import { TimerService } from '../core/timer.service';
             
             <ul class="actions a-alt">
                 <li>
-                    <a [routerLink]="['/recipes/edit', recipe._id]">
-                        <i class="zmdi zmdi-edit"></i>
-                    </a>
+                    <a [routerLink]="['/recipes/edit', recipe._id]" class="btn btn-icon btn-link"><i class="zmdi zmdi-edit"></i></a>
                 </li>
             </ul>
         </div>

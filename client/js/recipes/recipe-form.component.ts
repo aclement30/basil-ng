@@ -15,7 +15,7 @@ import { Recipe } from './recipe.model';
                 
                 <ul class="actions a-alt">
                     <li>
-                        <button class="btn btn-default btn-icon-text waves-effect" (click)="submit()" [disabled]="!recipeForm.valid"><i class="zmdi zmdi-check"></i> Enregistrer</button>
+                        <button class="btn btn-icon-text btn-link" (click)="submit()" [disabled]="!recipeForm.valid"><i class="zmdi zmdi-check"></i> Enregistrer</button>
                     </li>
                 </ul>
             </div>
@@ -39,12 +39,7 @@ import { Recipe } from './recipe.model';
                                 <small [hidden]="ingredients.valid || ingredients.pristine" class="help-block">Champ requis</small>
                             </div>
                         </div>
-                        <div class="col-sm-6">
-                            <p class="c-black f-500 m-b-5">Ingrédients parsés</p>
-                            {{ recipe.ingredients | json }}
-                        </div>
-                    </div>
-                    <div class="row">
+                        
                         <div class="col-sm-8">
                             <p class="c-black f-500 m-b-5">Étapes de préparation</p>
                             <div class="form-group fg-float" [ngClass]="{'has-error': instructions.invalid && instructions.dirty}">

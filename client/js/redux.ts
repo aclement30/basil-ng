@@ -17,7 +17,10 @@ export interface ISession {
 
 export interface IKitchenSidebar {
     displayed: boolean;
+}
 
+export interface ISidebar {
+    displayed: boolean;
 }
 
 export interface IVoiceAssistant {
@@ -28,6 +31,7 @@ export interface IVoiceAssistant {
 export interface IUI {
     cookmode: boolean;
     kitchenSidebar: IKitchenSidebar;
+    sidebar: ISidebar;
     voiceAssistant: IVoiceAssistant;
 }
 

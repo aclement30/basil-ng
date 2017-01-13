@@ -1,0 +1,38 @@
+.quick-actions {
+  list-style: none;
+  padding: 0;
+
+  & > li {
+    display: inline-block;
+    vertical-align: top;
+    min-width: 40px;
+    margin-left: 15px;
+
+    & > a,
+    & > button {
+      color: #fff;
+      display: block;
+      text-align: center;
+      z-index: 1;
+      width: 40px;
+      position: relative;
+      font-size: 28px;
+      line-height: 40px;
+      border-radius: 50%;
+      border: none;
+      padding: 0;
+      background-color: transparent;
+
+      @include transition(all);
+      @include transition-duration(400ms);
+
+      &.larger {
+        font-size: 32px;
+      }
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+}
