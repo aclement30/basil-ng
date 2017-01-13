@@ -1,4 +1,3 @@
-const webpackDevServer = require('./webpack-dev-server');
 const apiServer = require('./api-server');
 
 const CONFIG = require('./config/server');
@@ -10,6 +9,8 @@ const PROD = process.env.NODE_ENV === 'production';
 if (PROD) {
     apiServer(PORT);
 } else {
+    const webpackDevServer = require('./webpack-dev-server');
+
     apiServer(API_PORT);
     webpackDevServer(PORT, API_PORT);
 }
