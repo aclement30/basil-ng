@@ -67,13 +67,15 @@ export class SpeakerService {
     }
 
     chime() {
-        $('audio.chime-sound')[0].play();
+        const audioElement = <HTMLAudioElement>$('audio.chime-sound')[0];
+        audioElement.play();
 
         return new Promise(r => setTimeout(r, 1500));
     }
 
     ding() {
-        $('audio.ding-sound')[0].play();
+        const audioElement = <HTMLAudioElement>$('audio.ding-sound')[0];
+        audioElement.play();
 
         return new Promise(r => setTimeout(r, 500));
     }
