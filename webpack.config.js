@@ -14,8 +14,9 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const isTest = process.env.npm_lifecycle_event === 'test' || process.env.npm_lifecycle_event === 'test-watch';
 const PROD = process.env.NODE_ENV === 'production' || process.env.npm_lifecycle_event === 'build';
 
-//var appConfig = PROD ? require('./config/app.prod.js') : require('./config/app.dev.js');
 const nodeEnv = PROD ? 'production' : 'development';
+
+const appConfig = PROD ? require('./config/app.prod.js') : require('./config/app.dev.js');
 
 module.exports = function makeWebpackConfig () {
   /**
@@ -172,9 +173,9 @@ module.exports = function makeWebpackConfig () {
     // Render index.html
     config.plugins.push(
       new HtmlWebpackPlugin({
-        template: './public/views/index.html',
+        template: './client/index.html',
         inject: 'body',
-        //appConfig: appConfig
+        appConfig: appConfig
       }),
 
       // Reference: https://github.com/webpack/extract-text-webpack-plugin
@@ -191,7 +192,9 @@ module.exports = function makeWebpackConfig () {
   // Add build specific plugins
   if (PROD) {
     config.plugins.push(
-      // Reference: http://webpack.github.io/docs/list-of-plugins.html#noerrorsplugin
+      new webpack.optimize.CommonsChunkPlugin('vendors', '[name].[hash].js'),
+
+        // Reference: http://webpack.github.io/docs/list-of-plugins.html#noerrorsplugin
       // Only emit files when there are no errors
       new webpack.NoErrorsPlugin(),
 
@@ -201,7 +204,12 @@ module.exports = function makeWebpackConfig () {
 
       // Reference: http://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin
       // Minify all javascript, switch loaders to minimizing mode
-      new webpack.optimize.UglifyJsPlugin(),
+      new webpack.optimize.UglifyJsPlugin({
+          compress: {
+              screw_ie8: true,
+              warnings: false
+          }
+      }),
 
       // Copy assets from the public folder
       // Reference: https://github.com/kevlened/copy-webpack-plugin

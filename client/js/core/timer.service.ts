@@ -6,7 +6,7 @@ import { ICookingRecipes } from '../redux';
 import { Recipe } from '../recipes/recipe.model';
 import { TimersActions } from './redux.actions';
 import { Timer, TimerData } from './timer.model';
-import { SpeakerService, SpeakerOptions } from './speaker.service';
+import { SpeakerService } from './speaker.service';
 
 @Injectable()
 export class TimerService {

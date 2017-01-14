@@ -1,7 +1,7 @@
 import { ICookingRecipes } from '../redux';
 import { RecipesActions } from '../core/redux.actions';
 
-import { Recipe, RecipeSummary } from './recipe.model';
+import { RecipeSummary } from './recipe.model';
 
 export const INITIAL_STATE: ICookingRecipes = {
     list: [],

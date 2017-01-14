@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NgRedux } from 'ng2-redux';
-import { IAppState } from '../redux';
 
+import { IAppState } from '../redux';
 import { Recipe, RecipeSummary } from '../recipes/recipe.model';
 import { Timer } from './timer.model';
 import User from './user.model';

@@ -3,7 +3,6 @@ import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from
 import { Observable } from 'rxjs';
 
 import { SecurityService } from './security.service';
-import { ISession } from '../redux';
 
 @Injectable()
 export class Gatekeeper implements CanActivate {
@@ -21,9 +20,7 @@ export class Gatekeeper implements CanActivate {
         } else if (routeName !== 'login' && !this.securityService.isAuthenticated) {
             return this.securityService.session$
                 .skipWhile((session) => (session.loading))
-                .map((session) => {
-                    return this.securityService.isAuthenticated;
-                });
+                .map(() => (this.securityService.isAuthenticated));
         }
 
         return true;

@@ -1,7 +1,7 @@
 import { Component, HostBinding, HostListener } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { select } from 'ng2-redux';
-import { Router } from '@angular/router';
 
 import { SecurityService } from './security.service';
 import { IUI } from '../redux';

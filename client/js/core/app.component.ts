@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { RecipeService } from '../recipes/recipe.service';
 import { SecurityService } from './security.service';
-import { VoiceAssistantService } from './voice-assistant.service';
-import { RecipesActions, SessionActions } from './redux.actions';
+import { SessionActions } from './redux.actions';
 
 @Component({
     selector: 'body',
@@ -14,9 +13,7 @@ import { RecipesActions, SessionActions } from './redux.actions';
 export class AppComponent implements OnInit {
     constructor(
         private recipeService: RecipeService,
-        private securityService: SecurityService,
-        private recipesActions: RecipesActions,
-        private voiceAssistantService: VoiceAssistantService) {}
+        private securityService: SecurityService) {}
 
     ngOnInit(): void {
         this.securityService.authenticate().subscribe(this.onAuthResolve, this.onAuthFailed);

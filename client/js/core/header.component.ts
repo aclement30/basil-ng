@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { APP_CONFIG } from '../app.config';
 import { SecurityService } from './security.service';
 import { UIActions } from './redux.actions';
 
@@ -24,7 +25,7 @@ import { UIActions } from './redux.actions';
         </div>
         
         <ul class="pull-right h-menu">
-            <li>
+            <li *ngIf="vocalAssistant">
                 <button voice-assistant-button title="Assistant vocal"></button>
             </li>
             <li>
@@ -61,6 +62,7 @@ import { UIActions } from './redux.actions';
 })
 
 export class HeaderComponent {
+    public vocalAssistant: boolean = APP_CONFIG.canSpeechRecognition;
 
     constructor(
         private router: Router,

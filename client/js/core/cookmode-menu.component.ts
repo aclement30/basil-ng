@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { select } from 'ng2-redux';
 
+import { APP_CONFIG } from '../app.config';
 import { IUI } from '../redux';
 import { UIActions } from './redux.actions';
 
@@ -9,7 +10,7 @@ import { UIActions } from './redux.actions';
     selector: 'cookmode-menu',
     template: `
         <ul class="quick-actions">
-            <li>
+            <li *ngIf="vocalAssistant">
                 <button voice-assistant-button title="Assistant vocal"></button>
             </li>
             <li>
@@ -27,6 +28,7 @@ import { UIActions } from './redux.actions';
 
 export class CookmodeMenuComponent {
     @select('ui') ui$: Observable<IUI>;
+    public vocalAssistant: boolean = APP_CONFIG.canSpeechRecognition;
 
     constructor(
         private uiActions: UIActions) {}

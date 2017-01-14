@@ -5,11 +5,11 @@ import { FormsModule }   from '@angular/forms';
 
 import { NgReduxModule } from 'ng2-redux';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
 import { NgRedux } from 'ng2-redux';
-import { IAppState, rootReducer } from './redux';
 import * as createLogger from 'redux-logger';
 const persistState = require('redux-localstorage');
+
+import { IAppState, rootReducer } from './redux';
 
 import { AppComponent } from './core/app.component';
 
@@ -35,8 +35,7 @@ import { RecipesActions, SessionActions, TimersActions, UIActions } from './core
         NgReduxModule.forRoot(),
         RecipesModule
     ],
-    declarations: [
-    ],
+    declarations: [],
     providers: [
         RecipesActions,
         SessionActions,

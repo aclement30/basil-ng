@@ -1,19 +1,17 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Headers, Http, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
-import { select, NgRedux } from 'ng2-redux';
+import { select } from 'ng2-redux';
 
-import { CommandParser, Ingredient as IngredientCommands, Recipe as RecipeCommands, Steps as StepsCommands, Timer as TimerCommands } from './command.parser';
-import { ICookingRecipes, IAppState, ISession, IUI } from '../redux';
+import { APP_CONFIG } from '../app.config';
+import { Ingredient as IngredientCommands, Recipe as RecipeCommands, Steps as StepsCommands, Timer as TimerCommands } from './command.parser';
+import { ICookingRecipes, ISession, IUI } from '../redux';
 import { Recipe } from '../recipes/recipe.model';
 import { RecipesActions, UIActions } from '../core/redux.actions';
 import { SpeakerService } from './speaker.service';
 import { TimerService } from './timer.service';
 
-const BOT_URL = 'https://api.api.ai/v1';
-const BOT_VERSION = '20150910';
-const BOT_ACCESS_TOKEN = '4633e6b6d522469398256d65935ab91a';
-const BOT_HEADERS = new Headers({ 'Authorization': `Bearer ${BOT_ACCESS_TOKEN}` });
+const BOT_HEADERS = new Headers({ 'Authorization': `Bearer ${APP_CONFIG.bot.accessToken}` });
 
 export interface IWindow extends Window {
     webkitSpeechRecognition: any;
@@ -31,23 +29,23 @@ export class VoiceAssistantService {
     private currentRecipe: Recipe;
 
     constructor(
-        private commandParser: CommandParser,
         private http: Http,
-        private ngRedux: NgRedux<IAppState>,
         private recipesActions: RecipesActions,
         private speakerService: SpeakerService,
         private timerService: TimerService,
         private uiActions: UIActions,
         private zone: NgZone) {
 
-        this.recognition = new webkitSpeechRecognition();
-        this.recognition.lang = 'fr-FR';
-        //this.recognition.continuous = true;
-        this.recognition.interimResults = false;
-        this.recognition.onresult = this.parseVoiceCommand;
-        this.recognition.onsoundstart = this.onRecognitionSoundStart;
-        this.recognition.onsoundend = this.onRecognitionSoundEnd;
-        this.recognition.onerror = this.onRecognitionError;
+        if (APP_CONFIG.canSpeechRecognition) {
+            this.recognition = new webkitSpeechRecognition();
+            this.recognition.lang = 'fr-FR';
+            //this.recognition.continuous = true;
+            this.recognition.interimResults = false;
+            this.recognition.onresult = this.parseVoiceCommand;
+            this.recognition.onsoundstart = this.onRecognitionSoundStart;
+            this.recognition.onsoundend = this.onRecognitionSoundEnd;
+            this.recognition.onerror = this.onRecognitionError;
+        }
 
         this.ui$.subscribe(this.onUIChange);
         this.cookingRecipes$.subscribe(this.onCookingRecipesChange);
@@ -56,7 +54,7 @@ export class VoiceAssistantService {
     }
 
     onUIChange = (ui: IUI) => {
-        if (ui.voiceAssistant.enabled !== this.voiceAssistantEnabled) {
+        if (this.recognition && ui.voiceAssistant.enabled !== this.voiceAssistantEnabled) {
             if (ui.voiceAssistant.enabled) {
                 this.speakerService.speak('Je suis à l\'écoute.', { ding: true });
             } else {
@@ -89,7 +87,7 @@ export class VoiceAssistantService {
                 };
 
                 // Notify bot of current recipe
-                this.http.post(`${BOT_URL}/contexts?v=${BOT_VERSION}&sessionId=${session.user.id}`, params, options).subscribe();
+                this.http.post(`${APP_CONFIG.bot.url}/contexts?v=${APP_CONFIG.bot.version}&sessionId=${session.user.id}`, params, options).subscribe();
             }
         });
     }
@@ -108,7 +106,7 @@ export class VoiceAssistantService {
             };
 
             // Send vocal transcript to bot
-            this.http.post(`${BOT_URL}/query?v=${BOT_VERSION}`, params, options)
+            this.http.post(`${APP_CONFIG.bot.url}/query?v=${APP_CONFIG.bot.version}`, params, options)
                 .toPromise()
                 .then(this.executeCommand)
                 .catch(this.onBotError);
