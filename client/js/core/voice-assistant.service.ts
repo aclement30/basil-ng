@@ -7,7 +7,7 @@ import { APP_CONFIG } from '../app.config';
 import { Ingredient as IngredientCommands, Recipe as RecipeCommands, Steps as StepsCommands, Timer as TimerCommands } from './command.parser';
 import { ICookingRecipes, ISession, IUI } from '../redux';
 import { Recipe } from '../recipes/recipe.model';
-import { RecipesActions, UIActions } from '../core/redux.actions';
+import { RecipesActions, UIActions } from './redux.actions';
 import { SpeakerService } from './speaker.service';
 import { TimerService } from './timer.service';
 

@@ -55,4 +55,8 @@ import { VoiceAssistantService } from './voice-assistant.service';
     exports: [ TimerComponent ]
 })
 
-export class CoreModule {}
+export class CoreModule {
+    constructor(private voiceAssistantService: VoiceAssistantService) {
+
+    }
+}
