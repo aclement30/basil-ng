@@ -4,7 +4,7 @@
   "description": "",
   "author": "Alexandre Clément",
   "scripts": {
-    "build": "rimraf dist && webpack --bail --progress --profile",
+    "build": "rimraf public && webpack --bail --progress --profile",
     "test": "karma start",
     "test-watch": "karma start --auto-watch --no-single-run",
     "start": "node server",
@@ -37,6 +37,7 @@
     "@angular/core": "~2.2.0",
     "@angular/forms": "~2.2.0",
     "@angular/http": "~2.2.0",
+    "@angular/platform-browser": "2.2.1",
     "@angular/platform-browser-dynamic": "~2.2.0",
     "@angular/router": "~3.2.0",
     "@ng-bootstrap/ng-bootstrap": "^1.0.0-alpha.14",
