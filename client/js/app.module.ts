@@ -32,7 +32,7 @@ import { RecipesActions, SessionActions, TimersActions, UIActions } from './core
         HttpModule,
         LoginModule,
         NgbModule.forRoot(),
-        NgReduxModule.forRoot(),
+        NgReduxModule,
         RecipesModule
     ],
     declarations: [],

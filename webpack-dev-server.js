@@ -7,11 +7,14 @@ module.exports = (PORT, API_PORT) => {
     webpackConfig.entry.app.push(`webpack-dev-server/client?http://localhost:${PORT}/`);
 
     const server = new WebpackDevServer(webpack(webpackConfig), {
-        port: PORT,
+        port: 5000,
         contentBase: './public',
         stats: 'minimal',
         inline: true,
-        historyApiFallback: true,
+        hot: true,
+        historyApiFallback: {
+            index: '/'
+        },
         proxy: {
             '/api': `http://localhost:${API_PORT}`,
             '/auth': `http://localhost:${API_PORT}`

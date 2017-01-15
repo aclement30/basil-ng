@@ -65,9 +65,9 @@ module.exports = (PORT) => {
 
     // -------------------------------------------------------------------------
 
-    app.all('*', (req, res) => {
-        res.sendFile('public/index.html', { root: __dirname });
-    });
+    // app.all('*', (req, res) => {
+    //     res.sendFile('public/index.html', { root: __dirname });
+    // });
 
     async.series([
         (callback) => {
