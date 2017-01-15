@@ -6,7 +6,7 @@ import { SessionActions } from './redux.actions';
 
 @Component({
     selector: 'body',
-    template: '<router-outlet></router-outlet><audio src="chime.wav" class="chime-sound"></audio><audio src="ding.mp3" class="ding-sound"></audio>',
+    template: '<router-outlet></router-outlet><audio src="/sounds/chime.wav" class="chime-sound"></audio><audio src="/sounds/ding.mp3" class="ding-sound"></audio>',
     providers: [ SessionActions, SecurityService ]
 })
 
