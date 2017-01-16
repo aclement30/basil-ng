@@ -92,7 +92,7 @@ module.exports = (PORT) => {
         }
 
         if (PROD) {
-            app.get('/', (req, res) => {
+            app.get('*', function(req, res) {
                 res.sendFile('public/index.html', { root: __dirname });
             });
         }
