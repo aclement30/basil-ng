@@ -9,7 +9,7 @@
     "test-watch": "karma start --auto-watch --no-single-run",
     "start": "node server",
     "server:prod": "npm run copy:assets && node config/express/server.prod.js",
-    "postinstall": "npm rebuild yargs && npm run build"
+    "postinstall": "npm run build"
   },
   "engines": {
     "node": "6.9.1"
@@ -28,7 +28,6 @@
     "karma-webpack": "^1.8.0",
     "node-libs-browser": "^1.0.0",
     "rimraf": "^2.5.1",
-    "webpack": "beta",
     "webpack-dev-server": "beta"
   },
   "dependencies": {
@@ -87,6 +86,7 @@
     "sass-loader": "^4.1.1",
     "style-loader": "^0.13.1",
     "typescript": "^2.1.5",
+    "webpack": "beta",
     "zone.js": "^0.7.5"
   }
 }
