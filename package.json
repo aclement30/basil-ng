@@ -9,7 +9,7 @@
     "test-watch": "karma start --auto-watch --no-single-run",
     "start": "node server",
     "server:prod": "npm run copy:assets && node config/express/server.prod.js",
-    "postinstall": "npm run build"
+    "postinstall": "npm rebuild yargs && npm run build"
   },
   "engines": {
     "node": "6.9.1"
