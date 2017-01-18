@@ -45,7 +45,8 @@ function init(app) {
             (callback) => {
                 // Skip if orientation is correct
                 if (orientation === 1) {
-                    callback();
+                    callback(false);
+                    return;
                 }
 
                 // Create a temporary copy
