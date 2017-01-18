@@ -16,6 +16,7 @@ const CONFIG = require('./config/server');
 // -------------------------------------------------------------------------
 
 const authController = require('./server/controllers/authController');
+const ingredientController = require('./server/controllers/ingredientController');
 const recipeController = require('./server/controllers/recipeController');
 
 // -------------------------------------------------------------------------
@@ -61,13 +62,10 @@ module.exports = (PORT) => {
     // -------------------------------------------------------------------------
 
     authController.init(app, passport);
+    ingredientController.init(app);
     recipeController.init(app);
 
     // -------------------------------------------------------------------------
-
-    // app.all('*', (req, res) => {
-    //     res.sendFile('public/index.html', { root: __dirname });
-    // });
 
     async.series([
         (callback) => {

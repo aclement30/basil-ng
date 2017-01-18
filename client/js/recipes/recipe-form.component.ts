@@ -38,6 +38,8 @@ import { Recipe } from './recipe.model';
                                 </div>
                                 <small [hidden]="ingredients.valid || ingredients.pristine" class="help-block">Champ requis</small>
                             </div>
+                            
+                            <snap-uploader type="ocr/SCAN_INGREDIENTS" (getResult)="getSnapshotIngredients($event)"></snap-uploader>
                         </div>
                         
                         <div class="col-sm-8">
@@ -48,6 +50,8 @@ import { Recipe } from './recipe.model';
                                 </div>
                                 <small [hidden]="instructions.valid || instructions.pristine" class="help-block">Champ requis</small>
                             </div>
+                            
+                            <snap-uploader type="ocr/SCAN_INSTRUCTIONS" (getResult)="getSnapshotInstructions($event)"></snap-uploader>
                         </div>
                     </div>
                     
@@ -116,6 +120,14 @@ export class RecipeFormComponent implements OnInit {
                 this.recipe = new Recipe();
             }
         });
+    }
+
+    getSnapshotIngredients(ingredients: [string]) {
+        this.recipe.combinedIngredients += ingredients.join("\n");
+    }
+
+    getSnapshotInstructions(instructions: [string]) {
+        this.recipe.combinedInstructions += instructions.join("\n");
     }
 
     ngOnDestroy() {

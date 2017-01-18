@@ -11,6 +11,11 @@ var server = {
         callbackURL: process.env.GOOGLE_CALLBACK_URL
     },
 
+    ocrApi: {
+        url: 'https://api.ocr.space/parse/image',
+        apiKey: process.env.OCR_API_KEY,
+    },
+
     sessionSecretKey: process.env.SESSION_KEY,
 
     defaultGroup: process.env.DEFAULT_GROUP

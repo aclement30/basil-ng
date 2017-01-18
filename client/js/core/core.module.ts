@@ -14,6 +14,7 @@ import { KitchenSidebarButtonComponent } from './quick-actions/kitchen-sidebar-b
 import { KitchenSidebarComponent } from './kitchen-sidebar.component';
 import { MainComponent } from './main.component';
 import { SidebarComponent } from './sidebar.component';
+import { SnapUploaderComponent } from './snap-uploader.component';
 import { TimerComponent } from './timer.component';
 import { VoiceAssistantButtonComponent } from './quick-actions/voice-assistant-button.component';
 
@@ -21,6 +22,7 @@ import { CommandParser } from './command.parser';
 import { DialogService } from './dialog.service';
 import { Gatekeeper } from './gatekeeper.service';
 import { NotificationService } from './notification.service';
+import { OCRService } from './ocr.service';
 import { SecurityService } from './security.service';
 import { SpeakerService } from './speaker.service';
 import { TimerService } from './timer.service';
@@ -39,6 +41,7 @@ import { VoiceAssistantService } from './voice-assistant.service';
         KitchenSidebarComponent,
         MainComponent,
         SidebarComponent,
+        SnapUploaderComponent,
         TimerComponent,
         VoiceAssistantButtonComponent
     ],
@@ -47,12 +50,13 @@ import { VoiceAssistantService } from './voice-assistant.service';
         DialogService,
         Gatekeeper,
         NotificationService,
+        OCRService,
         SecurityService,
         SpeakerService,
         TimerService,
         VoiceAssistantService,
     ],
-    exports: [ TimerComponent ]
+    exports: [ SnapUploaderComponent, TimerComponent ]
 })
 
 export class CoreModule {
