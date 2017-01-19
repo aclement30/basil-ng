@@ -9,6 +9,8 @@
     "test-watch": "karma start --auto-watch --no-single-run",
     "start": "node server",
     "server:prod": "npm run copy:assets && node config/express/server.prod.js",
+    "rebuild:binaries": "npm rebuild node-sass && npm rebuild sharp",
+    "preinstall": "npm run rebuild:binaries",
     "postinstall": "npm run build"
   },
   "engines": {
