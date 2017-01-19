@@ -9,7 +9,7 @@
     "test-watch": "karma start --auto-watch --no-single-run",
     "start": "node server",
     "server:prod": "npm run copy:assets && node config/express/server.prod.js",
-    "postinstall": "npm rebuild node-sass && npm run build"
+    "postinstall": "npm run build"
   },
   "engines": {
     "node": "6.9.1"
@@ -44,7 +44,6 @@
     "@types/core-js": "^0.9.34",
     "@types/jasmine": "^2.5.35",
     "@types/jquery": "^2.0.34",
-    "@types/moment": "^2.13.0",
     "@types/node": "^6.0.45",
     "@types/redux-logger": "^2.6.32",
     "angular2-template-loader": "^0.6.0",
