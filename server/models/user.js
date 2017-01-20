@@ -1,17 +1,21 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var googleSchema = new mongoose.Schema({
+const googleSchema = new mongoose.Schema({
     id: {
         type: String,
         required: true
     },
-    token: {
+    accessToken: {
         type: String,
         required: true
-    }
+    },
+    refreshToken: {
+        type: String,
+        required: true
+    },
 });
 
-var schema = new mongoose.Schema({
+const schema = new mongoose.Schema({
     id: String,
     name: {
         type: String,

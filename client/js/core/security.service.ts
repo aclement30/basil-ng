@@ -22,21 +22,48 @@ export class SecurityService {
     authenticate(): Observable<User> {
         this.sessionActions.startLoading();
 
-        this.user$ = this.http.get('/api/user')
+        this.session$.first().subscribe((session: ISession) => {
+            this.user$ = this.http.get('/api/user')
+                .map((response: Response) => {
+                    const user = response.json();
+                    this.sessionActions.setUser(user);
+                    this.sessionActions.stopLoading();
+                    return user;
+                })
+                // Not logged in
+                .catch((error: Response | any) => {
+                    // If stored user has a refresh token, attempt to get a new access token
+                    if (session.user && session.user.refreshToken) {
+                        return this.refreshToken(session.user);
+                    } else {
+                        return this.onAuthenticationError(error);
+                    }
+                });
+        });
+
+        return this.user$;
+    }
+
+    refreshToken(user: User): Observable<User> {
+        this.sessionActions.startLoading();
+
+        this.user$ = this.http.post('/auth/token', { token: user.refreshToken })
             .map((response: Response) => {
-                const user = response.json();
+                user.accessToken = response.json().accessToken;
                 this.sessionActions.setUser(user);
                 this.sessionActions.stopLoading();
                 return user;
             })
             // Not logged in
-            .catch((error: Response | any) => {
-                this.sessionActions.resetUser();
-                this.sessionActions.stopLoading();
-                return Observable.throw('Unable to authenticate user');
-            });
+            .catch(this.onAuthenticationError);
 
         return this.user$;
+    }
+
+    onAuthenticationError(error: Response | any) {
+        this.sessionActions.resetUser();
+        this.sessionActions.stopLoading();
+        return Observable.throw('Unable to authenticate user');
     }
 
     logout() {

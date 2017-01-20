@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const expressSession = require('express-session');
 const mongoose = require('mongoose');
+const mongoDBStore = require('connect-mongodb-session')(expressSession);
 const passport = require('passport');
 
 // -------------------------------------------------------------------------
@@ -10,6 +11,17 @@ const passport = require('passport');
 // -------------------------------------------------------------------------
 
 const CONFIG = require('./config/server');
+
+const cookieStore = new mongoDBStore({
+    uri: CONFIG.db,
+    collection: 'sessions',
+});
+
+// Catch errors
+cookieStore.on('error', (error) => {
+    assert.ifError(error);
+    assert.ok(false);
+});
 
 // -------------------------------------------------------------------------
 // CONTROLLERS
@@ -39,8 +51,13 @@ module.exports = (PORT) => {
     // Configure session & Passport auth
     app.use(expressSession({
         secret: CONFIG.sessionSecretKey,
+        cookie: {
+            maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+        },
         name: 'basil',
+        rolling: true,
         resave: true,
+        store: cookieStore,
         saveUninitialized: true
     }));
     app.use(passport.initialize());

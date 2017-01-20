@@ -1,13 +1,14 @@
-var requireAuth = require('../services/auth').check;
+const authService = require('../services/auth');
+const requireAuth = authService.check;
 
 function init(app, passport) {
 
     // Google OAuth redirection page
-    app.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
+    app.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'], accessType: 'offline' }));
 
     // Callback after Google authenticates user
-    app.get('/auth/google/callback', function(req, res, next) {
-        passport.authenticate('google', function(error, user, info) {
+    app.get('/auth/google/callback', (req, res, next) => {
+        passport.authenticate('google', (error, user, info) =>{
             if (error) {
                 return res.redirect('/login?error=' + error);
             }
@@ -16,7 +17,7 @@ function init(app, passport) {
                 return res.redirect('/login');
             }
 
-            req.logIn(user, function(err) {
+            req.logIn(user, (err) => {
                 if (err) {
                     return res.redirect('/login?error=' + err);
                 }
@@ -28,12 +29,14 @@ function init(app, passport) {
     });
 
     // Connected user info page
-    app.get('/api/user', requireAuth, function (req, res) {
+    app.get('/api/user', requireAuth, (req, res) => {
         if (req.user) {
             res.send({
                 id: req.user._id,
                 name: req.user.name,
-                email: req.user.email
+                email: req.user.email,
+                accessToken: req.user.google.accessToken,
+                refreshToken: req.user.google.refreshToken,
             });
         } else {
             res.status(403).send();
@@ -41,7 +44,14 @@ function init(app, passport) {
     });
 
     // User logout
-    app.get('/auth/logout', function(req, res) {
+    app.post('/auth/token', authService.validateRefreshToken, authService.generateAccessToken, (req, res) => {
+        res.status(201).json({
+            accessToken: res.accessToken
+        });
+    });
+
+    // User logout
+    app.get('/auth/logout', (req, res) => {
         req.logout();
         res.redirect('/');
     });
