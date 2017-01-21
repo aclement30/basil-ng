@@ -13,6 +13,8 @@ import { TimerService } from './timer.service';
 
 const BOT_HEADERS = new Headers({ 'Authorization': `Bearer ${APP_CONFIG.bot.accessToken}` });
 
+const IDLE_TIMEOUT = 10000;
+
 export interface IWindow extends Window {
     webkitSpeechRecognition: any;
 }
@@ -27,6 +29,7 @@ export class VoiceAssistantService {
     private voiceAssistantEnabled: boolean = false;
     private recognition: any;
     private currentRecipe: Recipe;
+    private waitingTimeout: any;
 
     constructor(
         private http: Http,
@@ -57,8 +60,10 @@ export class VoiceAssistantService {
         if (this.recognition && ui.voiceAssistant.enabled !== this.voiceAssistantEnabled) {
             if (ui.voiceAssistant.enabled) {
                 this.speakerService.speak('Je suis à l\'écoute.', { ding: true });
+                this.startIdleTimeout();
             } else {
                 this.recognition.stop();
+                this.stopIdleTimeout();
             }
 
             this.voiceAssistantEnabled = ui.voiceAssistant.enabled;
@@ -127,12 +132,16 @@ export class VoiceAssistantService {
 
     onRecognitionSoundStart = () => {
         this.zone.run(() => {
+            this.stopIdleTimeout();
+
             this.uiActions.startListening();
         });
     }
 
     onRecognitionSoundEnd = () => {
         this.zone.run(() => {
+            this.startIdleTimeout();
+
             this.uiActions.stopListening();
         });
     }
@@ -145,14 +154,34 @@ export class VoiceAssistantService {
         if (!this.voiceAssistantEnabled) return;
 
         if (isSpeaking) {
+            this.stopIdleTimeout();
             this.recognition.stop();
         } else {
+            this.startIdleTimeout();
             this.recognition.start();
         }
     }
 
     onBotError = (error: any) => {
         debugger
+    }
+
+    startIdleTimeout() {
+        this.stopIdleTimeout();
+
+        this.waitingTimeout = setTimeout(this.stopVoiceAssistant, IDLE_TIMEOUT);
+    }
+
+    stopIdleTimeout() {
+        if (this.waitingTimeout) {
+            clearTimeout(this.waitingTimeout);
+        }
+    }
+
+    stopVoiceAssistant = () => {
+        this.stopIdleTimeout();
+
+        this.uiActions.disableVoiceAssistant();
     }
 
     executeCommand = (response: any) => {
