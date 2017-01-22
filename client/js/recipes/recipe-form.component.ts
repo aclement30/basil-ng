@@ -23,6 +23,7 @@ import { Recipe } from './recipe.model';
             <div class="card">
                 <div class="card-body card-padding">
                     <div class="form-group has-error" [ngClass]="{'has-error': title.invalid && title.dirty}">
+                        <label>Titre</label>
                         <div class="fg-line">
                             <input type="text" [(ngModel)]="recipe.title" name="title" class="form-control" placeholder="Titre" #title="ngModel" required>
                         </div>
@@ -31,8 +32,8 @@ import { Recipe } from './recipe.model';
                     
                     <div class="row">
                         <div class="col-sm-4">
-                            <p class="c-black f-500 m-b-5">Ingrédients</p>
                             <div class="form-group fg-float" [ngClass]="{'has-error': ingredients.invalid && ingredients.dirty}">
+                                <label>Ingrédients</label>
                                 <div class="fg-line">
                                     <textarea [(ngModel)]="recipe.combinedIngredients" class="form-control" name="ingredients" rows="15" placeholder="Ingrédients" #ingredients="ngModel" required></textarea>
                                 </div>
@@ -43,8 +44,8 @@ import { Recipe } from './recipe.model';
                         </div>
                         
                         <div class="col-sm-8">
-                            <p class="c-black f-500 m-b-5">Étapes de préparation</p>
                             <div class="form-group fg-float" [ngClass]="{'has-error': instructions.invalid && instructions.dirty}">
+                                <label>Étapes de préparation</label>
                                 <div class="fg-line">
                                     <textarea [(ngModel)]="recipe.combinedInstructions" class="form-control" name="instructions" rows="15" placeholder="Étapes de préparation" #instructions="ngModel" required></textarea>
                                 </div>
@@ -58,6 +59,7 @@ import { Recipe } from './recipe.model';
                     <div class="row">
                         <div class="col-sm-3">
                             <div class="form-group">
+                                <label>Portions</label>
                                 <div class="fg-line">
                                     <input type="text" [(ngModel)]="recipe.recipeYield" name="yield" class="form-control" placeholder="Rendement">
                                 </div>
@@ -65,10 +67,10 @@ import { Recipe } from './recipe.model';
                         </div>
                     </div>
                              
-                    <p class="c-black f-500 m-b-5">Autres informations</p>
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
+                                <label>Photo</label>
                                 <div class="fg-line">
                                     <input type="url" [(ngModel)]="recipe.image" name="image" class="form-control" placeholder="Photo (URL)">
                                 </div>
@@ -76,6 +78,7 @@ import { Recipe } from './recipe.model';
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
+                                <label>Source</label>
                                 <div class="fg-line">
                                     <input type="url" [(ngModel)]="recipe.originalUrl" name="image" class="form-control" placeholder="Source (URL)">
                                 </div>
