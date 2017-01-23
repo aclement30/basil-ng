@@ -33,7 +33,11 @@ module.exports = function makeWebpackConfig() {
      * Karma will set this when it's a test build
      */
     config.entry = {
-        app: ['./client/js/app.ts'],
+        app: [
+            './client/js/app.ts',
+            'webpack/hot/dev-server',
+        ],
+
         //vendors: './client/js/vendor.ts',
     };
 
@@ -202,6 +206,10 @@ module.exports = function makeWebpackConfig() {
                 'process.env.NODE_ENV': JSON.stringify(nodeEnv)
             })
         )
+    }
+
+    if (!PROD) {
+        config.plugins.push(new webpack.HotModuleReplacementPlugin());
     }
 
     // Add build specific plugins
