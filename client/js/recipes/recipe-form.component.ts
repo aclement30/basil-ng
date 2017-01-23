@@ -34,9 +34,7 @@ import { Recipe } from './recipe.model';
                         <div class="col-sm-4">
                             <div class="form-group fg-float" [ngClass]="{'has-error': ingredients.invalid && ingredients.dirty}">
                                 <label>Ingrédients</label>
-                                <div class="fg-line">
-                                    <textarea [(ngModel)]="recipe.combinedIngredients" class="form-control" name="ingredients" rows="15" placeholder="Ingrédients" #ingredients="ngModel" required></textarea>
-                                </div>
+                                <textarea autosize [(ngModel)]="recipe.combinedIngredients" class="form-control" name="ingredients" placeholder="Ingrédients" #ingredients="ngModel" required></textarea>
                                 <small [hidden]="ingredients.valid || ingredients.pristine" class="help-block">Champ requis</small>
                             </div>
                             
@@ -47,7 +45,7 @@ import { Recipe } from './recipe.model';
                             <div class="form-group fg-float" [ngClass]="{'has-error': instructions.invalid && instructions.dirty}">
                                 <label>Étapes de préparation</label>
                                 <div class="fg-line">
-                                    <textarea [(ngModel)]="recipe.combinedInstructions" class="form-control" name="instructions" rows="15" placeholder="Étapes de préparation" #instructions="ngModel" required></textarea>
+                                    <textarea autosize [(ngModel)]="recipe.combinedInstructions" class="form-control" name="instructions" rows="15" placeholder="Étapes de préparation" #instructions="ngModel" required></textarea>
                                 </div>
                                 <small [hidden]="instructions.valid || instructions.pristine" class="help-block">Champ requis</small>
                             </div>

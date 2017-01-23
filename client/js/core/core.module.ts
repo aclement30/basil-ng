@@ -5,6 +5,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
+import { Autosize } from './autosize.directive';
 import { CookmodeButtonComponent } from './quick-actions/cookmode-button.component';
 import { CookmodeMenuComponent } from './cookmode-menu.component';
 import { DashboardComponent } from './dashboard.component';
@@ -32,6 +33,7 @@ import { VoiceAssistantService } from './voice-assistant.service';
     imports: [ CommonModule, FormsModule, NgbModule, RouterModule ],
     declarations: [
         AppComponent,
+        Autosize,
         CookmodeButtonComponent,
         CookmodeMenuComponent,
         DashboardComponent,
@@ -56,7 +58,7 @@ import { VoiceAssistantService } from './voice-assistant.service';
         TimerService,
         VoiceAssistantService,
     ],
-    exports: [ SnapUploaderComponent, TimerComponent ]
+    exports: [ Autosize, SnapUploaderComponent, TimerComponent ]
 })
 
 export class CoreModule {
