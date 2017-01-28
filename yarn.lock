@@ -34,9 +34,9 @@
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/@angular/router/-/router-3.2.4.tgz#dfec71ad072ec031364ba5d08bd6fe03fd5beadc"
 
-"@ng-bootstrap/ng-bootstrap@^1.0.0-alpha.14":
-  version "1.0.0-alpha.18"
-  resolved "https://registry.yarnpkg.com/@ng-bootstrap/ng-bootstrap/-/ng-bootstrap-1.0.0-alpha.18.tgz#e2be574f75dfafab27fe32769bfbc0a923736f1d"
+"@ng-bootstrap/ng-bootstrap@^1.0.0-alpha.19":
+  version "1.0.0-alpha.19"
+  resolved "https://registry.yarnpkg.com/@ng-bootstrap/ng-bootstrap/-/ng-bootstrap-1.0.0-alpha.19.tgz#42792956be72c16d69a8d9ff57ef225b96af070a"
 
 "@types/bootstrap-notify@^3.1.30":
   version "3.1.30"
@@ -1750,6 +1750,10 @@ form-data@~2.1.1:
 forwarded@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.0.tgz#19ef9874c4ae1c297bcf078fde63a09b66a84363"
+
+fraction.js@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/fraction.js/-/fraction.js-3.3.1.tgz#5d6a31ff07707294f204ccbb6b53791607771083"
 
 fresh@0.3.0:
   version "0.3.0"

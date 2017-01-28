@@ -8,12 +8,30 @@
   border: 0;
 
   & > li > a {
+    font-size: 16px;
     background: none;
     cursor: pointer;
     border: none;
     padding: 10px 20px;
     @include transition(background-color);
     @include transition-duration(300ms);
+
+    &.selected {
+      background-color: rgba(0, 0, 0, 0.075);
+      color: #333;
+
+      &::after {
+        display: inline-block;
+        position: absolute;
+        right: 20px;
+        padding-top: 2px;
+        font: normal normal normal 18px/1 "Material-Design-Iconic-Font";
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        content: '\f26b';
+      }
+    }
   }
 
   &.dm-icon {
@@ -39,4 +57,10 @@
   padding: 10px 16px 5px;
   color: #B9B9B9;
   text-transform: uppercase;
+}
+
+.dropdown.show {
+  .dropdown-menu {
+    display: block;
+  }
 }
