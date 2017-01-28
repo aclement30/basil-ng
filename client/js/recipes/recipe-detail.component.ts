@@ -2,13 +2,12 @@ import { Component, OnInit, Injectable } from '@angular/core';
 import { ActivatedRoute, CanDeactivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { select } from 'ng2-redux';
-const Fraction = require('fraction.js');
 
 import { DialogService } from '../core/dialog.service';
 import { ICookingRecipes } from '../redux';
 import { RecipesActions } from '../core/redux.actions';
 import { RecipeService } from './recipe.service';
-import { Recipe } from './recipe.model';
+import { Ingredient, Recipe } from './recipe.model';
 import { Timer } from '../core/timer.model';
 import { TimerService } from '../core/timer.service';
 
@@ -58,7 +57,7 @@ class ServingOption {
                     <ul class="ingredients">
                         <li *ngFor="let ingredient of recipe.ingredients">
                             <div *ngIf="ingredient.quantity" class="quantity">
-                                {{ multiply(ingredient.quantity) }}
+                                {{ ingredient.multiply(serving.multiplier) }}
                                 <small class="unit" *ngIf="ingredient.unit">{{ ingredient.unit | ingredientUnit }}</small>
                             </div>
                             
@@ -156,22 +155,6 @@ export class RecipeDetailComponent implements OnInit {
         });
 
         this.recipeService.stopCooking(this.recipe);
-    }
-
-    multiply(quantity: string) {
-        if (!this.serving) return;
-
-        let matches;
-        if (quantity.match(/^([0-9.])+$/)) {
-            return +quantity * this.serving.multiplier;
-        } else if (matches = quantity.match(/^([0-9])+\/([0-9])+$/)) {
-            let fraction = new Fraction(+matches[1] * this.serving.multiplier, +matches[2]);
-            return fraction.toFraction(true);
-        } else if (matches = quantity.match(/^([0-9])+\s([0-9])+\/([0-9])+$/)) {
-            let numerator = (+matches[1] * +matches[3]) + +matches[2];
-            let fraction = new Fraction(numerator * this.serving.multiplier, +matches[3]);
-            return fraction.toFraction(true);
-        }
     }
 
     getServingOptionForServing(serving: number): ServingOption {
