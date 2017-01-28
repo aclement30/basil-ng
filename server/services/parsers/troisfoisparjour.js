@@ -9,7 +9,7 @@ module.exports = (url, document, callback) => {
     recipeData.ingredients = [];
     recipeData.recipeInstructions = [];
 
-    document('[itemprop=ingredients] > span').each(function(i, elem) {
+    document('.recipe-ingredient-container .imperial [itemprop=ingredients] > span').each(function(i, elem) {
         recipeData.ingredients.push({description: document(this).text().trim()});
     });
 

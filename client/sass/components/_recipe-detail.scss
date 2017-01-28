@@ -21,7 +21,7 @@ recipe-detail > .card {
         padding: 5px 0;
         border-bottom: 1px solid #d7d7d7;
         display: flex;
-        align-items: center;
+        align-items: stretch;
 
         &:last-of-type {
           border-bottom: none;
@@ -33,20 +33,24 @@ recipe-detail > .card {
           color: $brand-primary;
           display: inline-block;
           flex-basis: 20%;
+          margin-right: 10px;
         }
 
         .unit {
           font-size: 10px;
           font-weight: bold;
           color: #666666;
-          display: block;
-          //position: relative;
-          //top: -8px;
         }
 
         .ingredient-name {
           color: #333;
           flex-basis: 80%;
+        }
+
+        .ingredient-type {
+          display: block;
+          font-size: smaller;
+          color: gray;
         }
       }
     }
@@ -315,7 +319,7 @@ recipe-detail > .card {
 main.cookmode recipe-detail {
   @media (min-width: $screen-lg) {
     .left {
-      width: 70%;
+      flex: 0 1 50%;
 
       .recipe-picture {
         width: 40%;

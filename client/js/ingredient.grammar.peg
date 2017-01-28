@@ -5,7 +5,7 @@ ingredient_additions
     = ingredient_addition+
 
 ingredient_addition
-    = amount:amount (ws+)? ("de" ws+)? unit:unit? (ws+)? container:container? (ws+)? ("de" ws+ / "d'")? ingredient:ingredient? type:type? [\n]?  {
+    = amount:amount (ws+)? ("de" ws+)? unit:unit? (ws+)? container:container? (ws+)? ("de" ws+ / "d'")? ingredient:ingredient? type:type?  {
     var result = {
         quantity: amount,
         container: container,
@@ -68,7 +68,7 @@ integer
     = digits:[0-9]+ { return digits.join(''); }
 
 letter
-    = [a-zA-ZàÀâÂäÄèÈêÊëËéÉîÎïÏôÔöÖùÙüÜûÛçÇ\-'’]
+    = [a-zA-Z0-9àÀâÂäÄèÈêÊëËéÉîÎïÏôÔöÖùÙüÜûÛçÇ\-'’.%]
 
 unit
     = english_unit:english_unit !word { return english_unit; }
@@ -238,6 +238,7 @@ imprecise_unit
     / pinch { return 'pinch'; }
     / touch { return 'touch'; }
     / box { return 'box'; }
+    / tablet { return 'tablet' }
 
 box
     = 'boîtes'i
@@ -254,6 +255,12 @@ handful
     / 'handful'i
     / 'poignées'i
     / 'poignée'i
+
+tablet
+    = 'tablets'i
+    / 'tablettes'i
+    / 'tablette'i
+    / 'tablet'i
 
 pinch
     = 'pinches'i

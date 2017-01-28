@@ -47,7 +47,10 @@ import { TimerService } from '../core/timer.service';
                                 <small class="unit" *ngIf="ingredient.unit">{{ ingredient.unit | ingredientUnit }}</small>
                             </div>
                             
-                            <div class="ingredient-name" *ngIf="ingredient.name">{{ ingredient.name | capitalize }}</div>
+                            <div class="ingredient-name" *ngIf="ingredient.name">
+                                {{ ingredient.name | capitalize }}
+                                <span class="ingredient-type" *ngIf="ingredient.type">{{ ingredient.type }}</span>
+                            </div>
                             <span *ngIf="!ingredient.name">{{ ingredient.description }}</span>
                         </li>
                     </ul>

@@ -17,8 +17,13 @@ class RecipeFormatterService {
 
     formatIngredients(ingredients) {
         return ingredients.map((ingredient) => {
-            ingredient.description = ingredient.description.trim();
-            ingredient.description = ingredient.description.replace(/([\n\s])+/g, " ");
+            let description = ingredient.description;
+
+            description = description.trim();
+            description = description.replace(/([\n\s])+/g, " ");
+            description = description.replace(/’/, "'");
+
+            ingredient.description = description;
             return ingredient;
         });
     }
