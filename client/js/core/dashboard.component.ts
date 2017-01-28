@@ -17,7 +17,7 @@ import { RecipeService } from '../recipes/recipe.service';
         </div>
 
         <div class="row">
-            <div class="col-md-4 col-sm-6" *ngFor="let recipe of recipes" (click)="select(recipe)">
+            <div class="col-md-4 col-sm-6" *ngFor="let recipe of orderedRecipes" (click)="select(recipe)">
                 <div class="card recipe" [style.background-image]="'url(' + recipe.image + ')'">
                     <div class="card-header">
                         <h2>{{ recipe.title }}</h2>
@@ -60,5 +60,13 @@ export class DashboardComponent implements OnInit {
 
     select(recipe: Recipe): void {
         this.router.navigate(['/recipes/detail', recipe._id]);
+    }
+
+    get orderedRecipes() {
+        return this.recipes.sort((a, b) => {
+            const textA = a.title.toUpperCase();
+            const textB = b.title.toUpperCase();
+            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+        });
     }
 }
