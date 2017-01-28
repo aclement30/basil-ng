@@ -1,6 +1,7 @@
 dashboard {
   .card.recipe {
     background-size: cover;
+    background-image: url('../img/default-picture.jpg');
     height: 200px;
     cursor: pointer;
 
@@ -15,6 +16,33 @@ dashboard {
       h2 {
         font-size: em(16);
         color: #fff;
+      }
+    }
+
+    &:hover {
+      &::before {
+        content: "";
+        display: block;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: rgba(0, 0, 0, .2);
+      }
+    }
+
+    &:active,
+    &:focus {
+      &::before {
+        content: "";
+        display: block;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: rgba(0, 0, 0, .3);
       }
     }
   }

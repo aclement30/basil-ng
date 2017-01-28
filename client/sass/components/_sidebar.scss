@@ -100,7 +100,9 @@ sidebar,
       position: relative;
       font-weight: 700;
 
-      &:hover {
+      &:hover,
+      &:focus,
+      &:active {
         background-color: #F3F3F3;
       }
 

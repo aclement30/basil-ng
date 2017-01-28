@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, HostBinding, Output, NgZone } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, HostBinding, Output, NgZone } from '@angular/core';
 
 import { OCRService } from './ocr.service';
 import { NotificationService } from './notification.service';
@@ -9,14 +9,16 @@ export const SCAN_INSTRUCTIONS = 'ocr/SCAN_INSTRUCTIONS';
 @Component({
     selector: 'snap-uploader',
     template: `
-        <i class="zmdi icon zmdi-camera" *ngIf="!selectedPicture"></i>
-        
-        <div class="thumbnail" *ngIf="selectedPicture" [ngStyle]="{'background-image': 'url(' + thumbnail + ')'}"></div>
-        
-        <p class="description" *ngIf="type === '${SCAN_INGREDIENTS}'"><strong>Ajouter des ingrédients</strong><br><small>en prenant une photo</small></p>
-        <p class="description" *ngIf="type === '${SCAN_INSTRUCTIONS}'"><strong>Ajouter des étapes</strong><br><small>en prenant une photo</small></p>
-        
-        <p class="loading-message">Analyse de la photo</p>
+        <button type="button" (click)="focusInput()">
+            <i class="zmdi icon zmdi-camera" *ngIf="!selectedPicture"></i>
+            
+            <div class="thumbnail" *ngIf="selectedPicture" [ngStyle]="{'background-image': 'url(' + thumbnail + ')'}"></div>
+            
+            <p class="description" *ngIf="type === '${SCAN_INGREDIENTS}'"><strong>Ajouter des ingrédients</strong><br><small>en prenant une photo</small></p>
+            <p class="description" *ngIf="type === '${SCAN_INSTRUCTIONS}'"><strong>Ajouter des étapes</strong><br><small>en prenant une photo</small></p>
+            
+            <p class="loading-message">Analyse de la photo</p>
+        </button>
         
         <input type="file" (change)="fileChangeEvent($event)" accept="image/*" capture="camera">
     `
@@ -30,9 +32,14 @@ export class SnapUploaderComponent {
     public selectedPicture: File;
     public thumbnail: string = null;
 
-    constructor(private notificationService: NotificationService,
+    constructor(private elementRef: ElementRef,
+                private notificationService: NotificationService,
                 private ocrService: OCRService,
                 private zone: NgZone) {}
+
+    focusInput() {
+        this.elementRef.nativeElement.children[1].click();
+    }
 
     fileChangeEvent(fileInput: any) {
         this.isProcessing = true;

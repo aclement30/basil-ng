@@ -31,7 +31,7 @@ class ServingOption {
 
         <div class="card" *ngIf="recipe">
             <div class="left">
-                <div class="recipe-picture" *ngIf="recipe.image" [style.background-image]="'url(' + recipe.image + ')'">
+                <div class="recipe-picture" [style.background-image]="recipe.image ? 'url(' + recipe.image + ')' : null">
                     <div class="cooking-recipe" *ngIf="isCooking$ | async">
                         <i class="zmdi zmdi-fire"></i> <span class="hidden-xs">Recette </span>en cours
                     </div>
@@ -89,6 +89,10 @@ class ServingOption {
                         <div class="pmbb-view" *ngIf="recipe.notes">
                             <hr>
                             {{ recipe.notes }}
+                        </div>
+                        <div class="pmbb-view" *ngIf="recipe.originalUrl">
+                            <hr>
+                            Source : <a [href]="recipe.originalUrl" target="_blank">{{ recipe.originalUrl }}</a>
                         </div>
                     </div>
                     

@@ -18,7 +18,7 @@ import { RecipeService } from '../recipes/recipe.service';
 
         <div class="row">
             <div class="col-md-4 col-sm-6" *ngFor="let recipe of orderedRecipes" (click)="select(recipe)">
-                <div class="card recipe" [style.background-image]="'url(' + recipe.image + ')'">
+                <div class="card recipe" [style.background-image]="recipe.image ? 'url(' + recipe.image + ')' : null">
                     <div class="card-header">
                         <h2>{{ recipe.title }}</h2>
                     </div>

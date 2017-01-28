@@ -205,7 +205,9 @@ body {
         height: 32px;
       }
 
-      &:hover:not([disabled]) {
+      &:hover:not([disabled]),
+      &:focus:not([disabled]),
+      &:active:not([disabled]) {
         background-color: rgba(0,0,0,0.2);
       }
     }

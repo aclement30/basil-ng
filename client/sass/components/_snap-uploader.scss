@@ -2,7 +2,6 @@ snap-uploader {
   @extend .card;
 
   display: block;
-  background-color: $app-gray;
   padding: 20px;
   margin-bottom: 20px;
   text-align: center;
@@ -55,15 +54,28 @@ snap-uploader {
     }
   }
 
-  input[type=file] {
+  button {
     top: 0;
     left: 0;
-    cursor: pointer;
     display: block;
     width: 100%;
     height: 100%;
     position: absolute;
-    opacity: 0;
+    border: none;
+    background-color: $app-gray;
+
+    &:hover {
+      background-color: darken($app-gray, 10);
+    }
+
+    &:active,
+    &:focus {
+      background-color: darken($app-gray, 15);
+    }
+  }
+
+  input[type=file] {
+    display: none;
   }
 
   @keyframes spinner {
