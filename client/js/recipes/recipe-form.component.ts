@@ -151,7 +151,7 @@ export class RecipeFormComponent implements OnInit {
     }
 
     getSnapshotInstructions(instructions: [string]) {
-        this.recipe.combinedInstructions += instructions.join("\n");
+        this.recipe.combinedInstructions += "\n" + instructions.join("\n");
     }
 
     ngOnDestroy() {

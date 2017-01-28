@@ -66,6 +66,8 @@ function init(app) {
                     });
                 }
 
+                ingredients = this.formatIngredients(ingredients);
+
                 res.status(200).send(ingredients);
             } else {
                 errorHandler.client(error, res);

@@ -22,6 +22,7 @@ class RecipeFormatterService {
             description = description.trim();
             description = description.replace(/([\n\s])+/g, " ");
             description = description.replace(/’/, "'");
+            description = description.replace(/([0-9]),([0-9])/g, '$1.$2');
 
             ingredient.description = description;
             return ingredient;

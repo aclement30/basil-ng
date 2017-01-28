@@ -27,7 +27,7 @@ function init(app) {
                 }
 
                 // Remove false line breaks and split by line returns
-                let instructions = result.content.replace(/(\w+\s)\r\n/gi, "$1").split("\n");
+                let instructions = result.content.replace(/([\w\u00E0-\u00FC]+\s)\r\n/gi, "$1").split("\n");
                 instructions = RecipeFormatterService.formatInstructions(instructions);
 
                 res.status(200).send(instructions);
