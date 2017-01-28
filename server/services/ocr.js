@@ -6,7 +6,10 @@ const sharp = require('sharp');
 const async = require('async');
 const request = require('request');
 
-module.exports = {
+class OCRService {
+
+    constructor() {}
+
     getStorage() {
         const storage = multer.diskStorage({
             destination: 'tmp/uploads',
@@ -16,7 +19,7 @@ module.exports = {
         });
 
         return multer({ storage });
-    },
+    }
 
     processImage(path, processingCallback) {
         let orientation;
@@ -81,7 +84,7 @@ module.exports = {
 
             processingCallback(processingError, outputFile);
         });
-    },
+    }
 
     scanImage(file, scanCallback) {
         const options = {
@@ -114,4 +117,6 @@ module.exports = {
             });
         });
     }
-};
+}
+
+module.exports = new OCRService();
