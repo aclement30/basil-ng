@@ -162,7 +162,7 @@ export class RecipeDetailComponent implements OnInit {
         if (!this.serving) return;
 
         let matches;
-        if (quantity.match(/^([0-9])+$/)) {
+        if (quantity.match(/^([0-9.])+$/)) {
             return +quantity * this.serving.multiplier;
         } else if (matches = quantity.match(/^([0-9])+\/([0-9])+$/)) {
             let fraction = new Fraction(+matches[1] * this.serving.multiplier, +matches[2]);
