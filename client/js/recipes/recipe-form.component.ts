@@ -9,7 +9,7 @@ import { Recipe } from './recipe.model';
 @Component({
     selector: 'recipe-form',
     template: `
-        <form name="recipeForm" #recipeForm="ngForm" *ngIf="recipe">
+        <form #recipeForm="ngForm" *ngIf="recipe">
             <div class="c-header">
                 <h2>{{ recipe._id ? 'Modifier la recette' : 'Ajouter une recette' }}</h2>
                 
@@ -19,74 +19,92 @@ import { Recipe } from './recipe.model';
                     </li>
                 </ul>
             </div>
-    
+            
             <div class="card">
                 <div class="card-body card-padding">
-                    <div class="form-group has-error" [ngClass]="{'has-error': title.invalid && title.dirty}">
-                        <label>Titre</label>
+                    <ul class="tab-nav" *ngIf="!this.recipe._id">
+                        <li [ngClass]="{active: activeTab === 'web-import'}"><a (click)="toggleTab('web-import')">Recette Web</a></li>
+                        <li [ngClass]="{active: activeTab === 'normal'}"><a (click)="toggleTab('normal')">Nouvelle recette</a></li>
+                    </ul>
+                
+                    <div class="form-group web-recipe-import" *ngIf="activeTab === 'web-import' && !isParsed && !this.recipe._id" [ngClass]="{'has-error': importError && recipe.originalUrl}">
                         <div class="fg-line">
-                            <input type="text" [(ngModel)]="recipe.title" name="title" class="form-control" placeholder="Titre" #title="ngModel" required>
-                        </div>
-                        <small [hidden]="title.valid || title.pristine" class="help-block">Champ requis</small>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <div class="form-group fg-float" [ngClass]="{'has-error': ingredients.invalid && ingredients.dirty}">
-                                <label>Ingrédients</label>
-                                <textarea autosize [(ngModel)]="recipe.combinedIngredients" class="form-control" name="ingredients" placeholder="Ingrédients" #ingredients="ngModel" required></textarea>
-                                <small [hidden]="ingredients.valid || ingredients.pristine" class="help-block">Champ requis</small>
+                            <div class="row">
+                                <input type="url" [(ngModel)]="recipe.originalUrl" name="url" class="form-control" placeholder="http://" #sourceUrl="ngModel" required>
+                                <button type="button" (click)="importRecipe()" class="btn btn-primary waves-effect" [disabled]="!sourceUrl.valid || isImporting">Importer</button>
                             </div>
-                            
-                            <snap-uploader type="ocr/SCAN_INGREDIENTS" (getResult)="getSnapshotIngredients($event)"></snap-uploader>
+                            <small class="c-gray" [hidden]="importError && recipe.originalUrl">Entrez l'URL de la page Web contenant la recette</small>
+                            <small [hidden]="!importError || !recipe.originalUrl" class="help-block">{{ importError }}</small>
+                        </div>
+                    </div>
+
+                    <div class="recipe-fields" *ngIf="activeTab === 'normal' || isParsed || this.recipe._id">
+                        <div class="form-group" [ngClass]="{'has-error': title.invalid && title.dirty}">
+                            <label>Titre</label>
+                            <div class="fg-line">
+                                <input type="text" [(ngModel)]="recipe.title" name="title" class="form-control" placeholder="Titre" #title="ngModel" required>
+                            </div>
+                            <small [hidden]="title.valid || title.pristine" class="help-block">Champ requis</small>
                         </div>
                         
-                        <div class="col-sm-8">
-                            <div class="form-group fg-float" [ngClass]="{'has-error': instructions.invalid && instructions.dirty}">
-                                <label>Étapes de préparation</label>
-                                <div class="fg-line">
-                                    <textarea autosize [(ngModel)]="recipe.combinedInstructions" class="form-control" name="instructions" rows="15" placeholder="Étapes de préparation" #instructions="ngModel" required></textarea>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group fg-float" [ngClass]="{'has-error': ingredients.invalid && ingredients.dirty}">
+                                    <label>Ingrédients</label>
+                                    <textarea autosize [(ngModel)]="recipe.combinedIngredients" class="form-control" name="ingredients" placeholder="Ingrédients" #ingredients="ngModel" required></textarea>
+                                    <small [hidden]="ingredients.valid || ingredients.pristine" class="help-block">Champ requis</small>
                                 </div>
-                                <small [hidden]="instructions.valid || instructions.pristine" class="help-block">Champ requis</small>
+                                
+                                <snap-uploader type="ocr/SCAN_INGREDIENTS" (getResult)="getSnapshotIngredients($event)"></snap-uploader>
                             </div>
                             
-                            <snap-uploader type="ocr/SCAN_INSTRUCTIONS" (getResult)="getSnapshotInstructions($event)"></snap-uploader>
+                            <div class="col-sm-8">
+                                <div class="form-group fg-float" [ngClass]="{'has-error': instructions.invalid && instructions.dirty}">
+                                    <label>Étapes de préparation</label>
+                                    <div class="fg-line">
+                                        <textarea autosize [(ngModel)]="recipe.combinedInstructions" class="form-control" name="instructions" placeholder="Étapes de préparation" #instructions="ngModel" required></textarea>
+                                    </div>
+                                    <small [hidden]="instructions.valid || instructions.pristine" class="help-block">Champ requis</small>
+                                </div>
+                                
+                                <snap-uploader type="ocr/SCAN_INSTRUCTIONS" (getResult)="getSnapshotInstructions($event)"></snap-uploader>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <div class="form-group">
-                                <label>Portions</label>
-                                <div class="fg-line">
-                                    <input type="text" [(ngModel)]="recipe.recipeYield" name="yield" class="form-control" placeholder="Rendement">
+                        
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Portions</label>
+                                    <div class="fg-line">
+                                        <input type="text" [(ngModel)]="recipe.recipeYield" name="yield" class="form-control" placeholder="Rendement">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                             
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Photo</label>
-                                <div class="fg-line">
-                                    <input type="url" [(ngModel)]="recipe.image" name="image" class="form-control" placeholder="Photo (URL)">
+                                 
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Photo</label>
+                                    <div class="fg-line">
+                                        <input type="url" [(ngModel)]="recipe.image" name="image" class="form-control" placeholder="Photo (URL)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Source</label>
+                                    <div class="fg-line">
+                                        <input type="url" [(ngModel)]="recipe.originalUrl" name="image" class="form-control" placeholder="Source (URL)">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Source</label>
-                                <div class="fg-line">
-                                    <input type="url" [(ngModel)]="recipe.originalUrl" name="image" class="form-control" placeholder="Source (URL)">
-                                </div>
+                        
+                        <div class="form-group">
+                            <div class="fg-line">
+                                <input type="text" [(ngModel)]="recipe.notes" name="notes" class="form-control" placeholder="Notes">
                             </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <div class="fg-line">
-                            <input type="text" [(ngModel)]="recipe.notes" name="notes" class="form-control" placeholder="Notes">
                         </div>
                     </div>
                 </div>
@@ -103,6 +121,11 @@ export class RecipeFormComponent implements OnInit {
 
     paramsSubscriber: any;
     recipe: Recipe;
+
+    activeTab: string = 'web-import';
+    isImporting: boolean = false;
+    importError: null;
+    isParsed: boolean = false;
 
     constructor(
         private route: ActivatedRoute,
@@ -135,6 +158,25 @@ export class RecipeFormComponent implements OnInit {
         this.paramsSubscriber.unsubscribe();
     }
 
+    importRecipe() {
+        this.isImporting = true;
+        this.importError = null;
+
+        this.recipeService.import(this.recipe.originalUrl)
+            .then((recipe: Recipe) => {
+                if (recipe) {
+                    this.recipe = recipe;
+                }
+
+                this.isImporting = false;
+                this.isParsed = true;
+            })
+            .catch((errorMessage: any) => {
+                this.isImporting = false;
+                this.importError = errorMessage;
+            });
+    }
+
     submit(): void {
         const isExisting: boolean = !!this.recipe._id;
 
@@ -148,6 +190,14 @@ export class RecipeFormComponent implements OnInit {
 
                 this.router.navigate(['recipes', 'detail', recipe._id]);
             });
+    }
+
+    toggleTab(alias: string): void {
+        this.activeTab = alias;
+
+        if (alias === 'web-import') {
+            this.isParsed = false;
+        }
     }
 
     remove(): void {

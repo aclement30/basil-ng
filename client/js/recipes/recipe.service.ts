@@ -5,8 +5,14 @@ import 'rxjs/add/operator/toPromise';
 import { NgRedux } from 'ng2-redux';
 import { IAppState } from '../redux';
 
-import {Recipe, RecipeSummary, Ingredient} from './recipe.model';
+import { Recipe, RecipeSummary, Ingredient } from './recipe.model';
 import { RecipesActions } from '../core/redux.actions';
+
+export class RecipeImportResult {
+    url: string;
+    recipe?: Recipe;
+    errorMessage?: string;
+}
 
 @Injectable()
 export class RecipeService {
@@ -35,7 +41,7 @@ export class RecipeService {
 
     delete(id: string): Promise<void> {
         const url = `${this.apiUrl}/${id}`;
-        return this.http.delete(url, {headers: this.headers})
+        return this.http.delete(url, { headers: this.headers })
             .toPromise()
             .then(() => null)
             .catch(this.handleError);
@@ -51,7 +57,7 @@ export class RecipeService {
 
     create(recipe: Recipe): Promise<Recipe> {
         return this.http
-            .post(this.apiUrl, JSON.stringify(recipe), {headers: this.headers})
+            .post(this.apiUrl, JSON.stringify(recipe), { headers: this.headers })
             .toPromise()
             .then(res => new Recipe(res.json()))
             .catch(this.handleError);
@@ -60,12 +66,28 @@ export class RecipeService {
     update(recipe: Recipe): Promise<Recipe> {
         const url = `${this.apiUrl}/${recipe._id}`;
         return this.http
-            .put(url, JSON.stringify(recipe), {headers: this.headers})
+            .put(url, JSON.stringify(recipe), { headers: this.headers })
             .toPromise()
             .then(() => recipe)
             .catch(this.handleError);
     }
 
+    import(url: string): Promise<Recipe> {
+        return this.http
+            .post(`${this.apiUrl}/import`, JSON.stringify({ url }), { headers: this.headers })
+            .toPromise()
+            .then((response) => {
+                const result: RecipeImportResult = response.json();
+
+                return new Recipe(result.recipe);
+            })
+            .catch((response) => {
+                const result: RecipeImportResult = response.json();
+
+                return Promise.reject(result.errorMessage);
+            });
+    }
+    
     // COOKING RECIPES
 
     queryCookingRecipes(): Promise<RecipeSummary[]> {
@@ -82,7 +104,7 @@ export class RecipeService {
     startCooking(recipe: Recipe): Promise<any> {
         const url = `${this.apiUrl}/${recipe._id}/startCooking`;
         return this.http
-            .patch(url, {headers: this.headers})
+            .patch(url, { headers: this.headers })
             .toPromise()
             .then(() => {
                 this.recipesActions.startCooking(recipe);
@@ -93,7 +115,7 @@ export class RecipeService {
     stopCooking(recipe: Recipe): Promise<any> {
         const url = `${this.apiUrl}/${recipe._id}/stopCooking`;
         return this.http
-            .patch(url, {headers: this.headers})
+            .patch(url, { headers: this.headers })
             .toPromise()
             .then(() => {
                 this.recipesActions.stopCooking(recipe);
