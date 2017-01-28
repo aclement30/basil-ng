@@ -28,6 +28,7 @@ cookieStore.on('error', (error) => {
 // -------------------------------------------------------------------------
 
 const authController = require('./server/controllers/authController');
+const importController = require('./server/controllers/importController');
 const ingredientController = require('./server/controllers/ingredientController');
 const instructionController = require('./server/controllers/instructionController');
 const recipeController = require('./server/controllers/recipeController');
@@ -80,6 +81,7 @@ module.exports = (PORT) => {
     // -------------------------------------------------------------------------
 
     authController.init(app, passport);
+    importController.init(app);
     ingredientController.init(app);
     instructionController.init(app);
     recipeController.init(app);

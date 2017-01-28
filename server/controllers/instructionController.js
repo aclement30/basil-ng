@@ -4,6 +4,7 @@ const config = require('../../config/server.js'),
 const async = require('async');
 
 const OCRService = require('../services/ocr.js');
+const RecipeFormatterService = require('../services/recipe-formatter');
 
 function init(app) {
     app.post('/api/ocr/instructions', requireAuth, OCRService.getStorage().single('uploadedFile'), (req, res) => {
@@ -25,16 +26,9 @@ function init(app) {
                     return;
                 }
 
+                // Remove false line breaks and split by line returns
                 let instructions = result.content.replace(/(\w+\s)\r\n/gi, "$1").split("\n");
-
-                instructions.map((instruction) => {
-                    instruction = instruction.trim();
-
-                    // Remove step number
-                    //instruction = instruction.replace(/^([0-9])+\.\s/g, '');
-
-                    return instruction;
-                });
+                instructions = RecipeFormatterService.formatInstructions(instructions);
 
                 res.status(200).send(instructions);
             } else {
