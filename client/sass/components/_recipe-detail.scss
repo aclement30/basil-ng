@@ -12,6 +12,22 @@ recipe-detail > .card {
     background: #f8f8f8;
     border-right: 1px solid #eee;
 
+    h2 {
+      @include clearfix;
+
+      span {
+        display: block;
+        float: left;
+        margin-top: 10px;
+      }
+    }
+
+    button.multiplier {
+      float: right;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
     ul.ingredients {
       list-style: none;
       padding-left: 0;

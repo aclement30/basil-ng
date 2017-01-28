@@ -2,6 +2,7 @@ import { Component, OnInit, Injectable } from '@angular/core';
 import { ActivatedRoute, CanDeactivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { select } from 'ng2-redux';
+const Fraction = require('fraction.js');
 
 import { DialogService } from '../core/dialog.service';
 import { ICookingRecipes } from '../redux';
@@ -10,6 +11,11 @@ import { RecipeService } from './recipe.service';
 import { Recipe } from './recipe.model';
 import { Timer } from '../core/timer.model';
 import { TimerService } from '../core/timer.service';
+
+class ServingOption {
+    label: string;
+    multiplier: number;
+}
 
 @Component({
     selector: 'recipe-detail',
@@ -38,12 +44,21 @@ import { TimerService } from '../core/timer.service';
                 <button (click)="startCooking()" *ngIf="!(isCooking$ | async)" class="btn start-cooking btn-float btn-primary btn-icon waves-effect waves-circle waves-float"><i class="zmdi zmdi-cutlery"></i></button>
 
                 <div class="pmo-block">
-                    <h2>Ingrédients</h2>
+                    <h2 ngbDropdown>
+                        <span>Ingrédients</span>
+                        <button class="btn btn-default multiplier" ngbDropdownToggle>{{ serving.label }}</button>
+                        
+                        <ul class="dropdown-menu pull-right dm-icon">
+                            <li class="dropdown-item" *ngFor="let option of servingOptions">
+                                <a (click)="serving=option" [ngClass]="{selected: serving.multiplier === option.multiplier}">{{ option.label }}</a>
+                            </li>
+                        </ul>
+                    </h2>
 
                     <ul class="ingredients">
                         <li *ngFor="let ingredient of recipe.ingredients">
                             <div *ngIf="ingredient.quantity" class="quantity">
-                                {{ ingredient.quantity }}
+                                {{ multiply(ingredient.quantity) }}
                                 <small class="unit" *ngIf="ingredient.unit">{{ ingredient.unit | ingredientUnit }}</small>
                             </div>
                             
@@ -66,14 +81,8 @@ import { TimerService } from '../core/timer.service';
                     <div class="pmbb-body">
                         <div class="pmbb-view">
                             <ol class="instructions">
-                                <li ngbDropdown *ngFor="let step of recipe.recipeInstructions; let i = index">
-                                    <button class="step" ngbDropdownToggle><span>{{ (i + 1) }}</span><i class="zmdi zmdi-hourglass-alt"></i></button>
-                                    <ul class="dropdown-menu">
-                                        <li class="dropdown-item">
-                                            <a (click)="logout()"><i class="zmdi zmdi-time-restore"></i> Déconnexion</a>
-                                        </li>
-                                    </ul>
-                                    
+                                <li *ngFor="let step of recipe.recipeInstructions; let i = index">
+                                    <button class="step"><span>{{ (i + 1) }}</span><i class="zmdi zmdi-hourglass-alt"></i></button>                                    
                                     {{ step }}
                                 </li>
                             </ol>
@@ -98,6 +107,7 @@ export class RecipeDetailComponent implements OnInit {
     @select('timers') timers$: Observable<Timer[]>;
     paramsSubscriber: any;
     recipe: Recipe;
+    serving: ServingOption;
 
     constructor(
         private dialogService: DialogService,
@@ -111,6 +121,13 @@ export class RecipeDetailComponent implements OnInit {
             const id = params['id'];
             this.recipeService.get(id).then((recipe) => {
                 this.recipe = recipe;
+
+                if (this.recipe.recipeYield) {
+                    this.serving = this.getServingOptionForServing(this.recipe.recipeYield);
+                } else {
+                    this.serving = this.getServingOptionForYield(1);
+                }
+
                 this.recipesActions.setCurrentRecipe(recipe);
             });
         });
@@ -139,6 +156,49 @@ export class RecipeDetailComponent implements OnInit {
         });
 
         this.recipeService.stopCooking(this.recipe);
+    }
+
+    multiply(quantity: string) {
+        if (!this.serving) return;
+
+        let matches;
+        if (quantity.match(/^([0-9])+$/)) {
+            return +quantity * this.serving.multiplier;
+        } else if (matches = quantity.match(/^([0-9])+\/([0-9])+$/)) {
+            let fraction = new Fraction(+matches[1] * this.serving.multiplier, +matches[2]);
+            return fraction.toFraction(true);
+        } else if (matches = quantity.match(/^([0-9])+\s([0-9])+\/([0-9])+$/)) {
+            let numerator = (+matches[1] * +matches[3]) + +matches[2];
+            let fraction = new Fraction(numerator * this.serving.multiplier, +matches[3]);
+            return fraction.toFraction(true);
+        }
+    }
+
+    getServingOptionForServing(serving: number): ServingOption {
+        let label = `${serving} portion`;
+        if (serving > 1) { label += 's'; }
+
+        return { label, multiplier: (serving / this.recipe.recipeYield) };
+    }
+
+    getServingOptionForYield(recipeYield: number): ServingOption {
+        return { label: `${recipeYield} x`, multiplier: recipeYield };
+    }
+
+    get servingOptions(): ServingOption[] {
+        const options = [];
+
+        if (this.recipe.recipeYield) {
+            for (let i = 1; i <= (this.recipe.recipeYield * 2); i++) {
+                options.push(this.getServingOptionForServing(i));
+            }
+        } else {
+            for (let i = 1; i <= 4; i++) {
+                options.push(this.getServingOptionForYield(i));
+            }
+        }
+
+        return options;
     }
 
     get activeTimers$(): Observable<Timer[]> {
