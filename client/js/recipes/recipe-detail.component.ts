@@ -137,7 +137,9 @@ export class RecipeDetailComponent implements OnInit {
     }
 
     startCooking() {
-        this.cookingRecipeService.startCooking(this.recipe, this._serving.multiplier);
+        this.serving$.first().subscribe((serving: ServingOption) => {
+            this.cookingRecipeService.startCooking(this.recipe, serving.multiplier);
+        });
     }
 
     stopCooking() {
@@ -211,11 +213,7 @@ export class RecipeDetailComponent implements OnInit {
             } else if (this._serving) {
                 multiplier = this._serving.multiplier;
             } else {
-                if (this.recipe.recipeYield) {
-                    multiplier = this.recipe.recipeYield;
-                } else {
-                    multiplier = 1;
-                }
+                multiplier = 1;
             }
 
             return this.servingOptions.find(option => (option.multiplier === multiplier));
