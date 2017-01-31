@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { RecipeService } from '../recipes/recipe.service';
+import { CookingRecipeService } from '../recipes/cooking-recipe.service';
 import { SecurityService } from './security.service';
 import { SessionActions } from './redux.actions';
 
@@ -12,7 +12,7 @@ import { SessionActions } from './redux.actions';
 
 export class AppComponent implements OnInit {
     constructor(
-        private recipeService: RecipeService,
+        private cookingRecipeService: CookingRecipeService,
         private securityService: SecurityService) {}
 
     ngOnInit(): void {
@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
     }
 
     onAuthResolve = () => {
-        this.recipeService.queryCookingRecipes();
+        this.cookingRecipeService.query();
     }
 
     onAuthFailed = () => {}

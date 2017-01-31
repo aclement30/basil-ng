@@ -33,28 +33,6 @@ function init(app) {
         });
     });
 
-    app.get('/api/cookingRecipes', requireAuth, function (req, res){
-        if (req.user) {
-            User.findById(req.user._id).exec(function(error, user){
-                Recipe.find({isDeleted: false, _id: {$in: user.cookingRecipes}}).exec(function (err, objects){
-                    const recipeIds = objects.reduce((cookingRecipes, recipe) => {
-                        cookingRecipes.push({
-                            _id: recipe._id,
-                            title: recipe.title,
-                            image: recipe.image,
-                        });
-
-                        return cookingRecipes;
-                    }, []);
-
-                    res.send(recipeIds);
-                });
-            });
-        } else {
-            res.status(403).send();
-        }
-    });
-
     app.post('/api/recipes', requireAuth, function (req, res) {
         var data = req.body;
 
@@ -122,48 +100,6 @@ function init(app) {
                 }
             });
         });
-    });
-
-    app.patch('/api/recipes/:recipeId/startCooking', requireAuth, function (req, res) {
-        var recipeId = req.params.recipeId;
-
-        if (req.user) {
-            User.findById(req.user._id).exec(function(error, user){
-                var index = user.cookingRecipes.indexOf(recipeId);
-                if (index < 0) {
-                    user.cookingRecipes.push(recipeId);
-                }
-
-                User.update({_id: req.user._id}, {$set: {cookingRecipes: user.cookingRecipes}}, function (err) {
-                    if (!err) {
-                        res.sendStatus(200);
-                    }
-                });
-            });
-        } else {
-            res.status(403).send();
-        }
-    });
-
-    app.patch('/api/recipes/:recipeId/stopCooking', requireAuth, function (req, res) {
-        var recipeId = req.params.recipeId;
-
-        if (req.user) {
-            User.findById(req.user._id).exec(function(error, user){
-                var index = user.cookingRecipes.indexOf(recipeId);
-                if (index > -1) {
-                    user.cookingRecipes.splice(index, 1);
-                }
-
-                User.update({_id: req.user._id}, {$set: {cookingRecipes: user.cookingRecipes}}, function (err) {
-                    if (!err) {
-                        res.sendStatus(200);
-                    }
-                });
-            });
-        } else {
-            res.status(403).send();
-        }
     });
 
     app.delete('/api/recipes/:recipeId', requireAuth, function (req, res) {

@@ -142,4 +142,10 @@ export class RecipeSummary {
     _id: string;
     title: string;
     image: string;
+    multiplier: number;
+    started: string;
+
+    constructor(data: any = {}) {
+        Object.assign(this, data);
+    }
 }

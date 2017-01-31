@@ -1,7 +1,7 @@
-var mongoose = require('mongoose'),
-    idValidator = require('mongoose-id-validator');
+const mongoose = require('mongoose');
+const idValidator = require('mongoose-id-validator');
 
-var ingredientSchema = new mongoose.Schema({
+const ingredientSchema = new mongoose.Schema({
     description: {
         type: String,
         required: true
@@ -22,10 +22,9 @@ var ingredientSchema = new mongoose.Schema({
         type: String,
         default: null
     }
-});
-ingredientSchema.plugin(idValidator);
+}).plugin(idValidator);
 
-var schema = new mongoose.Schema({
+const schema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
@@ -83,9 +82,7 @@ var schema = new mongoose.Schema({
         default: Date.now
     },
     isDeleted: { type: Boolean, default: false }
-});
-
-schema.plugin(idValidator);
+}).plugin(idValidator);
 
 // Return a Recipe model based upon the defined schema
 module.exports = Recipe = mongoose.model('Recipe', schema);

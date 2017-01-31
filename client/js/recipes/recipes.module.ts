@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { CoreModule } from '../core/core.module';
+import { CookingRecipeService } from './cooking-recipe.service';
 import { RecipeService } from './recipe.service';
 
 import { CapitalizePipe } from '../core/capitalize.pipe';
@@ -16,7 +17,7 @@ import { RecipesActions } from '../core/redux.actions';
 @NgModule({
     imports: [ CoreModule, CommonModule, FormsModule, NgbModule, RouterModule ],
     declarations: [ CapitalizePipe, IngredientUnitPipe, RecipeDetailComponent, RecipeFormComponent ],
-    providers: [ CanDeactivateRecipeDetail, RecipesActions, RecipeService ],
+    providers: [ CanDeactivateRecipeDetail, CookingRecipeService, RecipesActions, RecipeService ],
 })
 
 export class RecipesModule {}

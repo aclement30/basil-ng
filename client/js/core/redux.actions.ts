@@ -42,6 +42,7 @@ export class RecipesActions {
     static SET_COOKING_RECIPES: string = 'SET_COOKING_RECIPES';
     static START_COOKING: string = 'START_COOKING';
     static STOP_COOKING: string = 'STOP_COOKING';
+    static UPDATE_SERVINGS: string = 'UPDATE_SERVINGS';
     static SET_CURRENT_RECIPE: string = 'SET_CURRENT_RECIPE';
     static RESET_CURRENT_RECIPE: string = 'RESET_CURRENT_RECIPE';
 
@@ -52,10 +53,10 @@ export class RecipesActions {
         });
     }
 
-    startCooking = (recipe: Recipe): void => {
+    startCooking = (recipe: Recipe, multiplier: number): void => {
         this.ngRedux.dispatch({
             type: RecipesActions.START_COOKING,
-            payload: { recipe }
+            payload: { recipe, multiplier }
         });
 
         this.ngRedux.dispatch({ type: UIActions.ENABLE_COOKMODE });
@@ -71,6 +72,13 @@ export class RecipesActions {
         if (state.ui.cookmode && !state.cookingRecipes.list.length) {
             this.ngRedux.dispatch({ type: UIActions.DISABLE_COOKMODE });
         }
+    }
+
+    updateServings = (recipe: Recipe, multiplier: number): void => {
+        this.ngRedux.dispatch({
+            type: RecipesActions.UPDATE_SERVINGS,
+            payload: { recipe, multiplier }
+        });
     }
 
     setCurrentRecipe = (recipe: Recipe): void => {

@@ -1,6 +1,7 @@
 import { ICookingRecipes } from '../redux';
-import { RecipesActions } from '../core/redux.actions';
+import * as moment from 'moment';
 
+import { RecipesActions } from '../core/redux.actions';
 import { RecipeSummary } from './recipe.model';
 
 export const INITIAL_STATE: ICookingRecipes = {
@@ -25,7 +26,12 @@ export function cookingRecipesReducer(state: ICookingRecipes = INITIAL_STATE, ac
             const INDEX = state.list.findIndex(recipe => (recipe._id === action.payload.recipe._id));
 
             if (INDEX < 0) {
-                newState.list.push(action.payload.recipe as RecipeSummary);
+                const recipeSummary = new RecipeSummary(Object.assign({}, action.payload.recipe, {
+                    multiplier: action.payload.multiplier,
+                    started: moment().toISOString(),
+                }));
+
+                newState.list.push(recipeSummary);
             }
 
             return newState;
@@ -36,6 +42,14 @@ export function cookingRecipesReducer(state: ICookingRecipes = INITIAL_STATE, ac
             if (INDEX >= 0) {
                 newState.list.splice(INDEX, 1);
             }
+
+            return newState;
+        }
+
+        case RecipesActions.UPDATE_SERVINGS: {
+            const INDEX = state.list.findIndex(recipe => (recipe._id === action.payload.recipe._id));
+
+            newState.list[INDEX].multiplier = action.payload.multiplier;
 
             return newState;
         }

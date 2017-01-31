@@ -87,45 +87,6 @@ export class RecipeService {
                 return Promise.reject(result.errorMessage);
             });
     }
-    
-    // COOKING RECIPES
-
-    queryCookingRecipes(): Promise<RecipeSummary[]> {
-        return this.http.get('api/cookingRecipes')
-            .toPromise()
-            .then(response => {
-                const cookingRecipes = response.json();
-                this.recipesActions.setCookingRecipes(cookingRecipes);
-                return cookingRecipes;
-            })
-            .catch(this.handleError);
-    }
-
-    startCooking(recipe: Recipe): Promise<any> {
-        const url = `${this.apiUrl}/${recipe._id}/startCooking`;
-        return this.http
-            .patch(url, { headers: this.headers })
-            .toPromise()
-            .then(() => {
-                this.recipesActions.startCooking(recipe);
-            })
-            .catch(this.handleError);
-    }
-
-    stopCooking(recipe: Recipe): Promise<any> {
-        const url = `${this.apiUrl}/${recipe._id}/stopCooking`;
-        return this.http
-            .patch(url, { headers: this.headers })
-            .toPromise()
-            .then(() => {
-                this.recipesActions.stopCooking(recipe);
-            })
-            .catch(this.handleError);
-    }
-
-    findCookingRecipe(id: string): RecipeSummary {
-        return this.ngRedux.getState().cookingRecipes.list.find(recipe => (recipe._id === id));
-    }
 
     private handleError(error: any): Promise<any> {
         console.error('An error occurred', error); // for demo purposes only

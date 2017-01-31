@@ -3,11 +3,12 @@ import { ActivatedRoute, CanDeactivate, ActivatedRouteSnapshot, RouterStateSnaps
 import { Observable } from 'rxjs';
 import { select } from 'ng2-redux';
 
+import { CookingRecipeService } from './cooking-recipe.service';
 import { DialogService } from '../core/dialog.service';
 import { ICookingRecipes } from '../redux';
 import { RecipesActions } from '../core/redux.actions';
 import { RecipeService } from './recipe.service';
-import { Ingredient, Recipe } from './recipe.model';
+import { Recipe } from './recipe.model';
 import { Timer } from '../core/timer.model';
 import { TimerService } from '../core/timer.service';
 
@@ -45,11 +46,11 @@ class ServingOption {
                 <div class="pmo-block">
                     <h2 ngbDropdown>
                         <span>Ingrédients</span>
-                        <button class="btn btn-default multiplier" ngbDropdownToggle>{{ serving.label }}</button>
+                        <button class="btn btn-default multiplier" ngbDropdownToggle>{{ (serving$ | async)?.label }}</button>
                         
                         <ul class="dropdown-menu pull-right dm-icon">
                             <li class="dropdown-item" *ngFor="let option of servingOptions">
-                                <a (click)="serving=option" [ngClass]="{selected: serving.multiplier === option.multiplier}">{{ option.label }}</a>
+                                <a (click)="changeServing(option)" [ngClass]="{selected: (serving$ | async)?.multiplier === option.multiplier}">{{ option.label }}</a>
                             </li>
                         </ul>
                     </h2>
@@ -57,7 +58,7 @@ class ServingOption {
                     <ul class="ingredients">
                         <li *ngFor="let ingredient of recipe.ingredients">
                             <div *ngIf="ingredient.quantity" class="quantity">
-                                {{ ingredient.multiply(serving.multiplier) }}
+                                {{ ingredient.multiply((serving$ | async)?.multiplier) }}
                                 <small class="unit" *ngIf="ingredient.unit">{{ ingredient.unit | ingredientUnit }}</small>
                             </div>
                             
@@ -110,9 +111,10 @@ export class RecipeDetailComponent implements OnInit {
     @select('timers') timers$: Observable<Timer[]>;
     paramsSubscriber: any;
     recipe: Recipe;
-    serving: ServingOption;
+    _serving: ServingOption;
 
     constructor(
+        private cookingRecipeService: CookingRecipeService,
         private dialogService: DialogService,
         private route: ActivatedRoute,
         private recipesActions: RecipesActions,
@@ -125,12 +127,6 @@ export class RecipeDetailComponent implements OnInit {
             this.recipeService.get(id).then((recipe) => {
                 this.recipe = recipe;
 
-                if (this.recipe.recipeYield) {
-                    this.serving = this.getServingOptionForServing(this.recipe.recipeYield);
-                } else {
-                    this.serving = this.getServingOptionForYield(1);
-                }
-
                 this.recipesActions.setCurrentRecipe(recipe);
             });
         });
@@ -141,7 +137,7 @@ export class RecipeDetailComponent implements OnInit {
     }
 
     startCooking() {
-        this.recipeService.startCooking(this.recipe);
+        this.cookingRecipeService.startCooking(this.recipe, this._serving.multiplier);
     }
 
     stopCooking() {
@@ -158,7 +154,17 @@ export class RecipeDetailComponent implements OnInit {
             }
         });
 
-        this.recipeService.stopCooking(this.recipe);
+        this.cookingRecipeService.stopCooking(this.recipe);
+    }
+
+    changeServing(serving: ServingOption) {
+        this._serving = serving;
+
+        this.isCooking$.first().subscribe(isCooking => {
+            if (isCooking) {
+                this.cookingRecipeService.updateServings(this.recipe, serving.multiplier);
+            }
+        });
     }
 
     getServingOptionForServing(serving: number): ServingOption {
@@ -191,6 +197,28 @@ export class RecipeDetailComponent implements OnInit {
     get activeTimers$(): Observable<Timer[]> {
         return this.timers$.map((timers: Timer[]) => {
             return timers.filter(timer => (timer.recipeId === this.recipe._id && !timer.completed));
+        });
+    }
+
+    get serving$(): Observable<ServingOption> {
+        return this.cookingRecipes$.map((cookingRecipes: ICookingRecipes) => {
+            const cookingRecipe = cookingRecipes.list.find(recipe => (recipe._id === this.recipe._id));
+
+            let multiplier: number;
+
+            if (cookingRecipe) {
+                multiplier = cookingRecipe.multiplier;
+            } else if (this._serving) {
+                multiplier = this._serving.multiplier;
+            } else {
+                if (this.recipe.recipeYield) {
+                    multiplier = this.recipe.recipeYield;
+                } else {
+                    multiplier = 1;
+                }
+            }
+
+            return this.servingOptions.find(option => (option.multiplier === multiplier));
         });
     }
 
