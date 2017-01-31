@@ -24,6 +24,9 @@ import { Timer } from './timer.model';
                     <a [routerLink]="['add']"><i class="zmdi zmdi-plus"></i> Ajouter une recette</a>
                 </li>
                 <li>
+                    <a [routerLink]="['/groceries']"><i class="zmdi zmdi-assignment"></i> Liste de courses</a>
+                </li>
+                <li>
                     <a (click)="logout()"><i class="zmdi zmdi-time-restore"></i> Déconnexion</a>
                 </li>
             </ul>

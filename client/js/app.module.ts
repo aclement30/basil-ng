@@ -14,6 +14,7 @@ import { IAppState, rootReducer } from './redux';
 import { AppComponent } from './core/app.component';
 
 import { CoreModule } from './core/core.module';
+import { GroceriesModule } from './groceries/groceries.module';
 import { LoginModule } from './login/login.module';
 import { RecipesModule } from './recipes/recipes.module';
 
@@ -29,6 +30,7 @@ import { RecipesActions, SessionActions, TimersActions, UIActions } from './core
         BrowserModule,
         CoreModule,
         FormsModule,
+        GroceriesModule,
         HttpModule,
         LoginModule,
         NgbModule.forRoot(),

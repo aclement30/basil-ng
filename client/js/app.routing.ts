@@ -6,6 +6,7 @@ import { LoginComponent } from "./login/login.component";
 import { MainComponent }   from './core/main.component';
 import { RecipeDetailComponent, CanDeactivateRecipeDetail }   from './recipes/recipe-detail.component';
 import { RecipeFormComponent }   from './recipes/recipe-form.component';
+import { ShoppingListComponent }   from './groceries/shopping-list.component';
 import { Gatekeeper } from './core/gatekeeper.service';
 
 const routes: Routes = [
@@ -23,6 +24,14 @@ const routes: Routes = [
             { path: 'add', component: RecipeFormComponent },
             { path: 'detail/:id', component: RecipeDetailComponent, canDeactivate: [CanDeactivateRecipeDetail] },
             { path: 'edit/:id', component: RecipeFormComponent },
+        ]
+    },
+    {
+        path: 'groceries',
+        component: MainComponent,
+        canActivate: [Gatekeeper],
+        children: [
+            { path: '', component: ShoppingListComponent },
         ]
     },
     { path: 'login', component: LoginComponent, canActivate: [Gatekeeper] },
