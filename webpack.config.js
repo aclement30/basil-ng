@@ -146,6 +146,7 @@ module.exports = function makeWebpackConfig() {
 
     config.resolve = {
         extensions: ['.ts', '.js'],
+        modules: [__dirname + '/node_modules']
     };
 
     config.devtool = 'source-map';
