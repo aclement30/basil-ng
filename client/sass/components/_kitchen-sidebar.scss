@@ -35,6 +35,10 @@ kitchen-sidebar {
       }
     }
 
+    .list-group-item {
+      cursor: pointer;
+    }
+
     .list-group {
       padding: 15px 0;
       height: calc(100vh - 100px);

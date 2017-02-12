@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { select } from 'ng2-redux';
 
@@ -16,7 +17,7 @@ import { UIActions } from './redux.actions';
             </ul>
 
             <div class="list-group lg-alt c-overflow">
-                <a *ngFor="let recipe of recipes$ | async" [routerLink]="['/recipes/detail', recipe._id]" class="list-group-item media">
+                <a *ngFor="let recipe of recipes$ | async" (click)="showRecipe(recipe._id)" class="list-group-item media">
                     <div class="pull-left">
                         <img class="avatar-img" [src]="recipe.image">
                     </div>
@@ -35,10 +36,18 @@ export class KitchenSidebarComponent {
     @select('cookingRecipes') cookingRecipes$: Observable<ICookingRecipes>;
     @select('ui') ui$: Observable<IUI>;
 
-    constructor(private uiActions: UIActions) {}
+    constructor(
+        private router: Router,
+        private uiActions: UIActions) {}
 
     closeSidebar() {
         this.uiActions.hideKitchenSidebar();
+    }
+
+    showRecipe(recipeId: string) {
+        this.router.navigate(['/recipes/detail', recipeId]);
+
+        this.closeSidebar();
     }
 
     get sidebarDisplayed$(): Observable<boolean> {

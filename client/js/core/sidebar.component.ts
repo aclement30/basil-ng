@@ -18,13 +18,13 @@ import { Timer } from './timer.model';
             
             <ul class="main-menu">
                 <li>
-                    <a [routerLink]="['/recipes']"><i class="zmdi zmdi-apps"></i> Recettes</a>
+                    <a (click)="navigateTo(['/recipes'])"><i class="zmdi zmdi-apps"></i> Recettes</a>
                 </li>
                 <li>
-                    <a [routerLink]="['add']"><i class="zmdi zmdi-plus"></i> Ajouter une recette</a>
+                    <a (click)="navigateTo(['/recipes/add'])"><i class="zmdi zmdi-plus"></i> Ajouter une recette</a>
                 </li>
                 <li>
-                    <a [routerLink]="['/groceries']"><i class="zmdi zmdi-assignment"></i> Liste de courses</a>
+                    <a (click)="navigateTo(['/groceries'])"><i class="zmdi zmdi-assignment"></i> Liste de courses</a>
                 </li>
                 <li>
                     <a (click)="logout()"><i class="zmdi zmdi-time-restore"></i> Déconnexion</a>
@@ -32,7 +32,7 @@ import { Timer } from './timer.model';
             </ul>
             
             <div class="timers">
-                    <timer *ngFor="let timer of timers$ | async" [timer]="timer"></timer>
+                <timer *ngFor="let timer of timers$ | async" [timer]="timer"></timer>
             </div>
         </aside>
     `
@@ -59,6 +59,12 @@ export class SidebarComponent {
         if (targetType === 'A') {
             this.hideSidebar();
         }
+    }
+
+    navigateTo(location: string[]) {
+        this.router.navigate(location);
+
+        this.hideSidebar();
     }
 
     hideSidebar() {
