@@ -1,11 +1,43 @@
 const ingredientParser = require('../ingredient.grammar.peg');
 const Fraction = require('fraction.js');
+const convert = require('convert-units');
 
-export class Ingredient {
+import { FoodItem } from '../core/interfaces';
+
+interface IUnitType {
+    name: string;
+    units: string[];
+    baseUnit?: string;
+}
+
+interface IUnitTypes {
+    VOLUME: IUnitType;
+    MASS: IUnitType;
+    ITEM: IUnitType;
+}
+
+export const UNIT_TYPES: IUnitTypes = {
+    VOLUME: {
+        name: 'VOLUME',
+        units: convert().possibilities('volume'),
+        baseUnit: 'ml',
+    },
+    MASS: {
+        name: 'MASS',
+        units: convert().possibilities('mass'),
+        baseUnit: 'g',
+    },
+    ITEM: {
+        name: 'ITEM',
+        units: ['box', 'tablet', 'pinch'],
+    },
+};
+
+export class Ingredient implements FoodItem {
     description: string;
     quantity?: number;
     container?: any;
-    name?: string;
+    name: string;
     unit?: string;
     type?: string;
 
@@ -29,6 +61,20 @@ export class Ingredient {
         }
 
         return this._formatFraction(newQuantity.toFraction(true));
+    }
+
+    get unitType(): IUnitType {
+        if (!this.unit) {
+            return UNIT_TYPES.ITEM;
+        }
+
+        if (UNIT_TYPES.VOLUME.units.indexOf(this.unit)) {
+            return UNIT_TYPES.VOLUME;
+        } else if (UNIT_TYPES.MASS.units.indexOf(this.unit)) {
+            return UNIT_TYPES.MASS;
+        } else {
+            return UNIT_TYPES.ITEM;
+        }
     }
 
     _formatFraction(fraction: string) {
@@ -127,9 +173,6 @@ export class Recipe {
 
         try {
             parsedIngredient = ingredientParser.parse(description.trim());
-            if (parsedIngredient.quantity) {
-                parsedIngredient.quantity = parsedIngredient.quantity;
-            }
         } catch(error) {
             console.warn(error);
         }

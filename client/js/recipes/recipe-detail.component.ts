@@ -5,7 +5,9 @@ import { select } from 'ng2-redux';
 
 import { CookingRecipeService } from './cooking-recipe.service';
 import { DialogService } from '../core/dialog.service';
+import { GroceryService } from '../groceries/grocery.service';
 import { ICookingRecipes } from '../redux';
+import { NotificationService } from '../core/notification.service';
 import { RecipesActions } from '../core/redux.actions';
 import { RecipeService } from './recipe.service';
 import { Recipe } from './recipe.model';
@@ -56,7 +58,9 @@ class ServingOption {
                     </h2>
 
                     <ul class="ingredients">
-                        <li *ngFor="let ingredient of recipe.ingredients">
+                        <li *ngFor="let ingredient of recipe.ingredients; let i = index" (click)="selectedIngredients[i]=!selectedIngredients[i]" [ngClass]="{selectable: canSelectIngredients}">
+                            <div class="checkbox" [ngClass]="{checked: selectedIngredients[i]}"><i></i></div>
+                            
                             <div *ngIf="ingredient.quantity" class="quantity">
                                 {{ ingredient.multiply((serving$ | async)?.multiplier) }}
                                 <small class="unit" *ngIf="ingredient.unit">{{ ingredient.unit | ingredientUnit }}</small>
@@ -69,6 +73,9 @@ class ServingOption {
                             <span *ngIf="!ingredient.name">{{ ingredient.description }}</span>
                         </li>
                     </ul>
+                    
+                    <button (click)="addIngredientsToShoppingList()" *ngIf="!canSelectIngredients" class="btn btn-icon-text btn-default btn-groceries waves-effect"><i class="zmdi zmdi-assignment-check"></i> Ajouter à la liste de courses</button>
+                    <!--<button (click)="addIngredientsToShoppingList()" *ngIf="canSelectIngredients" class="btn btn-icon-text btn-success"><i class="zmdi zmdi-check"></i> Valider</button>-->
                 </div>
             </div>
 
@@ -112,10 +119,14 @@ export class RecipeDetailComponent implements OnInit {
     paramsSubscriber: any;
     recipe: Recipe;
     _serving: ServingOption;
+    canSelectIngredients = false;
+    selectedIngredients = {};
 
     constructor(
         private cookingRecipeService: CookingRecipeService,
         private dialogService: DialogService,
+        private groceryService: GroceryService,
+        private notificationService: NotificationService,
         private route: ActivatedRoute,
         private recipesActions: RecipesActions,
         private recipeService: RecipeService,
@@ -167,6 +178,18 @@ export class RecipeDetailComponent implements OnInit {
                 this.cookingRecipeService.updateServings(this.recipe, serving.multiplier);
             }
         });
+    }
+
+    addIngredientsToShoppingList() {
+        this.serving$.first().subscribe((serving: ServingOption) => {
+            const items = this.recipeService.getShoppingListFromIngredients(this.recipe.ingredients, serving.multiplier);
+
+            this.groceryService.add(items)
+                .then(() => {
+                    this.notificationService.notify('Les ingrédients ont été ajoutés à la liste de course.');
+                });
+        });
+
     }
 
     getServingOptionForServing(serving: number): ServingOption {

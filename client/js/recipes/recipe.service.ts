@@ -5,6 +5,7 @@ import 'rxjs/add/operator/toPromise';
 import { NgRedux } from 'ng2-redux';
 import { IAppState } from '../redux';
 
+import { FoodItem } from '../core/interfaces';
 import { Recipe, RecipeSummary, Ingredient } from './recipe.model';
 import { RecipesActions } from '../core/redux.actions';
 
@@ -13,6 +14,20 @@ export class RecipeImportResult {
     recipe?: Recipe;
     errorMessage?: string;
 }
+
+export const ignoredGroceryItems = [
+    'sel',
+    'sel et poivre',
+    'poivre',
+    'poivre du moulin',
+    'poivre noir',
+    'poivre noir du moulin',
+    'huile d\'olive',
+    'huile',
+    'sucre',
+    'farine',
+    'eau',
+];
 
 @Injectable()
 export class RecipeService {
@@ -86,6 +101,28 @@ export class RecipeService {
 
                 return Promise.reject(result.errorMessage);
             });
+    }
+
+    getShoppingListFromIngredients(ingredients: Ingredient[], multiplier: number): FoodItem[] {
+        const items: FoodItem[] = [];
+
+        ingredients.forEach((ingredient) => {
+            const item = new Ingredient(ingredient);
+
+            // Remove quantity for mass/volume measured ingredients
+            if (item.unitType.name !== 'ITEM') {
+                item.quantity = null;
+            } else {
+                item.quantity = item.quantity * multiplier;
+            }
+
+            // Ignore basic ingredients such as water, salt, etc
+            if (ignoredGroceryItems.indexOf(item.name) < 0) {
+                items.push(item);
+            }
+        });
+
+        return items;
     }
 
     private handleError(error: any): Promise<any> {

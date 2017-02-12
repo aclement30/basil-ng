@@ -44,6 +44,28 @@ recipe-detail > .card {
           padding-bottom: 0;
         }
 
+        .checkbox {
+          width: 20px;
+          padding-right: 20px;
+          cursor: pointer;
+          margin: 2px 10px 0 0;
+          display: none;
+
+          i {
+            font-size: larger;
+            color: #adadad;
+            @extend .zmdi;
+            @extend .zmdi-square-o;
+          }
+
+          &.checked {
+            > i {
+              color: #5E5E5E;
+              @extend .zmdi-check-square;
+            }
+          }
+        }
+
         .quantity {
           font-weight: bold;
           color: $brand-primary;
@@ -67,6 +89,14 @@ recipe-detail > .card {
           display: block;
           font-size: smaller;
           color: gray;
+        }
+
+        &.selectable {
+          cursor: pointer;
+
+          .checkbox {
+            display: block;
+          }
         }
       }
     }
@@ -250,6 +280,11 @@ recipe-detail > .card {
     height: 250px;
     background-size: cover;
     background-image: url('../img/default-picture.jpg');
+  }
+
+  .btn-groceries {
+    display: block;
+    margin: 25px auto 0;
   }
 
   .pmb-block {
