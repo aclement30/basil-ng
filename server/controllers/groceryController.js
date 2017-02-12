@@ -1,4 +1,7 @@
+const async = require('async');
 const GroceryItem = require('../models/groceryItem');
+const GroceryService = require('../services/grocery');
+
 const errorHandler = require('../errorHandler');
 const requireAuth = require('../services/auth').check;
 
@@ -16,41 +19,82 @@ function init(app) {
 
         res.header('X-Page', page);
 
-        GroceryItem.count({ sDeleted: false, user: req.user._id }).exec((countError, count) => {
-            res.header('X-Total-Count', count);
+        GroceryService.getItems(req.user, { offset, limit }, (error, items) => {
+            res.header('X-Total-Count', items.count);
+            res.send(items);
+        });
+    });
 
-            GroceryItem.find({ isDeleted: false, user: req.user._id }).skip(offset).limit(limit).sort({ date: -1 }).exec((err, items) => {
-                res.send(items);
-            });
+    app.get('/api/groceries/search', requireAuth, (req, res) => {
+        GroceryService.searchItems(req.user, req.query.keywords, (error, items) => {
+            let results = items.map(item => ({ name: item }));
+
+            res.send(results);
         });
     });
 
     app.post('/api/groceries', requireAuth, (req, res) => {
-        const data = req.body;
+        const items = req.body;
 
-        // Construct a new GroceryItem object
-        const itemData = {
-            quantity: data['quantity'] ? parseInt(data['quantity']) : 1,
-            name: data['name'],
-            unit: data['unit'],
-            position: data['position'] ? parseInt(data['position']) : null,
-            recipe: data['recipe'],
-            user: req.user._id
-        };
+        if (!items || items.length === 0) {
+            errorHandler.client("Request body must contains an array of item(s)", res);
+            return;
+        }
 
-        // Create a new model instance with our object
-        const groceryItem = new GroceryItem(itemData);
+        async.waterfall([
+            (callback) => {
+                GroceryService.getItems(req.user, null, callback);
+            },
+            (existingItems, callback) => {
+                async.map(items, (data, mapCallback) => {
+                    if (!data) {
+                        errorHandler.client("Invalid item", res);
+                        return;
+                    }
 
-        groceryItem.save((error) => {
+                    const itemData = {
+                        quantity: data['quantity'] ? parseInt(data['quantity']) : null,
+                        name: data['name'],
+                        unit: data['unit'],
+                        position: data['position'] ? parseInt(data['position']) : null,
+                        recipe: data['recipe'],
+                        user: req.user._id
+                    };
+
+                    // Check if an existing item in shopping list match with new item name
+                    const matchingItem = GroceryService.findMatchingItem(itemData, existingItems);
+
+                    if (matchingItem) {
+                        // Merge the existing item with the new item
+                        const mergedItem = GroceryService.mergeItems(matchingItem, itemData);
+
+                        if (mergedItem) {
+                            mergedItem.save((err) => {
+                                mapCallback(err, mergedItem);
+                            });
+
+                            return;
+                        }
+                    }
+
+                    // Create a new model instance with our object
+                    const groceryItem = new GroceryItem(itemData);
+
+                    groceryItem.save((err) => {
+                        mapCallback(err, groceryItem);
+                    });
+                }, callback);
+            }
+        ], (error, groceryItems) => {
             if (!error) {
-                res.status(201).send(groceryItem);
+                res.status(201).send(groceryItems);
             } else {
                 errorHandler.client(error, res);
             }
         });
     });
 
-    app.put('/api/groceries/:recipeId', requireAuth, (req, res) => {
+    app.put('/api/groceries/:itemId', requireAuth, (req, res) => {
         const itemId = req.params.itemId;
         const data = req.body;
 
@@ -80,6 +124,35 @@ function init(app) {
                     errorHandler.client(error, res);
                 }
             });
+        });
+    });
+
+    app.patch('/api/groceries/:itemId/toggle', requireAuth, (req, res) => {
+        const itemId = req.params.itemId;
+
+        if (req.user) {
+            GroceryItem.findOne({ _id: itemId, user: req.user._id }, (err, item) => {
+                if (item) {
+                    GroceryItem.update({ _id: item._id }, { $set: { isCrossed: !item.isCrossed } }, (err) => {
+                        item.isCrossed = !item.isCrossed;
+                        if (!err) {
+                            res.send(item);
+                        }
+                    });
+                } else {
+                    res.sendStatus(200);
+                }
+            });
+        } else {
+            res.status(403).send();
+        }
+    });
+
+    app.delete('/api/groceries/clear', requireAuth, (req, res) => {
+        GroceryItem.update({ isDeleted: false, isCrossed: true, user: req.user._id }, { $set: { isDeleted: true } }, { multi: true }, (err) => {
+            if (!err) {
+                res.sendStatus(200);
+            }
         });
     });
 

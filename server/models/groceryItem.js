@@ -4,7 +4,7 @@ const idValidator = require('mongoose-id-validator');
 const schema = new mongoose.Schema({
     quantity: {
         type: Number,
-        default: 1
+        default: null
     },
     name: {
         type: String,
@@ -18,9 +18,9 @@ const schema = new mongoose.Schema({
         type: Number,
         default: null
     },
-    recipe: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Recipe'
+    isCrossed: {
+        type: Boolean,
+        default: false
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
