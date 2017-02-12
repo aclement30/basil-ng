@@ -8,11 +8,12 @@ import { CoreModule } from '../core/core.module';
 
 import { GroceryService } from './grocery.service';
 
+import { AddItemComponent } from './add-item.component';
 import { ShoppingListComponent } from './shopping-list.component';
 
 @NgModule({
     imports: [ CoreModule, CommonModule, FormsModule, NgbModule, RouterModule ],
-    declarations: [ ShoppingListComponent ],
+    declarations: [ AddItemComponent, ShoppingListComponent ],
     providers: [ GroceryService ],
 })
 

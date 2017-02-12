@@ -4,8 +4,10 @@ import { Headers, Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { NgRedux } from 'ng2-redux';
 import { IAppState } from '../redux';
+const ingredientParser = require('../ingredient.grammar.peg');
 
 import { GroceryItem } from './grocery-item.model';
+import { FoodItem } from '../core/interfaces';
 
 @Injectable()
 export class GroceryService {
@@ -32,11 +34,46 @@ export class GroceryService {
             .catch(this.handleError);
     }
 
-    add(item: GroceryItem): Promise<GroceryItem> {
+    add(items: FoodItem[]): Promise<GroceryItem[]> {
         return this.http
-            .post(this.apiUrl, JSON.stringify(item), { headers: this.headers })
+            .post(this.apiUrl, JSON.stringify(items), { headers: this.headers })
             .toPromise()
-            .then(res => new GroceryItem(res.json()))
+            .then(response => response.json().map((data: any) => new GroceryItem(data)))
+            .catch(this.handleError);
+    }
+
+    parse(text: string): GroceryItem {
+        let parsedIngredient: GroceryItem;
+
+        try {
+            parsedIngredient = new GroceryItem(ingredientParser.parse(text.trim()));
+        } catch(error) {
+            parsedIngredient = new GroceryItem({ name: text.trim() });
+        }
+
+        return parsedIngredient;
+    }
+
+    toggleItem(item: GroceryItem): Promise<any> {
+        const url = `${this.apiUrl}/${item._id}/toggle`;
+        return this.http
+            .patch(url, { headers: this.headers })
+            .toPromise()
+            .then(response => {
+                const updatedItem = new GroceryItem(response.json());
+
+                item.isCrossed = updatedItem.isCrossed;
+
+                return item;
+            })
+            .catch(this.handleError);
+    }
+
+    clearCrossedItems(): Promise<void> {
+        const url = `${this.apiUrl}/clear`;
+        return this.http.delete(url, { headers: this.headers })
+            .toPromise()
+            .then(() => null)
             .catch(this.handleError);
     }
 
