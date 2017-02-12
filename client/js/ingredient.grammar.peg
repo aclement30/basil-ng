@@ -239,10 +239,14 @@ imprecise_unit
     / touch { return 'touch'; }
     / box { return 'box'; }
     / tablet { return 'tablet' }
+    / bit { return 'bit' }
+    / packet { return 'packet' }
 
 box
     = 'boîtes'i
     / 'boîte'i
+    / 'boites'i
+    / 'boite'i
     / 'contenants'i
     / 'contenant'i
 
@@ -261,6 +265,14 @@ tablet
     / 'tablettes'i
     / 'tablette'i
     / 'tablet'i
+
+bit
+    = 'morceaux'i
+    / 'morceau'i
+
+packet
+    = 'sachets'i
+    / 'sachet'i
 
 pinch
     = 'pinches'i
