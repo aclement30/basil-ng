@@ -6,11 +6,13 @@ import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { Autosize } from './autosize.directive';
+import { CapitalizePipe } from './filters/capitalize.pipe';
 import { CookmodeButtonComponent } from './quick-actions/cookmode-button.component';
 import { CookmodeMenuComponent } from './cookmode-menu.component';
 import { DashboardComponent } from './dashboard.component';
 import { FooterComponent } from './footer.component';
 import { HeaderComponent } from './header.component';
+import { IngredientUnitPipe } from './filters/ingredient-unit.pipe';
 import { KitchenSidebarButtonComponent } from './quick-actions/kitchen-sidebar-button.component';
 import { KitchenSidebarComponent } from './kitchen-sidebar.component';
 import { MainComponent } from './main.component';
@@ -34,11 +36,13 @@ import { VoiceAssistantService } from './voice-assistant.service';
     declarations: [
         AppComponent,
         Autosize,
+        CapitalizePipe,
         CookmodeButtonComponent,
         CookmodeMenuComponent,
         DashboardComponent,
         FooterComponent,
         HeaderComponent,
+        IngredientUnitPipe,
         KitchenSidebarButtonComponent,
         KitchenSidebarComponent,
         MainComponent,
@@ -58,7 +62,7 @@ import { VoiceAssistantService } from './voice-assistant.service';
         TimerService,
         VoiceAssistantService,
     ],
-    exports: [ Autosize, SnapUploaderComponent, TimerComponent ]
+    exports: [ Autosize, CapitalizePipe, IngredientUnitPipe, SnapUploaderComponent, TimerComponent ]
 })
 
 export class CoreModule {

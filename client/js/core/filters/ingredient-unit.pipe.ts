@@ -10,6 +10,10 @@ export class IngredientUnitPipe implements PipeTransform {
                 return 'boîte';
             case 'tablet':
                 return 'tablette';
+            case 'bit':
+                return 'morceau';
+            case 'packet':
+                return 'sachet';
             case 'tsp':
                 return 'c. à c.';
             case 'tbsp':
