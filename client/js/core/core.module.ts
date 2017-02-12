@@ -9,7 +9,6 @@ import { Autosize } from './autosize.directive';
 import { CapitalizePipe } from './filters/capitalize.pipe';
 import { CookmodeButtonComponent } from './quick-actions/cookmode-button.component';
 import { CookmodeMenuComponent } from './cookmode-menu.component';
-import { DashboardComponent } from './dashboard.component';
 import { FooterComponent } from './footer.component';
 import { HeaderComponent } from './header.component';
 import { IngredientUnitPipe } from './filters/ingredient-unit.pipe';
@@ -39,7 +38,6 @@ import { VoiceAssistantService } from './voice-assistant.service';
         CapitalizePipe,
         CookmodeButtonComponent,
         CookmodeMenuComponent,
-        DashboardComponent,
         FooterComponent,
         HeaderComponent,
         IngredientUnitPipe,

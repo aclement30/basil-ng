@@ -15,6 +15,7 @@ import { AppComponent } from './core/app.component';
 
 import { CoreModule } from './core/core.module';
 import { GroceriesModule } from './groceries/groceries.module';
+import { HomeModule } from './home/home.module';
 import { LoginModule } from './login/login.module';
 import { RecipesModule } from './recipes/recipes.module';
 
@@ -31,6 +32,7 @@ import { RecipesActions, SessionActions, TimersActions, UIActions } from './core
         CoreModule,
         FormsModule,
         GroceriesModule,
+        HomeModule,
         HttpModule,
         LoginModule,
         NgbModule.forRoot(),

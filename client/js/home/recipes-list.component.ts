@@ -5,7 +5,7 @@ import { Recipe } from '../recipes/recipe.model';
 import { RecipeService } from '../recipes/recipe.service';
 
 @Component({
-    selector: 'dashboard',
+    selector: 'recipes-list',
     template: `
         <div class="c-header">
             <h2>Recettes</h2>
@@ -37,7 +37,7 @@ import { RecipeService } from '../recipes/recipe.service';
     `
 })
 
-export class DashboardComponent implements OnInit {
+export class RecipesListComponent implements OnInit {
 
     recipes: Recipe[];
 
