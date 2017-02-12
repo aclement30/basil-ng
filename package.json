@@ -4,7 +4,7 @@
   "description": "",
   "author": "Alexandre Clément",
   "scripts": {
-    "build": "rimraf public && webpack -p",
+    "build": "rimraf public && webpack -p && node compileParser",
     "test": "karma start",
     "test-watch": "karma start --auto-watch --no-single-run",
     "start": "node server",

@@ -6,3 +6,4 @@ npm-debug.log
 Template/*
 public/*
 tmp/*
+server/ingredient.parser.js
