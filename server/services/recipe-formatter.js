@@ -19,12 +19,15 @@ class RecipeFormatterService {
         return ingredients.map((ingredient) => {
             let description = ingredient.description;
 
-            description = description.trim();
-            description = description.replace(/([\n\s])+/g, " ");
-            description = description.replace(/’/, "'");
-            description = description.replace(/([0-9]),([0-9])/g, '$1.$2');
+            if (description) {
+                description = description.trim();
+                description = description.replace(/([\n\s])+/g, " ");
+                description = description.replace(/’/, "'");
+                description = description.replace(/([0-9]),([0-9])/g, '$1.$2');
 
-            ingredient.description = description;
+                ingredient.description = description;
+            }
+
             return ingredient;
         });
     }

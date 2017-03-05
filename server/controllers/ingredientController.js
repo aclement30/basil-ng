@@ -4,6 +4,7 @@ const config = require('../../config/server.js'),
 const async = require('async');
 
 const OCRService = require('../services/ocr.js');
+const RecipeFormatterService = require('../services/recipe-formatter');
 
 function init(app) {
     app.post('/api/ocr/ingredients', requireAuth, OCRService.getStorage().single('uploadedFile'), (req, res) => {
@@ -66,7 +67,7 @@ function init(app) {
                     });
                 }
 
-                ingredients = this.formatIngredients(ingredients);
+                ingredients = RecipeFormatterService.formatIngredients(ingredients);
 
                 res.status(200).send(ingredients);
             } else {
