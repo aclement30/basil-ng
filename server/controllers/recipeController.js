@@ -1,43 +1,46 @@
-var Recipe = require('../models/recipe'),
-    errorHandler = require('../errorHandler'),
-    requireAuth = require('../services/auth').check;
+const Recipe = require('../models/recipe');
+const RecipeService = require('../services/recipe');
+const errorHandler = require('../errorHandler');
+const requireAuth = require('../services/auth').check;
 
 function init(app) {
-    app.get('/api/recipes/:recipeId', requireAuth, function (req, res) {
-        var recipeId = req.params.recipeId;
+    app.get('/api/recipes/:recipeId', requireAuth, (req, res) => {
+        const recipeId = req.params.recipeId;
+        if (!recipeId) {
+            errorHandler.client("Missing recipe ID", res);
 
-        Recipe.findOne({_id: recipeId, user: req.user._id}).exec(function (err, object) {
-            res.send(object);
+            return;
+        }
+
+        RecipeService.getRecipe(req.user, recipeId, (error, recipe) => {
+            res.send(recipe);
         });
     });
 
-    app.get('/api/recipes', requireAuth, function (req, res) {
-        var limit = Number(req.query.limit) || 100;
+    app.get('/api/recipes', requireAuth, (req, res) => {
+        let limit = Number(req.query.limit) || 100;
         if (limit < 1 || limit > 500) {
             limit = 100;
         }
-        var page = Number(req.query.page) || 1;
+        let page = Number(req.query.page) || 1;
         if (page < 1) {
             page = 1;
         }
-        var offset = (page - 1) * limit;
+        const offset = (page - 1) * limit;
 
         res.header('X-Page', page);
 
-        Recipe.count({isDeleted: false, user: req.user._id}).exec(function(countError, count){
-            res.header('X-Total-Count', count);
-
-            Recipe.find({isDeleted: false, user: req.user._id}).skip(offset).limit(limit).sort({date: -1}).exec(function (err, objects) {
-                res.send(objects);
-            });
+        RecipeService.getRecipes(req.user, { offset, limit }, (error, recipes) => {
+            res.header('X-Total-Count', recipes.count);
+            res.send(recipes);
         });
     });
 
-    app.post('/api/recipes', requireAuth, function (req, res) {
-        var data = req.body;
+    app.post('/api/recipes', requireAuth, (req, res) => {
+        const data = req.body;
 
         // Construct a new Recipe object
-        var recipeData = {
+        const recipeData = {
             title: data['title'],
             ingredients: data['ingredients'],
             recipeInstructions: data['recipeInstructions'],
@@ -48,13 +51,10 @@ function init(app) {
             image: data['image'],
             originalUrl: data['originalUrl'],
             notes: data['notes'],
-            user: req.user._id
+            tags: data['tags'],
         };
 
-        // Create a new model instance with our object
-        var recipe = new Recipe(recipeData);
-
-        recipe.save(function (error) {
+        RecipeService.createRecipe(recipeData, req.user, (error, recipe) => {
             if (!error) {
                 res.status(201).send(recipe);
             } else {
@@ -63,9 +63,9 @@ function init(app) {
         });
     });
 
-    app.put('/api/recipes/:recipeId', requireAuth, function (req, res) {
-        var recipeId = req.params.recipeId;
-        var data = req.body;
+    app.put('/api/recipes/:recipeId', requireAuth, (req, res) => {
+        const recipeId = req.params.recipeId;
+        const data = req.body;
 
         if (!recipeId || recipeId == 'undefined') {
             errorHandler.client("Missing recipe ID", res);
@@ -73,41 +73,23 @@ function init(app) {
             return;
         }
 
-        Recipe.findOne({_id: recipeId, user: req.user._id}, function (err, recipe) {
-            if (err) {
-                errorHandler.client("Recipe not found (#" + recipeId + ')', res);
-
-                return;
+        RecipeService.updateRecipe(recipeId, data, req.user, (error, recipe) => {
+            if (!error) {
+                res.send(recipe);
+            } else {
+                errorHandler.client(error, res);
             }
-
-            recipe.title = data['title'];
-            recipe.ingredients = data['ingredients'];
-            recipe.recipeInstructions = data['recipeInstructions'];
-            recipe.cookTime = data['cookTime'] ? parseInt(data['cookTime']) : null;
-            recipe.prepTime = data['prepTime'] ? parseInt(data['prepTime']) : null;
-            recipe.totalTime = data['cookTime'] || data['prepTime'] ? parseInt(data['cookTime']) + parseInt(data['prepTime']) : null;
-            recipe.recipeYield = data['recipeYield'] ? parseInt(data['recipeYield']) : null;
-            recipe.recipeYield = data['recipeYield'] ? parseInt(data['recipeYield']) : null;
-            recipe.image = data['image'];
-            recipe.originalUrl = data['originalUrl'];
-            recipe.notes = data['notes'];
-
-            recipe.save(function (error) {
-                if (!error) {
-                    res.send(recipe);
-                } else {
-                    errorHandler.client(error, res);
-                }
-            });
         });
     });
 
-    app.delete('/api/recipes/:recipeId', requireAuth, function (req, res) {
-        var recipeId = req.params.recipeId;
+    app.delete('/api/recipes/:recipeId', requireAuth, (req, res) => {
+        const recipeId = req.params.recipeId;
 
-        Recipe.update({_id: recipeId, user: req.user._id}, {$set: {isDeleted: true}}, function (err) {
-            if (!err) {
+        RecipeService.deleteRecipe(req.user, recipeId, (error) => {
+            if (!error) {
                 res.sendStatus(200);
+            } else {
+                errorHandler.server('Recipe could not be deleted', res);
             }
         });
     });
