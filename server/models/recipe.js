@@ -81,6 +81,12 @@ const schema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    tags: {
+        type: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Tag',
+        }],
+    },
     isDeleted: { type: Boolean, default: false }
 }).plugin(idValidator);
 

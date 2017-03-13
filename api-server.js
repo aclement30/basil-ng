@@ -34,6 +34,7 @@ const importController = require('./server/controllers/importController');
 const ingredientController = require('./server/controllers/ingredientController');
 const instructionController = require('./server/controllers/instructionController');
 const recipeController = require('./server/controllers/recipeController');
+const tagController = require('./server/controllers/tagController');
 
 // -------------------------------------------------------------------------
 // SERVICES
@@ -89,6 +90,7 @@ module.exports = (PORT) => {
     ingredientController.init(app);
     instructionController.init(app);
     recipeController.init(app);
+    tagController.init(app);
 
     // -------------------------------------------------------------------------
 
