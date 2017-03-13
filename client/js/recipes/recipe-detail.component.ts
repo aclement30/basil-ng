@@ -6,13 +6,14 @@ import { select } from 'ng2-redux';
 import { CookingRecipeService } from './cooking-recipe.service';
 import { DialogService } from '../core/dialog.service';
 import { GroceryService } from '../groceries/grocery.service';
-import { ICookingRecipes } from '../redux';
+import {ICookingRecipes, ITags} from '../redux';
 import { NotificationService } from '../core/notification.service';
 import { RecipesActions } from '../core/redux.actions';
 import { RecipeService } from './recipe.service';
 import { Recipe } from './recipe.model';
 import { Timer } from '../core/timer.model';
 import { TimerService } from '../core/timer.service';
+import {Tag} from "../tags/tag.model";
 
 class ServingOption {
     label: string;
@@ -102,6 +103,10 @@ class ServingOption {
                             <hr>
                             Source : <a [href]="recipe.originalUrl" target="_blank">{{ recipe.originalUrl }}</a>
                         </div>
+                        <div class="pmbb-view clearfix" *ngIf="tags.length">
+                            <hr>
+                            <div class="tag" *ngFor="let tag of tags">{{ tag.name }}</div>
+                        </div>
                     </div>
                     
                     <div class="timers">
@@ -116,10 +121,13 @@ class ServingOption {
 export class RecipeDetailComponent implements OnInit {
     @select('cookingRecipes') cookingRecipes$: Observable<ICookingRecipes>;
     @select('timers') timers$: Observable<Timer[]>;
+    @select('tags') tags$: Observable<ITags>;
+
     recipe: Recipe;
     _serving: ServingOption;
     canSelectIngredients = false;
     selectedIngredients = {};
+    tags: Tag[];
 
     constructor(
         private cookingRecipeService: CookingRecipeService,
@@ -136,6 +144,10 @@ export class RecipeDetailComponent implements OnInit {
 
         this.recipeService.get(id).then((recipe) => {
             this.recipe = recipe;
+
+            this.tags$.first().subscribe((tags: ITags) => {
+                this.tags = recipe.tags.map(tagId => tags.list.find(tag => tag._id === tagId));
+            }).unsubscribe();
 
             this.recipesActions.setCurrentRecipe(recipe);
         });
