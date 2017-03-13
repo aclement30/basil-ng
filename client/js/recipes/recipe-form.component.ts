@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { select } from 'ng2-redux';
+import { Observable } from "rxjs";
 
 import { DialogService } from '../core/dialog.service';
 import { NotificationService } from '../core/notification.service';
 import { RecipeService } from './recipe.service';
 import { Recipe } from './recipe.model';
+import { Tag } from '../tags/tag.model';
+import { ITags } from "../redux";
 
 @Component({
     selector: 'recipe-form',
@@ -80,6 +84,16 @@ import { Recipe } from './recipe.model';
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-sm-9">
+                                <div class="form-group">
+                                    <label>Catégories</label>
+                                    <div class="fg-line">
+                                        <tag-input [(ngModel)]="recipeTags" name="tags" placeholder="Autres catégories" secondaryPlaceholder="Cakes, Entrées..." [identifyBy]="'_id'" [displayBy]="'name'" onlyFromAutocomplete="true">
+                                            <tag-input-dropdown [autocompleteItems]="tags" [identifyBy]="'_id'" [displayBy]="'name'"></tag-input-dropdown>
+                                        </tag-input>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                                  
                         <div class="row">
@@ -121,11 +135,15 @@ export class RecipeFormComponent implements OnInit {
 
     paramsSubscriber: any;
     recipe: Recipe;
+    _recipeTags: Tag[];
 
     activeTab: string = 'web-import';
     isImporting: boolean = false;
     importError: null;
     isParsed: boolean = false;
+    tags: Tag[] = [];
+
+    @select('tags') tags$: Observable<ITags>;
 
     constructor(
         private route: ActivatedRoute,
@@ -139,10 +157,18 @@ export class RecipeFormComponent implements OnInit {
             const id = params['id'];
 
             if (id) {
-                this.recipeService.get(id).then(recipe => this.recipe = recipe);
+                this.recipeService.get(id).then(recipe => {
+                    this.recipe = recipe;
+                    this.updateCachedTags(this.recipe.tags);
+                    return recipe;
+                });
             } else {
                 this.recipe = new Recipe();
             }
+        });
+
+        this.tags$.first().subscribe((tags: ITags) => {
+            this.tags = tags.list;
         });
     }
 
@@ -209,5 +235,18 @@ export class RecipeFormComponent implements OnInit {
                 this.notificationService.notify('La recette a été supprimée.');
                 this.router.navigate(['/']);
             })
+    }
+
+    private updateCachedTags(tagIds: String[]) {
+        this._recipeTags = tagIds.map(tagId => this.tags.find(tag => tag._id === tagId));
+    }
+
+    get recipeTags(): Tag[] {
+        return this._recipeTags;
+    }
+
+    set recipeTags(tags: Tag[]) {
+        this.recipe.tags = tags.map(tag => tag._id);
+        this.updateCachedTags(this.recipe.tags);
     }
 }

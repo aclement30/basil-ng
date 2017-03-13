@@ -332,19 +332,25 @@ body {
   padding: 25px 30px;
   line-height: 100%;
   font-weight: 500;
-  color: #4C4C4C;
+  color: #fff;
   margin-bottom: 10px;
-  font-size: 15px;
+  font-size: 16px;
   position: relative;
   z-index: 1;
-  background-color: #f7f7f7;
-  min-height: 65px;
+  background-color: rgba(#f7f7f7, 0.3);
+  min-height: 67px;
 
   .actions {
     position: absolute;
     top: 18px;
     right: 17px;
     z-index: 10;
+  }
+
+  @media (max-width: $screen-mobile-max) {
+    margin-bottom: 0;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
   }
 }
 

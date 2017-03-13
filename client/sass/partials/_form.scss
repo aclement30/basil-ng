@@ -480,6 +480,61 @@ html:not(.ie9) {
 
 }
 
+tag-input {
+  tag {
+    padding-top: 0 !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    margin-top: 4px !important;
+    margin-right: 10px !important;
+    height: 26px !important;
+    line-height: 28px !important;
+    letter-spacing: 0 !important;
+
+    delete-icon {
+      height: 16px !important;
+
+      svg {
+        position: relative;
+        top: -7px;
+        height: 16px !important;
+      }
+    }
+  }
+
+  .ng2-tag-input {
+    @extend .form-control;
+    height: auto;
+    border-bottom: 1px solid $input-border !important;
+
+    padding: 0 !important;
+    border-bottom-width: 1px !important;
+
+    &.ng2-tag-input--focused {
+      border-bottom: 1px solid $input-border-focus !important;
+    }
+
+    input[type=text] {
+      padding: 0 !important;
+      height: 34px !important;
+    }
+  }
+}
+
+ng2-dropdown-menu {
+  .ng2-dropdown-menu {
+    padding: 10px 0 !important;
+    margin-left: 6px;
+  }
+
+  .ng2-menu-item {
+    font-size: 16px !important;
+    padding: 10px 20px !important;
+    line-height: 1.42857 !important;
+    height: auto !important;
+  }
+}
+
 /*
  * IE 9 Placeholder
  */

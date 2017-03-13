@@ -15,7 +15,7 @@ import { IngredientUnitPipe } from './filters/ingredient-unit.pipe';
 import { KitchenSidebarButtonComponent } from './quick-actions/kitchen-sidebar-button.component';
 import { KitchenSidebarComponent } from './kitchen-sidebar.component';
 import { MainComponent } from './main.component';
-import { SidebarComponent } from './sidebar.component';
+import { NavigationMenuComponent } from './navigation-menu.component';
 import { SnapUploaderComponent } from './snap-uploader.component';
 import { TimerComponent } from './timer.component';
 import { VoiceAssistantButtonComponent } from './quick-actions/voice-assistant-button.component';
@@ -44,7 +44,7 @@ import { VoiceAssistantService } from './voice-assistant.service';
         KitchenSidebarButtonComponent,
         KitchenSidebarComponent,
         MainComponent,
-        SidebarComponent,
+        NavigationMenuComponent,
         SnapUploaderComponent,
         TimerComponent,
         VoiceAssistantButtonComponent

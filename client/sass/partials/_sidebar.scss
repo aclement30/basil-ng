@@ -1,0 +1,52 @@
+aside.sidebar {
+  left: 0;
+  top: 0;
+  padding-top: 95px;
+  width: $sidebar-left-width;
+  position: absolute;
+  height: calc(100% - 110px);
+  margin-top: 200px;
+  z-index: 50;
+
+  /*----------------------------------
+    Main menu
+  -----------------------------------*/
+  .main-menu {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+
+    a {
+      color: $sidebar-link-color;
+    }
+
+    & > li {
+      & > a {
+        cursor: pointer;
+        padding: 16px 25px;
+        display: block;
+        position: relative;
+        font-weight: 700;
+
+        &:hover,
+        &:focus {
+          background-color: #F3F3F3;
+        }
+
+        & > i {
+          position: absolute;
+          left: 35px;
+          font-size: 22px;
+          top: 2px;
+          width: 25px;
+          text-align: center;
+          padding: 13px 0;
+        }
+      }
+    }
+  }
+
+  @media (max-width: $screen-mobile-max) {
+    display: none;
+  }
+}

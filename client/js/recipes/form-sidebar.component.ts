@@ -1,3 +1,8 @@
-/**
- * Created by alexandre on 17-03-12.
- */
+import { Component } from '@angular/core';
+
+@Component({
+    selector: 'form-sidebar',
+    template: `<aside class="sidebar"></aside>`
+})
+
+export class FormSidebarComponent {}

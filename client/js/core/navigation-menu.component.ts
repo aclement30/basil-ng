@@ -9,11 +9,11 @@ import { UIActions } from './redux.actions';
 import { Timer } from './timer.model';
 
 @Component({
-    selector: 'sidebar',
+    selector: 'navigation-menu',
     template: `
-        <aside class="sidebar">
+        <aside class="menu">
             <div class="smm-header">
-                <i class="zmdi zmdi-long-arrow-left" (click)="hideSidebar()"></i>
+                <i class="zmdi zmdi-long-arrow-left" (click)="hideMenu()"></i>
             </div>
             
             <ul class="main-menu">
@@ -38,17 +38,17 @@ import { Timer } from './timer.model';
     `
 })
 
-export class SidebarComponent {
+export class NavigationMenuComponent {
     @select('timers') timers$: Observable<Timer>;
     @select('ui') ui$: Observable<IUI>;
-    @HostBinding('class.toggled') sidebarDisplayed: boolean = false;
+    @HostBinding('class.toggled') menuDisplayed: boolean = false;
 
     constructor(
         private router: Router,
         private securityService: SecurityService,
         private uiActions: UIActions) {
         this.ui$.subscribe((ui: IUI) => {
-            this.sidebarDisplayed = ui.sidebar.displayed;
+            this.menuDisplayed = ui.navigationMenu.displayed;
         });
     }
 
@@ -57,18 +57,18 @@ export class SidebarComponent {
         const targetType = target.nodeName;
 
         if (targetType === 'A') {
-            this.hideSidebar();
+            this.hideMenu();
         }
     }
 
     navigateTo(location: string[]) {
         this.router.navigate(location);
 
-        this.hideSidebar();
+        this.hideMenu();
     }
 
-    hideSidebar() {
-        this.uiActions.hideSidebar();
+    hideMenu() {
+        this.uiActions.hideNavigationMenu();
     }
 
     logout() {

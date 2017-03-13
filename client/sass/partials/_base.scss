@@ -43,7 +43,7 @@ pre {
   position: relative;
 
   @media (min-width: $screen-mobile-min) {
-    padding: 0 40px 30px $sidebar-left-width;
+    padding: 0 40px 30px;
     min-height: calc(100vh - 159px);
   }
 
@@ -53,5 +53,15 @@ pre {
 
   @media (max-width: $screen-xs-max)  {
     padding: 0 15px 30px;
+  }
+}
+
+main:not(.cookmode) {
+  #main > router-outlet + * {
+    display: block;
+
+    @media (min-width: $screen-mobile-min) {
+      padding-left: calc(#{$sidebar-left-width} - 40px);
+    }
   }
 }

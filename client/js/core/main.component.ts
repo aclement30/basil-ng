@@ -10,15 +10,13 @@ import { IUI } from '../redux';
     template: `
         <header></header>
 
-        <section id="main">
-            <sidebar></sidebar>
-            <kitchen-sidebar></kitchen-sidebar>
-            
-            <section id="content">
-                <div class="container">
-                    <router-outlet></router-outlet>
-                </div>
-            </section>
+        <navigation-menu></navigation-menu>
+        <kitchen-sidebar></kitchen-sidebar>
+
+        <router-outlet name="sidebar"></router-outlet>
+        
+        <section id="main">    
+            <router-outlet></router-outlet>
             
             <footer></footer>
         </section>

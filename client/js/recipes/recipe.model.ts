@@ -104,6 +104,7 @@ export class Recipe {
     notes: string;
     rating: number;
     originalUrl: string;
+    tags: String[];
     user: string;
     created: Date;
     isDeleted: boolean;

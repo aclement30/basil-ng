@@ -27,6 +27,7 @@
 @import "partials/grid";
 @import "partials/listview";
 @import "partials/misc";
+@import "partials/sidebar";
 @import "partials/tabs";
 @import "partials/sweetalert-overrides";
 
@@ -37,11 +38,11 @@
 @import 'components/kitchen-sidebar';
 @import 'components/login';
 @import 'components/main';
+@import 'components/navigation-menu';
 @import 'components/quick-actions';
 @import 'components/recipes-list';
 @import 'components/recipe-detail';
 @import 'components/recipe-form';
 @import 'components/shopping-list';
-@import 'components/sidebar';
 @import 'components/snap-uploader';
 @import 'components/timer';

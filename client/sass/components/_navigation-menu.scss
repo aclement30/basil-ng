@@ -1,30 +1,19 @@
-sidebar {
+navigation-menu {
   left: 0;
+  padding-top: 80px;
+  opacity: 0;
+  @include translate3d(-$sidebar-left-width - 50, 0, 0);
+  position: fixed;
+  top: 0;
+  height: 100%;
+  width: $sidebar-left-width + 30px;
+  box-shadow: $sidebar-shadow;
+  background: #fff;
 
-  @media (min-width: $screen-mobile-min) {
-    width: $sidebar-left-width;
-    position: absolute;
-    height: calc(100% - 110px);
-    top: 0;
-    margin-top: 110px;
-  }
-
-  @media (max-width: $screen-mobile-max) {
-    padding-top: 80px;
-    opacity: 0;
-    @include translate3d(-$sidebar-left-width - 50, 0, 0);
-    position: fixed;
-    top: 0;
-    height: 100%;
-    width: $sidebar-left-width + 30px;
-    box-shadow: $sidebar-shadow;
-    background: #fff;
-
-    &.toggled {
-      @include opacity(1);
-      @include translate3d(0, 0, 0);
-      z-index: 101;
-    }
+  &.toggled {
+    @include opacity(1);
+    @include translate3d(0, 0, 0);
+    z-index: 101;
   }
 
   timer {
@@ -34,7 +23,7 @@ sidebar {
   }
 }
 
-sidebar,
+navigation-menu,
 .sub-menu > a:before,
 .sub-menu > a:after {
   @include transition(all);
@@ -42,31 +31,26 @@ sidebar,
 }
 
 .smm-header {
-  display: none;
+  background: url('../img/menu-bg.jpg');
+  background-size: cover;
+  height: 80px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 300px;
+  z-index: 10;
 
-  @media (max-width: $screen-mobile-max) {
-    display: block;
-    background: url('../img/menu-bg.jpg');
-    background-size: cover;
-    height: 80px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 300px;
-    z-index: 10;
-
-    i {
-      font-size: 21px;
-      color: $brand-primary;
-      background: #fff;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      text-align: center;
-      line-height: 41px;
-      margin: 20px 30px 0;
-      cursor: pointer;
-    }
+  i {
+    font-size: 21px;
+    color: $brand-primary;
+    background: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 41px;
+    margin: 20px 30px 0;
+    cursor: pointer;
   }
 }
 
@@ -83,7 +67,7 @@ sidebar,
 /*----------------------------------
     Main menu
 -----------------------------------*/
-.main-menu {
+navigation-menu .main-menu {
   list-style: none;
   padding-left: 0;
   margin: 0;
@@ -125,7 +109,7 @@ sidebar,
   }
 }
 
-sidebar.toggled {
+navigation-menu.toggled {
   .main-menu {
     display: block;
   }

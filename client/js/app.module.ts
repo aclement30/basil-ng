@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule }    from '@angular/http';
 import { NgModule }      from '@angular/core';
 import { FormsModule }   from '@angular/forms';
+import { TagInputModule } from 'ng2-tag-input';
 
 import { NgReduxModule } from 'ng2-redux';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -37,7 +38,8 @@ import { RecipesActions, SessionActions, TimersActions, UIActions } from './core
         LoginModule,
         NgbModule.forRoot(),
         NgReduxModule,
-        RecipesModule
+        RecipesModule,
+        TagInputModule,
     ],
     declarations: [],
     providers: [
@@ -80,13 +82,17 @@ export class AppModule {
                     user: null,
                     loading: false,
                 },
+                tags: {
+                    list: [],
+                    current: null,
+                },
                 timers: [],
                 ui: {
                     cookmode: false,
                     kitchenSidebar: {
                         displayed: false,
                     },
-                    sidebar: {
+                    navigationMenu: {
                         displayed: false,
                     },
                     voiceAssistant: {

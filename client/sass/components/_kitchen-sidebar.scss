@@ -8,6 +8,7 @@ kitchen-sidebar {
     box-shadow: $sidebar-shadow;
     left: -320px;
     opacity: 0;
+    display: none;
     @include transition(all);
     @include transition-duration(250ms);
 

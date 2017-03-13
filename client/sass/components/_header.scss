@@ -98,14 +98,8 @@ header {
   }
 
   .menu-collapse {
-    @media (min-width: $screen-mobile-min) {
-      display: none;
-    }
-
-    @media (max-width: $screen-mobile-max) {
-      margin-top: 8px;
-      float: left;
-    }
+    margin-top: 8px;
+    float: left;
   }
 }
 

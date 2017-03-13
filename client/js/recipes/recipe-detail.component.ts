@@ -116,7 +116,6 @@ class ServingOption {
 export class RecipeDetailComponent implements OnInit {
     @select('cookingRecipes') cookingRecipes$: Observable<ICookingRecipes>;
     @select('timers') timers$: Observable<Timer[]>;
-    paramsSubscriber: any;
     recipe: Recipe;
     _serving: ServingOption;
     canSelectIngredients = false;
@@ -133,18 +132,13 @@ export class RecipeDetailComponent implements OnInit {
         private timerService: TimerService) {}
 
     ngOnInit(): void {
-        this.paramsSubscriber = this.route.params.subscribe(params => {
-            const id = params['id'];
-            this.recipeService.get(id).then((recipe) => {
-                this.recipe = recipe;
+        const id = this.route.snapshot.params['id'];
 
-                this.recipesActions.setCurrentRecipe(recipe);
-            });
+        this.recipeService.get(id).then((recipe) => {
+            this.recipe = recipe;
+
+            this.recipesActions.setCurrentRecipe(recipe);
         });
-    }
-
-    ngOnDestroy() {
-        this.paramsSubscriber.unsubscribe();
     }
 
     startCooking() {

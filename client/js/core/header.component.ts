@@ -71,7 +71,7 @@ export class HeaderComponent {
     ) {}
 
     toggleSidebar() {
-        this.uiActions.showSidebar();
+        this.uiActions.showNavigationMenu();
     }
 
     logout() {

@@ -153,8 +153,8 @@ export class UIActions {
 
     static SHOW_KITCHEN_SIDEBAR: string = 'SHOW_KITCHEN_SIDEBAR';
     static HIDE_KITCHEN_SIDEBAR: string = 'HIDE_KITCHEN_SIDEBAR';
-    static SHOW_SIDEBAR: string = 'SHOW_SIDEBAR';
-    static HIDE_SIDEBAR: string = 'HIDE_SIDEBAR';
+    static SHOW_NAVIGATION_MENU: string = 'SHOW_NAVIGATION_MENU';
+    static HIDE_NAVIGATION_MENU: string = 'HIDE_NAVIGATION_MENU';
     static ENABLE_COOKMODE: string = 'ENABLE_COOKMODE';
     static DISABLE_COOKMODE: string = 'DISABLE_COOKMODE';
     static ENABLE_VOICE_ASSISTANT: string = 'ENABLE_VOICE_ASSISTANT';
@@ -170,12 +170,12 @@ export class UIActions {
         this.ngRedux.dispatch({ type: UIActions.HIDE_KITCHEN_SIDEBAR });
     }
 
-    showSidebar = (): void => {
-        this.ngRedux.dispatch({ type: UIActions.SHOW_SIDEBAR });
+    showNavigationMenu = (): void => {
+        this.ngRedux.dispatch({ type: UIActions.SHOW_NAVIGATION_MENU });
     }
 
-    hideSidebar = (): void => {
-        this.ngRedux.dispatch({ type: UIActions.HIDE_SIDEBAR });
+    hideNavigationMenu = (): void => {
+        this.ngRedux.dispatch({ type: UIActions.HIDE_NAVIGATION_MENU });
     }
 
     enableCookmode = (): void => {
