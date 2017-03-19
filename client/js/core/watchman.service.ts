@@ -6,7 +6,7 @@ import { select } from "ng2-redux";
 import { IUI } from "../redux";
 import { NotificationService } from "./notification.service";
 
-const PING_INTERVAL = 1000;
+const PING_INTERVAL = 30000;
 
 @Injectable()
 export class Watchman {
