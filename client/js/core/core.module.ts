@@ -29,6 +29,7 @@ import { SecurityService } from './security.service';
 import { SpeakerService } from './speaker.service';
 import { TimerService } from './timer.service';
 import { VoiceAssistantService } from './voice-assistant.service';
+import { Watchman } from "./watchman.service";
 
 @NgModule({
     imports: [ CommonModule, FormsModule, NgbModule, RouterModule ],
@@ -59,12 +60,13 @@ import { VoiceAssistantService } from './voice-assistant.service';
         SpeakerService,
         TimerService,
         VoiceAssistantService,
+        Watchman,
     ],
     exports: [ Autosize, CapitalizePipe, IngredientUnitPipe, SnapUploaderComponent, TimerComponent ]
 })
 
 export class CoreModule {
-    constructor(private voiceAssistantService: VoiceAssistantService) {
+    constructor(private voiceAssistantService: VoiceAssistantService, private watchman: Watchman) {
 
     }
 }

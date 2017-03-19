@@ -1,6 +1,8 @@
 .alert {
-  padding-left: 30px;
-  font-size: 13px;
+  padding-left: 20px;
+  padding-top: 13px;
+  padding-bottom: 13px;
+  font-size: 14px;
 
   span {
     cursor: pointer;
@@ -39,6 +41,11 @@
   &.alert-danger {
     box-shadow: 0 0 5px fade($alert-danger-bg, 50%);
   }
+}
+
+.alert [data-notify="icon"] {
+  font-size: 18px;
+  padding-right: 10px;
 }
 
 .alert-link {

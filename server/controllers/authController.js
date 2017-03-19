@@ -43,6 +43,10 @@ function init(app, passport) {
         }
     });
 
+    app.get('/api/ping', (req, res) => {
+        res.status(200).send();
+    });
+
     // User logout
     app.post('/auth/token', authService.validateRefreshToken, authService.generateAccessToken, (req, res) => {
         res.status(201).json({

@@ -8,14 +8,12 @@ export class NotificationService {
 
     constructor() {}
 
-    notify(message: string, type?: string) {
+    notify(message: string, type?: string, options?: any) {
         if (!type) {
             type = 'inverse';
         }
 
-        $.notify({
-            message: message
-        }, {
+        const notificationOptions = Object.assign({}, {
             type,
             placement: {
                 from: 'bottom',
@@ -24,6 +22,11 @@ export class NotificationService {
             animate: {
                 enter: 'fadeInUp',
             },
-        });
+        }, options);
+
+        return $.notify({
+            message: message,
+            icon: options && options.icon ? options.icon : null,
+        }, notificationOptions);
     }
 }
