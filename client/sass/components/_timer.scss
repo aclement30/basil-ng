@@ -1,7 +1,7 @@
 timer {
   display: block;
   padding: 12px 20px;
-  border-bottom: 1px solid #ddd;
+  border-top: 1px solid #ddd;
 
   .wrapper {
     display: flex;
@@ -57,10 +57,5 @@ timer {
     margin-top: 10px;
     margin-bottom: 10px;
     height: 5px;
-  }
-
-  @media(max-width: $screen-mobile-max) {
-    border-bottom: 0;
-    border-top: 1px solid #ddd;
   }
 }

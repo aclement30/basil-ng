@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 import { select } from 'ng2-redux';
 
 import { SecurityService } from './security.service';
-import { IUI } from '../redux';
+import { RecipeSummary } from "../recipes/recipe.model";
+import { IUI, ICookingRecipes } from '../redux';
 import { UIActions } from './redux.actions';
 import { Timer } from './timer.model';
 
@@ -17,8 +18,13 @@ import { Timer } from './timer.model';
             </div>
             
             <ul class="main-menu">
-                <li>
+                <li class="sub-menu recipes toggled">
                     <a (click)="navigateTo(['/recipes'])"><i class="zmdi zmdi-apps"></i> Recettes</a>
+                    <ul class="cooking-recipes">
+                        <li *ngFor="let recipe of recipes$ | async">
+                            <a (click)="navigateTo(['/recipes/detail', recipe._id])">{{ recipe.title }}</a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
                     <a (click)="navigateTo(['/recipes/add'])"><i class="zmdi zmdi-plus"></i> Ajouter une recette</a>
@@ -39,6 +45,7 @@ import { Timer } from './timer.model';
 })
 
 export class NavigationMenuComponent {
+    @select('cookingRecipes') cookingRecipes$: Observable<ICookingRecipes>;
     @select('timers') timers$: Observable<Timer>;
     @select('ui') ui$: Observable<IUI>;
     @HostBinding('class.toggled') menuDisplayed: boolean = false;
@@ -74,6 +81,12 @@ export class NavigationMenuComponent {
     logout() {
         this.securityService.logout().subscribe(() => {
             this.router.navigate(['/login']);
+        });
+    }
+
+    get recipes$(): Observable<RecipeSummary[]> {
+        return this.cookingRecipes$.map((cookingRecipes: ICookingRecipes) => {
+            return cookingRecipes.list;
         });
     }
 }

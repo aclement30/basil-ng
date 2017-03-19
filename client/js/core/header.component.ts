@@ -31,10 +31,10 @@ import { UIActions } from './redux.actions';
             <li>
                 <button cookmode-button title="Cookmode"></button>
             </li>
-            <li>
+            <!--<li>
                 <button kitchen-sidebar-button class="larger" title="Recettes en cours"></button>
             </li>
-            <!--<li class="hm-search-trigger">-->
+            <li class="hm-search-trigger">-->
                 <!--<a class="larger">-->
                     <!--<i class="zmdi zmdi-search"></i>-->
                 <!--</a>-->

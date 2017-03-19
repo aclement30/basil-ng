@@ -16,9 +16,9 @@ import { UIActions } from './redux.actions';
             <li>
                 <button cookmode-button title="Cookmode"></button>
             </li>
-            <li>
+            <!--<li>
                 <button kitchen-sidebar-button class="larger" title="Recettes en cours"></button>
-            </li>
+            </li>-->
         </ul>
     `,
     host: {

@@ -21,6 +21,29 @@ navigation-menu {
       display: none;
     }
   }
+
+  .sub-menu.recipes {
+    a::after {
+      display: none;
+    }
+  }
+
+  .sub-menu .cooking-recipes {
+    li {
+      a {
+        display: block;
+        font-weight: normal;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #F3F3F3;
+        }
+      }
+    }
+  }
 }
 
 navigation-menu,
@@ -99,6 +122,12 @@ navigation-menu .main-menu {
         width: 25px;
         text-align: center;
         padding: 13px 0;
+      }
+    }
+
+    &.sub-menu.recipes {
+      ul {
+        display: block;
       }
     }
   }
