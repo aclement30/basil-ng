@@ -46,11 +46,7 @@ export class SpeakerService {
         this._message.rate = 1.2;
         this._message.text = text;
 
-        this._message.onend = () => {
-            setTimeout(this.dialogService.close, options.dialogCloseDelay);
-
-            this.speaking.emit(false);
-        };
+        this._message.onend = this.stopSpeaking(options);
 
         this.speaking.emit(true);
 
@@ -64,6 +60,9 @@ export class SpeakerService {
 
         this.dialogService.show(options.dialogTitle, options.dialogText ? options.dialogText : text);
         speechSynthesis.speak(this._message);
+
+        // Failsafe in the event SpeechSynthesis does not call onend callback
+        setTimeout(this.stopSpeaking(options), this.getWaitTime(text));
     }
 
     chime() {
@@ -78,5 +77,25 @@ export class SpeakerService {
         audioElement.play();
 
         return new Promise(r => setTimeout(r, 500));
+    }
+
+    stopSpeaking(options) {
+        return () => {
+            setTimeout(this.dialogService.close, options.dialogCloseDelay);
+
+            this.speaking.emit(false);
+        };
+    }
+
+    getWaitTime(text) {
+        const wpm = 180;        // Readable words per minute
+        const wordLength = 5;   // Standardized number of chars in calculable word
+        const delay = 500;     // Milliseconds before user starts reading the notification
+        const bonus = 500;     // Extra time
+
+        const words = text.length / wordLength;
+        const wordsTime = ((words / wpm) * 60) * 1000;
+
+        return delay + wordsTime + bonus;
     }
 }
