@@ -1,126 +1,122 @@
 <!doctype html>
 <html lang="fr">
 <head>
-    <base href="/">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width,initial-scale=1, user-scalable=no">
-    <meta name="fragment" content="!">
+  <base href="/">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1, user-scalable=no">
+  <meta name="fragment" content="!">
 
-    <title>Basil</title>
-    <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
-    <meta name="keywords" content="node.js, express, mongoose, mongodb, angularjs, swig">
-    <meta name="description" content="">
+  <title>Basil</title>
+  <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+  <meta name="keywords" content="node.js, express, mongoose, mongodb, angularjs, swig">
+  <meta name="description" content="">
 
-    <meta property="fb:app_id" content="APP_ID">
-    <meta property="og:title" content="Basil">
-    <meta property="og:description" content="">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="APP_URL">
-    <meta property="og:image" content="APP_LOGO">
-    <meta property="og:site_name" content="Basil">
-    <meta property="fb:admins" content="APP_ADMIN">
+  <meta property="fb:app_id" content="APP_ID">
+  <meta property="og:title" content="Basil">
+  <meta property="og:description" content="">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="APP_URL">
+  <meta property="og:image" content="APP_LOGO">
+  <meta property="og:site_name" content="Basil">
+  <meta property="fb:admins" content="APP_ADMIN">
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-    <script language="javascript">
-        window.appConfig = <%- JSON.stringify(htmlWebpackPlugin.options.appConfig) %>;
-    </script>
+  <style type="text/css">
+    html:not(.ismobile) .page-loader {
+      background-color: #2196F3;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+    html:not(.ismobile) .page-loader .preloader {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+    }
+    html.ismobile .page-loader {
+      display: none;
+    }
 
-    <!--[if lt IE 9]>
-    <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    .preloader {
+      position: relative;
+      margin: 0px auto;
+      display: inline-block;
+      width: 80px;
+    }
+    .preloader:before {
+      content: '';
+      display: block;
+      padding-top: 100%;
+    }
+    .preloader .plc-path {
+      animation: dash 1.5s ease-in-out infinite;
+      stroke: #fff;
+    }
 
-    <style type="text/css">
-        html:not(.ismobile) .page-loader {
-            background-color: #2196F3;
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-        }
-        html:not(.ismobile) .page-loader .preloader {
-            position: absolute;
-            left: 0;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            margin: auto;
-        }
-        html.ismobile .page-loader {
-            display: none;
-        }
+    .pl-circular {
+      animation: rotate 2s linear infinite;
+      height: 100%;
+      transform-origin: center center;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: auto;
+    }
 
-        .preloader {
-            position: relative;
-            margin: 0px auto;
-            display: inline-block;
-            width: 80px;
-        }
-        .preloader:before {
-            content: '';
-            display: block;
-            padding-top: 100%;
-        }
-        .preloader .plc-path {
-            animation: dash 1.5s ease-in-out infinite;
-            stroke: #fff;
-        }
+    .plc-path {
+      stroke-dasharray: 1,200;
+      stroke-dashoffset: 0;
+      stroke-linecap: round;
+      stroke-width: 2;
+      stroke-miterlimit: 10;
+      fill: none;
+    }
 
-        .pl-circular {
-            animation: rotate 2s linear infinite;
-            height: 100%;
-            transform-origin: center center;
-            width: 100%;
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            margin: auto;
-        }
+    @keyframes rotate {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    @keyframes dash {
+      0% {
+        stroke-dasharray: 1,200;
+        stroke-dashoffset: 0;
+      }
+      50% {
+        stroke-dasharray: 89,200;
+        stroke-dashoffset: -35px;
+      }
+      100% {
+        stroke-dasharray: 89,200;
+        stroke-dashoffset: -124px;
+      }
+    }
+  </style>
 
-        .plc-path {
-            stroke-dasharray: 1,200;
-            stroke-dashoffset: 0;
-            stroke-linecap: round;
-            stroke-width: 2;
-            stroke-miterlimit: 10;
-            fill: none;
-        }
-
-        @keyframes rotate {
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-        @keyframes dash {
-            0% {
-                stroke-dasharray: 1,200;
-                stroke-dashoffset: 0;
-            }
-            50% {
-                stroke-dasharray: 89,200;
-                stroke-dashoffset: -35px;
-            }
-            100% {
-                stroke-dasharray: 89,200;
-                stroke-dashoffset: -124px;
-            }
-        }
-    </style>
+  <script language="javascript">
+    window.appConfig = <%- JSON.stringify(htmlWebpackPlugin.options.appConfig) %>;
+  </script>
 </head>
 
 <body>
-    <div class="page-loader">
-        <div class="preloader pl-xl">
-            <svg class="pl-circular" viewBox="25 25 50 50">
-                <circle class="plc-path" cx="50" cy="50" r="20"></circle>
-            </svg>
-        </div>
+  <div class="page-loader">
+    <div class="preloader pl-xl">
+      <svg class="pl-circular" viewBox="25 25 50 50">
+        <circle class="plc-path" cx="50" cy="50" r="20"></circle>
+      </svg>
     </div>
+  </div>
 </body>
 </html>

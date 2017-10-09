@@ -1,0 +1,246 @@
+@import '../../styles/partials/variables';
+@import '../../styles/partials/mixins';
+
+:host {
+  left: 0;
+  padding-top: 80px;
+  opacity: 0;
+  @include translate3d(-$sidebar-left-width - 50, 0, 0);
+  position: fixed;
+  top: 0;
+  height: 100%;
+  width: $sidebar-left-width + 30px;
+  box-shadow: $sidebar-shadow;
+  background: #fff;
+
+  &.toggled {
+    @include opacity(1);
+    @include translate3d(0, 0, 0);
+    z-index: 101;
+  }
+
+  timer {
+    .description .contextual-description {
+      display: none;
+    }
+  }
+
+  .sub-menu.recipes {
+    a::after {
+      display: none;
+    }
+  }
+
+  .sub-menu .cooking-recipes {
+    li {
+      a {
+        display: block;
+        font-weight: normal;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #F3F3F3;
+        }
+      }
+    }
+  }
+}
+
+:host,
+.sub-menu > a:before,
+.sub-menu > a:after {
+  @include transition(all);
+  @include transition-duration(250ms);
+}
+
+.smm-header {
+  background: url('../../assets/img/menu-bg.jpg');
+  background-size: cover;
+  height: 80px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 300px;
+  z-index: 10;
+
+  i {
+    font-size: 21px;
+    color: $brand-primary;
+    background: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 41px;
+    margin: 20px 30px 0;
+    cursor: pointer;
+  }
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255,255,255,0.5);
+  z-index: 100;
+}
+
+/*----------------------------------
+    Main menu
+-----------------------------------*/
+:host .main-menu {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  display: none;
+
+  a {
+    color: $sidebar-link-color;
+  }
+
+  & > li {
+    & > a {
+      cursor: pointer;
+      padding: 16px 25px 16px 75px;
+      display: block;
+      position: relative;
+      font-weight: 700;
+
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: #F3F3F3;
+      }
+
+      & > i {
+        position: absolute;
+        left: 35px;
+        font-size: 22px;
+        top: 2px;
+        width: 25px;
+        text-align: center;
+        padding: 13px 0;
+      }
+    }
+
+    &.sub-menu.recipes {
+      ul {
+        display: block;
+      }
+    }
+  }
+
+  @media (max-width: $screen-mobile-max) {
+    height: 100%;
+    overflow-y: auto;
+  }
+}
+
+:host.toggled {
+  .main-menu {
+    display: block;
+  }
+}
+
+/*----------------------------------
+    Sub menu
+-----------------------------------*/
+.sub-menu {
+  & > a {
+    position: relative;
+
+    &:before, &:after {
+      position: absolute;
+      top: 14px;
+      color: #9ba1b1;
+      font-family: $font-icon-md;
+      font-size: 17px;
+      right: 25px;
+      @include opacity(0);
+    }
+
+    &:before {
+      content: "\f278";
+      @include scale(1);
+    }
+
+    &:after {
+      content: "\f273";
+      @include scale(0);
+    }
+
+    &:hover {
+      &:before, &:after {
+        @include opacity(1);
+      }
+    }
+  }
+
+  &.toggled {
+    & > a {
+      &:before,
+      &:after {
+        @include opacity(1);
+      }
+
+      &:before {
+        @include scale(0);
+      }
+
+      &:after {
+        @include scale(1);
+      }
+    }
+  }
+
+  .sub-menu > a {
+    &:before, &:after {
+      top: 5px;
+    }
+  }
+
+  ul {
+    list-style: none;
+    display: none;
+    padding: 0;
+
+    & > li {
+      & > a {
+        padding: 8px 25px 8px 75px;
+        font-weight: 500;
+        display: block;
+        font-weight: 700;
+      }
+
+      &:first-child > a {
+        padding-top: 14px;
+      }
+
+      &:last-child > a {
+        padding-bottom: 16px;
+      }
+
+      ul {
+        font-size: 12px;
+        margin: 10px 0;
+        background-color: #F3F3F3;
+      }
+    }
+  }
+
+  &.active {
+    & > ul {
+      display: block;
+    }
+  }
+}
+
+.smm-alerts > li a.active,
+.main-menu li a.active {
+  color: $brand-primary;
+}

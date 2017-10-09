@@ -1,0 +1,342 @@
+@import '../../styles/partials/variables';
+@import '../../styles/partials/mixins';
+@import '../../styles/partials/bootstrap-overrides';
+
+:host {
+  @extend .media;
+  @include user-select(none);
+
+  position: relative;
+  padding: 40px 45px;
+  margin-bottom: 20px;
+  z-index: 10;
+
+  @media (max-width: $screen-xs-max) {
+    padding: 15px 25px;
+  }
+
+  background-color: $brand-primary;
+
+  .add-recipe {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 40px;
+    background-color: rgba(255, 255, 255, 0.2);
+    margin-top: 5px;
+    margin-right: 20px;
+    color: #fff;
+    font-size: 30px;
+    vertical-align: top;
+    cursor: pointer;
+    @include transition(background-color);
+    @include transition-duration(250ms);
+
+    a {
+      color: #fff;
+
+      i {
+        position: relative;
+        left: 8px;
+      }
+    }
+
+    &.active {
+      background-color: #fff;
+      position: relative;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.8);
+
+        &:before {
+          @include animated(shake, 500ms);
+        }
+      }
+
+      &:before {
+        content: "";
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background-color: #fff;
+        position: absolute;
+        bottom: -10px;
+        left: 19px;
+      }
+    }
+
+    &:hover:not(.active) {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  .pull-right {
+    padding-left: 10px;
+  }
+}
+
+/*----------------------------------
+    Logo
+-----------------------------------*/
+.h-logo {
+  @media (min-width: $screen-xs-max) {
+    width: 223px;
+  }
+
+  a {
+    color: #fff;
+    font-weight: 700;
+    font-size: 23px;
+    display: inline-block;
+
+    small {
+      display: block;
+      font-weight: 400;
+      font-size: 18px;
+      line-height: 100%;
+      margin-top: -3px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+  }
+
+  .menu-collapse {
+    margin-top: 8px;
+    float: left;
+  }
+}
+
+
+/*----------------------------------
+    Header Search
+-----------------------------------*/
+.h-search {
+  padding: 2px 0px 2px 0;
+}
+
+.h-search,
+.hs-input,
+.hs-reset:before,
+.hs-reset:after {
+  @include transition(all);
+  @include transition-duration(300ms);
+}
+
+.hs-input {
+  border: 0;
+  height: 50px;
+  padding: 10px 20px 10px 50px;
+  border-radius: 2px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  font-size: 15px;
+
+  @include placeholder(#fff);
+
+  &.ie9-placeholder {
+    color: #fff !important;
+  }
+}
+
+.focused .hs-input {
+  background-color: #fff;
+  color: $text-color;
+
+  & + .hs-reset {
+    color: $text-color;
+
+    &:before {
+      @include scale-rotate(0, 180deg);
+    }
+
+    &:after {
+      @include scale-rotate(1, 0deg);
+    }
+  }
+
+  //@include placeholder(lighten(text-color, 5%));
+}
+
+.hs-reset {
+  left: 0;
+  font-size: 20px;
+  color: #fff;
+  top: 0;
+  position: absolute;
+  cursor: pointer;
+  width: 50px;
+  height: 100%;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  &:before,
+  &:after {
+    position: absolute;
+    left: 20px;
+    top: 16px;
+  }
+
+  &:after {
+    content: '\f2ff';
+    @include scale-rotate(0, -180deg);
+    color: $text-color;
+  }
+}
+
+@media (min-width: $screen-md-min) {
+  /* Search trigger icon for mobile */
+  .hm-search-trigger {
+    display: none !important;
+  }
+
+  .hm-add-recipe {
+    display: none !important;
+  }
+}
+
+@media (max-width: $screen-sm-max) {
+  /* Header Search */
+  .h-search {
+    padding: 40px 40px 0;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+    background-color: $m-teal;
+    z-index: 1;
+    opacity: 0;
+    @include translate3d(0, -65px, 0);
+
+    &.toggled {
+      opacity: 1;
+      @include translate3d(0, 0, 0);
+    }
+  }
+
+  .hs-input {
+    background-color: #fff;
+    color: $text-muted;
+
+    @include placeholder(#ccc);
+  }
+
+  .hs-reset:after {
+    @include scale-rotate(1, 0deg);
+    opacity: 1;
+  }
+
+  /* Header Search for IE9 */
+  .ie9 .h-search {
+    display: none;
+
+    &.toggled {
+      display: block;
+    }
+  }
+
+  /* Search trigger icon for mobile */
+  .hm-search-trigger  {
+    display: inline-block;
+  }
+
+  .add-recipe {
+    display: none !important;
+  }
+
+  .hm-add-recipe {
+    display: inline-block;
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  /* Header Search */
+  .h-search {
+    padding: 30px 15px 0;
+  }
+}
+
+
+/*----------------------------------
+    Hedaer menu
+-----------------------------------*/
+.h-menu {
+  list-style: none;
+  padding: 0;
+
+  & > li {
+    display: inline-block !important;
+    margin-top: 5px;
+    vertical-align: top;
+    min-width: 40px;
+    margin-left: 15px;
+
+    & > a,
+    & > button {
+      color: #fff;
+      display: block;
+      text-align: center;
+      z-index: 1;
+      width: 40px;
+      position: relative;
+      font-size: 28px;
+      line-height: 40px;
+      border-radius: 50%;
+      border: none;
+      padding: 0;
+      background-color: transparent;
+
+      @include transition(all);
+      @include transition-duration(400ms);
+
+      &.larger {
+        font-size: 32px;
+      }
+
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+}
+
+//.hm-icon {
+//  font-size: 48px;
+//  line-height: 40px;
+//  border-radius: 50%;
+//
+//  &:hover {
+//    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+//  }
+//}
+
+.hm-label {
+  line-height: 35px;
+  white-space: nowrap;
+  padding: 0 10px;
+  font-size: $font-size-base + 1;
+  text-transform: uppercase;
+}
+
+.hmn-counts {
+  position: absolute;
+  font-style: normal;
+  background: $m-red;
+  padding: 1px 5px;
+  border-radius: 2px;
+  right: 7px;
+  top: -3px;
+  font-size: 10px;
+  line-height: 15px;
+}
+
+.hm-alerts {
+  @media(min-width: $screen-mobile-min) {
+    display: none !important;
+  }
+}

@@ -1,0 +1,86 @@
+@import '../../styles/partials/variables';
+@import '../../styles/partials/mixins';
+
+:host {
+  .action-header {
+    @include clearfix;
+    padding: 15px 30px;
+
+    .dropdown {
+      float: left;
+    }
+
+    button {
+      font-size: 16px;
+
+      .zmdi {
+        font-size: 16px !important;
+        margin-top: 4px !important;
+      }
+    }
+  }
+
+  .card.recipe {
+    background-size: cover;
+    background-image: url('../../assets/img/default-picture.jpg');
+    height: 200px;
+    cursor: pointer;
+
+    .card-header {
+      padding: 12px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+
+      h2 {
+        font-size: em(16);
+        color: #fff;
+      }
+    }
+
+    &:hover {
+      &::before {
+        content: "";
+        display: block;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: rgba(0, 0, 0, .2);
+      }
+    }
+
+    &:active,
+    &:focus {
+      &::before {
+        content: "";
+        display: block;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: rgba(0, 0, 0, .3);
+      }
+    }
+  }
+
+  @media (max-width: $screen-mobile-min) {
+    > .card {
+      margin-bottom: 20px;
+    }
+
+    .card.recipe {
+      margin-bottom: 20px;
+    }
+  }
+
+  @media (min-width: $screen-mobile-max) {
+    .action-header {
+      display: none;
+    }
+  }
+}

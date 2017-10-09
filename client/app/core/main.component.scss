@@ -1,0 +1,60 @@
+@import '../../styles/partials/variables';
+@import '../../styles/partials/mixins';
+
+:host {
+  &::before {
+    content: '';
+    height: 265px;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: $brand-primary;
+  }
+
+  @media (max-width: $screen-xs) {
+    .c-header {
+      padding: 0;
+      padding-left: 5px;
+
+      .actions {
+        right: 0;
+      }
+    }
+  }
+
+  &.cookmode {
+    &::before {
+      height: 130px;
+    }
+
+    @media (min-width: $screen-xs) {
+      #main {
+        padding-left: 40px;
+      }
+    }
+
+    /deep/ header {
+      display: none;
+    }
+
+    /deep/ recipe-detail .c-header,
+    /deep/ recipes-list .c-header,
+    /deep/ recipe-form .c-header,
+    /deep/ shopping-list .c-header {
+      margin-top: 25px;
+
+      .actions {
+        display: none;
+      }
+    }
+
+    /deep/ sidebar {
+      display: none;
+    }
+
+    /deep/ cookmode-menu {
+      display: block;
+    }
+  }
+}
