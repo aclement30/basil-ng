@@ -60,6 +60,7 @@
     "redux-logger": "^3.0.6",
     "rxjs": "^5.4.2",
     "sharp": "^0.18.4",
+    "webpack": "^3.6.0",
     "zone.js": "^0.8.14"
   },
   "devDependencies": {
@@ -83,7 +84,6 @@
     "tslint": "~5.7.0",
     "typescript": "~2.3.3",
     "webpack-dev-server": "~2.7.1",
-    "webpack": "~3.6.0",
     "autoprefixer": "^6.5.3",
     "css-loader": "^0.28.1",
     "cssnano": "^3.10.0",
