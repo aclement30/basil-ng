@@ -8,61 +8,12 @@ import { RecipeService } from '../recipes/recipe.service';
 import { TagsActions } from "../tags/tags.actions";
 import {ITags} from "../redux";
 import {Tag} from "../tags/tag.model";
+import User from '../core/user.model';
+import { SecurityService } from '../core/security.service';
 
 @Component({
     selector: 'recipes-list',
-    template: `
-        <div class="c-header">
-            <h2>Recettes</h2>
-            <ul class="actions">
-                <li>
-                    <a [routerLink]="['/recipes/add']" class="btn btn-icon-text btn-link"><i class="zmdi zmdi-plus"></i> Ajouter</a>
-                </li>
-            </ul>
-        </div>
-        
-        <div class="card c-dark -transparent">
-            <div class="action-header">
-                <div class="dropdown" ngbDropdown>
-                    <button class="btn btn-link btn-icon-text" ngbDropdownToggle *ngIf="(selectedTag$ | async)">{{ (selectedTag$ | async)?.name }}&nbsp;&nbsp;<i class="zmdi zmdi-chevron-down"></i></button>
-                    <button class="btn btn-link btn-icon-text" ngbDropdownToggle *ngIf="!(selectedTag$ | async)">Toutes les recettes&nbsp;&nbsp;<i class="zmdi zmdi-chevron-down"></i></button>
-    
-                    <ul class="dropdown-menu dm-icon">
-                        <li>
-                            <a [routerLink]="['/recipes']" [ngClass]="{'selected': !(selectedTag$ | async)}">Toutes les recettes</a>
-                        </li>
-                        <li class="dropdown-item" *ngFor="let tag of (tags$ | async)?.list">
-                            <a [routerLink]="['/recipes/tag', tag.alias]" [ngClass]="{selected: (selectedTag$ | async)?._id === tag._id}">{{ tag.name }}</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4 col-sm-6" *ngFor="let recipe of orderedRecipes" (click)="select(recipe)">
-                <div class="card recipe" [style.background-image]="recipe.image ? 'url(' + recipe.image + ')' : null">
-                    <div class="card-header">
-                        <h2>{{ recipe.title }}</h2>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card blank-state" *ngIf="!_filteredRecipes.length">
-            <div class="card-body card-padding" *ngIf="!recipes.length">
-                <i class="blank-icon zmdi zmdi-cutlery"></i>
-                <p class="lead">La liste de recettes est vide</p>
-                
-                <button [routerLink]="['add']" class="btn btn-primary btn-icon-text waves-effect"><i class="zmdi zmdi-plus"></i> Ajouter une recette</button>
-            </div>
-            
-            <div class="card-body card-padding" *ngIf="(selectedTag$ | async)">
-                <i class="blank-icon zmdi zmdi-folder-outline"></i>
-                <p class="lead">Cette catégorie ne contient aucune recette</p>
-            </div>
-        </div>
-    `,
+    templateUrl: './recipes-list.component.html',
     styleUrls: ['recipes-list.component.scss'],
 })
 
@@ -70,7 +21,8 @@ export class RecipesListComponent implements OnInit, OnDestroy {
 
     private paramsSubscriber: Subscription;
 
-    recipes: Recipe[];
+    recipesLoaded = false;
+    recipes: Recipe[] = [];
     _filteredRecipes: Recipe[] = [];
 
     @select('tags') tags$: Observable<ITags>;
@@ -79,21 +31,10 @@ export class RecipesListComponent implements OnInit, OnDestroy {
         private recipeService: RecipeService,
         private route: ActivatedRoute,
         private router: Router,
+        private securityService: SecurityService,
         private tagsActions: TagsActions) { }
 
-    getRecipes(): void {
-        this.recipeService.query()
-            .then(recipes => {
-                this.recipes = recipes;
-                this.filterRecipes();
-            });
-    }
-
     ngOnInit(): void {
-        this.recipes = [];
-
-        this.getRecipes();
-
         this.paramsSubscriber = this.route.params.subscribe(this.onParamsChange);
     }
 
@@ -102,8 +43,19 @@ export class RecipesListComponent implements OnInit, OnDestroy {
     }
 
     onParamsChange = (params) => {
-        const alias = params.tag;
+        const userId = params.userId;
+        if (!userId) {
+          this.securityService.user$
+              .filter(Boolean)
+              .take(1)
+              .subscribe((currentUser: User) => {
+                  this.router.navigate(['recipes', 'user', currentUser.id]);
+              });
+        } else {
+          this.getRecipes(userId);
+        }
 
+        const alias = params.tag;
         if (alias) {
             this.tags$.first().subscribe(tags => {
                 const currentTag = tags.list.find(listTag => listTag.alias === alias);
@@ -146,5 +98,14 @@ export class RecipesListComponent implements OnInit, OnDestroy {
         return this.tags$.map((tags: ITags) => {
             return tags.current;
         });
+    }
+
+    private getRecipes(userId: string): void {
+      this.recipeService.query({ userId })
+          .subscribe((recipes: Recipe[]) => {
+              this.recipes = recipes;
+              this.recipesLoaded = true;
+              this.filterRecipes();
+          });
     }
 }

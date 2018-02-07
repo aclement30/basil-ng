@@ -2,22 +2,22 @@ const Recipe = require('../models/recipe');
 
 class RecipeService {
 
-    getRecipe(user, id, callback) {
-        Recipe.findOne({_id: id, user: user._id}).exec((error, recipe) => {
+    getRecipe(id, callback) {
+        Recipe.findOne({ _id: id }).exec((error, recipe) => {
             callback(error, recipe);
         });
     }
 
-    getRecipes(user, pagination, callback) {
-        const limit = pagination && pagination.limit || 100;
-        const offset = pagination && pagination.offset || 0;
+    getRecipes(params, callback) {
+        const limit = params.pagination && params.pagination.limit || 100;
+        const offset = params.pagination && params.pagination.offset || 0;
 
         let recipes = [];
 
-        Recipe.count({ isDeleted: false, user: user._id }).exec((countError, count) => {
+        Recipe.count({ isDeleted: false, user: params.user._id }).exec((countError, count) => {
             recipes.count = count;
 
-            Recipe.find({ isDeleted: false, user: user._id }).skip(offset).limit(limit).sort({ date: -1 }).exec((error, userRecipes) => {
+            Recipe.find({ isDeleted: false, user: params.user._id }).skip(offset).limit(limit).sort({ date: -1 }).exec((error, userRecipes) => {
                 recipes = recipes.concat(userRecipes);
 
                 callback(error, recipes);

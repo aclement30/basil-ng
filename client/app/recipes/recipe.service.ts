@@ -8,6 +8,7 @@ import { IAppState } from '../redux';
 import { FoodItem } from '../core/interfaces';
 import { Recipe, RecipeSummary, Ingredient } from './recipe.model';
 import { RecipesActions } from '../core/redux.actions';
+import { Observable } from 'rxjs/Observable';
 
 export class RecipeImportResult {
     url: string;
@@ -40,18 +41,15 @@ export class RecipeService {
         private recipesActions: RecipesActions,
         private ngRedux: NgRedux<IAppState>) { }
 
-    query(): Promise<Recipe[]> {
-        return this.http.get(this.apiUrl)
-            .toPromise()
-            .then(response => response.json().map((data: any) => new Recipe(data)))
-            .catch(this.handleError);
+    query(params: any): Observable<Recipe[]> {
+        return this.http.get(this.apiUrl, params)
+            .map(response => response.json().map((data: any) => new Recipe(data)));
     }
 
     get(id: string): Promise<Recipe> {
         return this.http.get(`${this.apiUrl}/${id}`)
             .toPromise()
             .then(response => new Recipe(response.json()))
-            .catch(this.handleError);
     }
 
     delete(id: string): Promise<void> {
@@ -59,7 +57,6 @@ export class RecipeService {
         return this.http.delete(url, { headers: this.headers })
             .toPromise()
             .then(() => null)
-            .catch(this.handleError);
     }
 
     save(recipe: Recipe): Promise<Recipe> {
@@ -75,7 +72,6 @@ export class RecipeService {
             .post(this.apiUrl, JSON.stringify(recipe), { headers: this.headers })
             .toPromise()
             .then(res => new Recipe(res.json()))
-            .catch(this.handleError);
     }
 
     update(recipe: Recipe): Promise<Recipe> {
@@ -84,7 +80,6 @@ export class RecipeService {
             .put(url, JSON.stringify(recipe), { headers: this.headers })
             .toPromise()
             .then(() => recipe)
-            .catch(this.handleError);
     }
 
     import(url: string): Promise<Recipe> {
@@ -123,10 +118,5 @@ export class RecipeService {
         });
 
         return items;
-    }
-
-    private handleError(error: any): Promise<any> {
-        console.error('An error occurred', error); // for demo purposes only
-        return Promise.reject(error.message || error);
     }
 }

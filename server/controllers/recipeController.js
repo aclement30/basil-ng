@@ -1,10 +1,10 @@
-const Recipe = require('../models/recipe');
 const RecipeService = require('../services/recipe');
+const UserService = require('../services/user');
 const errorHandler = require('../errorHandler');
 const requireAuth = require('../services/auth').check;
 
 function init(app) {
-    app.get('/api/recipes/:recipeId', requireAuth, (req, res) => {
+    app.get('/api/recipes/:recipeId', (req, res) => {
         const recipeId = req.params.recipeId;
         if (!recipeId) {
             errorHandler.client("Missing recipe ID", res);
@@ -12,12 +12,12 @@ function init(app) {
             return;
         }
 
-        RecipeService.getRecipe(req.user, recipeId, (error, recipe) => {
+        RecipeService.getRecipe(recipeId, (error, recipe) => {
             res.send(recipe);
         });
     });
 
-    app.get('/api/recipes', requireAuth, (req, res) => {
+    app.get('/api/recipes', (req, res) => {
         let limit = Number(req.query.limit) || 100;
         if (limit < 1 || limit > 500) {
             limit = 100;
@@ -30,7 +30,16 @@ function init(app) {
 
         res.header('X-Page', page);
 
-        RecipeService.getRecipes(req.user, { offset, limit }, (error, recipes) => {
+        const params = {
+            user: req.user,
+            pagination: { offset, limit },
+        }
+
+        if (req.query.userId) {
+            params.user = UserService.getUser(req.query.userId)
+        }
+
+        RecipeService.getRecipes(params, (error, recipes) => {
             res.header('X-Total-Count', recipes.count);
             res.send(recipes);
         });
@@ -67,7 +76,7 @@ function init(app) {
         const recipeId = req.params.recipeId;
         const data = req.body;
 
-        if (!recipeId || recipeId == 'undefined') {
+        if (!recipeId) {
             errorHandler.client("Missing recipe ID", res);
 
             return;
