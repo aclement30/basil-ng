@@ -1,0 +1,95 @@
+<div class="c-header" *ngIf="recipe">
+  <h2>{{ recipe.title }}</h2>
+
+  <ul class="actions a-alt">
+    <li>
+      <a [routerLink]="['/recipes/edit', recipe._id]" class="btn btn-icon btn-link"><i class="zmdi zmdi-edit"></i></a>
+    </li>
+  </ul>
+</div>
+
+<div class="card" *ngIf="recipe">
+  <div class="left">
+    <div class="recipe-picture" [style.background-image]="recipe.image ? 'url(' + recipe.image + ')' : null">
+      <div class="cooking-recipe" *ngIf="isCooking$ | async">
+        <i class="zmdi zmdi-fire"></i> <span class="hidden-xs">Recette </span>en cours
+      </div>
+      <button (click)="stopCooking()" class="stop-cooking" *ngIf="isCooking$ | async">
+        <i class="zmdi zmdi-assignment-check"></i> Terminer<span class="hidden-xs"> la recette</span>
+      </button>
+    </div>
+
+    <button (click)="startCooking()" *ngIf="!(isCooking$ | async)" class="btn start-cooking btn-float btn-primary btn-icon waves-effect waves-circle waves-float"><i class="zmdi zmdi-cutlery"></i></button>
+
+    <div class="pmo-block">
+      <h2>
+        <span>Ingrédients</span>
+
+        <div class="dropdown" ngbDropdown>
+          <button class="btn btn-default multiplier" ngbDropdownToggle>{{ (serving$ | async)?.label }}</button>
+
+          <ul class="dropdown-menu pull-right dm-icon">
+            <li class="dropdown-item" *ngFor="let option of servingOptions">
+              <a (click)="changeServing(option)" [ngClass]="{selected: (serving$ | async)?.multiplier === option.multiplier}">{{ option.label }}</a>
+            </li>
+          </ul>
+        </div>
+      </h2>
+
+      <ul class="ingredients">
+        <li *ngFor="let ingredient of recipe.ingredients; let i = index" (click)="selectedIngredients[i]=!selectedIngredients[i]" [ngClass]="{selectable: canSelectIngredients}">
+          <div class="checkbox" [ngClass]="{checked: selectedIngredients[i]}"><i></i></div>
+
+          <div *ngIf="ingredient.quantity" class="quantity">
+            {{ ingredient.multiply((serving$ | async)?.multiplier) }}
+            <small class="unit" *ngIf="ingredient.unit">{{ ingredient.unit | ingredientUnit }}</small>
+          </div>
+
+          <div class="ingredient-name" *ngIf="ingredient.name">
+            {{ ingredient.name | capitalize }}
+            <span class="ingredient-type" *ngIf="ingredient.type">{{ ingredient.type }}</span>
+          </div>
+          <span *ngIf="!ingredient.name">{{ ingredient.description }}</span>
+        </li>
+      </ul>
+
+      <button (click)="addIngredientsToShoppingList()" *ngIf="!canSelectIngredients" class="btn btn-icon-text btn-default btn-groceries waves-effect"><i class="zmdi zmdi-assignment-check"></i> Ajouter à la liste de courses</button>
+      <!--<button (click)="addIngredientsToShoppingList()" *ngIf="canSelectIngredients" class="btn btn-icon-text btn-success"><i class="zmdi zmdi-check"></i> Valider</button>-->
+    </div>
+  </div>
+
+  <div class="pm-body clearfix">
+    <div class="pmb-block">
+      <div class="pmbb-header">
+        <h2>Préparation</h2>
+      </div>
+
+      <div class="pmbb-body">
+        <div class="pmbb-view">
+          <ol class="instructions">
+            <li *ngFor="let step of recipe.recipeInstructions; let i = index">
+              <button class="step"><span>{{ (i + 1) }}</span><i class="zmdi zmdi-hourglass-alt"></i></button>
+              {{ step }}
+            </li>
+          </ol>
+        </div>
+        <div class="pmbb-view" *ngIf="recipe.notes">
+          <hr>
+          {{ recipe.notes }}
+        </div>
+        <div class="pmbb-view" *ngIf="recipe.originalUrl">
+          <hr>
+          Source : <a [href]="recipe.originalUrl" target="_blank">{{ recipe.originalUrl }}</a>
+        </div>
+        <div class="pmbb-view clearfix" *ngIf="tags.length">
+          <hr>
+          <div class="tag" *ngFor="let tag of tags">{{ tag.name }}</div>
+        </div>
+      </div>
+
+      <div class="timers">
+        <timer *ngFor="let timer of activeTimers$ | async" [timer]="timer"></timer>
+      </div>
+    </div>
+  </div>
+</div>
