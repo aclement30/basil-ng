@@ -8,7 +8,7 @@ const autoprefixer = require('autoprefixer');
 const postcssUrl = require('postcss-url');
 const cssnano = require('cssnano');
 
-const { NoEmitOnErrorsPlugin, SourceMapDevToolPlugin, NamedModulesPlugin } = require('webpack');
+const { DefinePlugin, NoEmitOnErrorsPlugin, SourceMapDevToolPlugin, NamedModulesPlugin } = require('webpack');
 const { NamedLazyChunksWebpackPlugin, BaseHrefWebpackPlugin } = require('@angular/cli/plugins/webpack');
 const { CommonsChunkPlugin } = require('webpack').optimize;
 const { AotPlugin } = require('@ngtools/webpack');
@@ -105,11 +105,8 @@ module.exports = {
         ]
       },
       {
-        // HTML LOADER
-        // Reference: https://github.com/webpack/raw-loader
-        // Allow loading html through js
         "test": /\.html$/,
-        "loader": 'ejs-compiled-loader'
+        "loader": "raw-loader"
       },
       {
         "test": /\.(eot|svg|cur)$/,
@@ -356,6 +353,7 @@ module.exports = {
     ]
   },
   "plugins": [
+    new DefinePlugin(appConfig),
     new NoEmitOnErrorsPlugin(),
     new CopyWebpackPlugin([
       {
@@ -413,9 +411,6 @@ module.exports = {
             return 0;
         }
       },
-      // Custom config
-      "appConfig": appConfig
-
     }),
     new BaseHrefWebpackPlugin({}),
     new CommonsChunkPlugin({
