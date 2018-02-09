@@ -11,7 +11,7 @@ const cssnano = require('cssnano');
 const { DefinePlugin, NoEmitOnErrorsPlugin, SourceMapDevToolPlugin, NamedModulesPlugin } = require('webpack');
 const { NamedLazyChunksWebpackPlugin, BaseHrefWebpackPlugin } = require('@angular/cli/plugins/webpack');
 const { CommonsChunkPlugin } = require('webpack').optimize;
-const { AotPlugin } = require('@ngtools/webpack');
+const { AngularCompilerPlugin } = require('@ngtools/webpack');
 
 const nodeModules = path.join(process.cwd(), 'node_modules');
 const realNodeModules = fs.realpathSync(nodeModules);
@@ -166,65 +166,6 @@ module.exports = {
               "sourceMap": false,
               "precision": 8,
               "includePaths": []
-            }
-          }
-        ]
-      },
-      {
-        "exclude": [
-          path.join(process.cwd(), "client/styles/app.scss")
-        ],
-        "test": /\.less$/,
-        "use": [
-          "exports-loader?module.exports.toString()",
-          {
-            "loader": "css-loader",
-            "options": {
-              "sourceMap": false,
-              "importLoaders": 1
-            }
-          },
-          {
-            "loader": "postcss-loader",
-            "options": {
-              "ident": "postcss",
-              "plugins": postcssPlugins
-            }
-          },
-          {
-            "loader": "less-loader",
-            "options": {
-              "sourceMap": false
-            }
-          }
-        ]
-      },
-      {
-        "exclude": [
-          path.join(process.cwd(), "client/styles/app.scss")
-        ],
-        "test": /\.styl$/,
-        "use": [
-          "exports-loader?module.exports.toString()",
-          {
-            "loader": "css-loader",
-            "options": {
-              "sourceMap": false,
-              "importLoaders": 1
-            }
-          },
-          {
-            "loader": "postcss-loader",
-            "options": {
-              "ident": "postcss",
-              "plugins": postcssPlugins
-            }
-          },
-          {
-            "loader": "stylus-loader",
-            "options": {
-              "sourceMap": false,
-              "paths": []
             }
           }
         ]
@@ -447,16 +388,17 @@ module.exports = {
       "async": "common"
     }),
     new NamedModulesPlugin({}),
-    new AotPlugin({
+    new AngularCompilerPlugin({
       "mainPath": "main.ts",
-      "replaceExport": false,
+      "platform": 0,
       "hostReplacementPaths": {
         "environments/environment.ts": "environments/environment.ts"
       },
-      "exclude": [],
+      "sourceMap": true,
       "tsConfigPath": "client/tsconfig.app.json",
-      "skipCodeGeneration": true
-    })
+      "skipCodeGeneration": true,
+      "compilerOptions": {}
+    }),
   ],
   "node": {
     "fs": "empty",
