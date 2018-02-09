@@ -5,6 +5,7 @@ const expressSession = require('express-session');
 const mongoose = require('mongoose');
 const mongoDBStore = require('connect-mongodb-session')(expressSession);
 const passport = require('passport');
+const compression = require('compression');
 
 // -------------------------------------------------------------------------
 // CONFIG
@@ -75,8 +76,11 @@ AuthService.setup(passport);
 // Disable etag headers on responses
 app.disable('etag');
 
-// Set /public as our static content dir
-app.use(express.static(__dirname + '/public'));
+// Serve compressed (.gz) files
+app.use(compression());
+
+// Set /dist as our static content dir
+app.use(express.static(__dirname + '/dist'));
 
 app.use(bodyParser.urlencoded({'extended': 'true'}));           // parse application/x-www-form-urlencoded
 app.use(bodyParser.json());
@@ -120,7 +124,7 @@ async.series([
 
     if (PROD) {
         app.get('*', function(req, res) {
-            res.sendFile('public/index.html', { root: __dirname });
+            res.sendFile('dist/index.html', { root: __dirname });
         });
     }
 });

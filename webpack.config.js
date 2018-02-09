@@ -12,6 +12,7 @@ const { DefinePlugin, NoEmitOnErrorsPlugin, SourceMapDevToolPlugin, NamedModules
 const { NamedLazyChunksWebpackPlugin, BaseHrefWebpackPlugin } = require('@angular/cli/plugins/webpack');
 const { CommonsChunkPlugin } = require('webpack').optimize;
 const { AngularCompilerPlugin } = require('@ngtools/webpack');
+const CompressionPlugin = require("compression-webpack-plugin");
 
 const nodeModules = path.join(process.cwd(), 'node_modules');
 const realNodeModules = fs.realpathSync(nodeModules);
@@ -336,6 +337,7 @@ module.exports = {
       "skipCodeGeneration": true,
       "compilerOptions": {}
     }),
+    new CompressionPlugin({}),
   ],
   "node": {
     "fs": "empty",
