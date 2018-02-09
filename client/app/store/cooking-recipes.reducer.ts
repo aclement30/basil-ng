@@ -1,6 +1,6 @@
 import * as moment from 'moment';
 
-import { RecipeSummary } from '../recipes/recipe.model';
+import { RecipeSummary } from '../models/recipe.model';
 import { AppState } from './index';
 import { ActionWithRecipe, CookingRecipesActions } from './cooking-recipes.actions';
 

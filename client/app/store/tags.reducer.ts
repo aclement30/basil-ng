@@ -1,6 +1,6 @@
 import { ActionWithPayload, AppState } from './index';
 import { TagsActions } from './tags.actions';
-import { Tag } from '../tags/tag.model';
+import { Tag } from '../models/tag.model';
 
 export interface TagsState {
   list: Tag[];

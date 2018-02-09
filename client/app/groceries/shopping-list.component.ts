@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { GroceryItem } from './grocery-item.model';
+import { GroceryItem } from '../models/grocery-item.model';
 import { GroceryService } from './grocery.service';
 
 @Component({

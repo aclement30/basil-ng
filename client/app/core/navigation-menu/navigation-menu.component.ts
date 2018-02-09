@@ -5,8 +5,8 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { SecurityService } from '../security.service';
-import { RecipeSummary } from '../../recipes/recipe.model';
-import { Timer } from '../timer.model';
+import { RecipeSummary } from '../../models/recipe.model';
+import { Timer } from '../../models/timer.model';
 import { UIActions } from '../../store/ui.actions';
 import { AppState } from '../../store/index';
 import { getTimers } from '../../store/timers.reducer';

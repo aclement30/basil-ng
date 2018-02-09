@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 
-import { RecipeSummary } from '../recipes/recipe.model';
+import { RecipeSummary } from '../models/recipe.model';
 import { AppState } from '../store/index';
 import { getCookingRecipes } from '../store/cooking-recipes.reducer';
 import { getKitchenSidebar, IKitchenSidebar } from '../store/ui.reducer';

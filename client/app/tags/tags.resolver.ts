@@ -2,7 +2,7 @@ import { Injectable  } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
-import { Tag } from './tag.model';
+import { Tag } from '../models/tag.model';
 import { TagService } from './tag.service';
 import { TagsActions } from '../store/tags.actions';
 

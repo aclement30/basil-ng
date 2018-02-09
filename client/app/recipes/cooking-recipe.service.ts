@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
-import { Recipe, RecipeSummary } from './recipe.model';
+import { Recipe, RecipeSummary } from '../models/recipe.model';
 import { CookingRecipesActions } from '../store/cooking-recipes.actions';
 
 @Injectable()

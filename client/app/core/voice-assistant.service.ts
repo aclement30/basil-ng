@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { APP_CONFIG } from '../app.config';
 import { Ingredient as IngredientCommands, Recipe as RecipeCommands, Steps as StepsCommands, Timer as TimerCommands } from './command.parser';
-import { Recipe } from '../recipes/recipe.model';
+import { Recipe } from '../models/recipe.model';
 import { SpeakerService } from './speaker.service';
 import { TimerService } from './timer.service';
 import { getCurrentCookingRecipe } from '../store/cooking-recipes.reducer';

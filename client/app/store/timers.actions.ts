@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { ActionWithPayload, AppState } from './index';
-import { Timer } from '../core/timer.model';
+import { Timer } from '../models/timer.model';
 
 class SetTimers implements ActionWithPayload {
   readonly type = TimersActions.SET_TIMERS;

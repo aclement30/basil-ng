@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 
-import { Tag } from '../tags/tag.model';
+import { Tag } from '../models/tag.model';
 import { AppState } from '../store/index';
 import { getCurrentTag, getTags } from '../store/tags.reducer';
 

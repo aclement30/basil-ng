@@ -20,7 +20,7 @@ import { RecipesModule } from './recipes/recipes.module';
 
 import { AppRoutingModule } from './app.routing';
 
-import { Timer } from './core/timer.model';
+import { Timer } from './models/timer.model';
 import { TimerService } from './core/timer.service';
 import { AppState, reducers } from './store/index';
 import { CookingRecipesEffects } from './store/cooking-recipes.effects';

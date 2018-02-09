@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 
 import { GroceryService } from './grocery.service';
-import { GroceryItem } from './grocery-item.model';
+import { GroceryItem } from '../models/grocery-item.model';
 
 @Component({
     selector: 'add-item',

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
 import { FoodItem } from '../core/interfaces';
-import { Recipe, Ingredient } from './recipe.model';
+import { Recipe, Ingredient } from '../models/recipe.model';
 
 export class RecipeImportResult {
     url: string;

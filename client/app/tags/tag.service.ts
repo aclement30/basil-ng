@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
-import { Tag } from './tag.model';
+import { Tag } from '../models/tag.model';
 
 @Injectable()
 export class TagService {

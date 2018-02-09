@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Action, Store } from '@ngrx/store';
 
 import { AppState } from './index';
-import { RecipeSummary } from '../recipes/recipe.model';
+import { RecipeSummary } from '../models/recipe.model';
 
 export interface ActionWithRecipe extends Action {
   recipes?: RecipeSummary[];

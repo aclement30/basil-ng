@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import * as ingredientParser from '../ingredient.grammar';
-import { GroceryItem } from './grocery-item.model';
+import { GroceryItem } from '../models/grocery-item.model';
 import { FoodItem } from '../core/interfaces';
 import { Observable } from 'rxjs/Observable';
 

@@ -1,4 +1,4 @@
-import { Timer } from '../core/timer.model';
+import { Timer } from '../models/timer.model';
 import { ActionWithPayload, AppState } from './index';
 import { TimersActions } from './timers.actions';
 

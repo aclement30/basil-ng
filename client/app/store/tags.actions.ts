@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Action, Store } from '@ngrx/store';
 
 import { ActionWithPayload, AppState } from './index';
-import { Tag } from '../tags/tag.model';
+import { Tag } from '../models/tag.model';
 
 class SetTags implements ActionWithPayload {
   readonly type = TagsActions.SET_TAGS;

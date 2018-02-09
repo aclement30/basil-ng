@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import { Recipe } from '../recipes/recipe.model';
-import { Timer, TimerData } from './timer.model';
+import { Recipe } from '../models/recipe.model';
+import { Timer, TimerData } from '../models/timer.model';
 import { SpeakerService } from './speaker.service';
 import { TimersActions } from '../store/timers.actions';
 import { getCurrentCookingRecipe } from '../store/cooking-recipes.reducer';
