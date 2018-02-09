@@ -1,14 +1,9 @@
-import { Injectable }    from '@angular/core';
-import { Headers, Http } from '@angular/http';
-
-import 'rxjs/add/operator/toPromise';
-import { NgRedux } from 'ng2-redux';
-import { IAppState } from '../redux';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
 
 import { FoodItem } from '../core/interfaces';
-import { Recipe, RecipeSummary, Ingredient } from './recipe.model';
-import { RecipesActions } from '../core/redux.actions';
-import { Observable } from 'rxjs/Observable';
+import { Recipe, Ingredient } from './recipe.model';
 
 export class RecipeImportResult {
     url: string;
@@ -33,33 +28,27 @@ export const ignoredGroceryItems = [
 @Injectable()
 export class RecipeService {
 
-    private headers = new Headers({'Content-Type': 'application/json'});
+    private headers = {'Content-Type': 'application/json'};
     private apiUrl = 'api/recipes';
 
-    constructor(
-        private http: Http,
-        private recipesActions: RecipesActions,
-        private ngRedux: NgRedux<IAppState>) { }
+    constructor(private http: HttpClient) {}
 
     query(params: any): Observable<Recipe[]> {
         return this.http.get(this.apiUrl, params)
-            .map(response => response.json().map((data: any) => new Recipe(data)));
+            .map(response => (response as any).map((data: any) => new Recipe(data)));
     }
 
-    get(id: string): Promise<Recipe> {
+    get(id: string): Observable<Recipe> {
         return this.http.get(`${this.apiUrl}/${id}`)
-            .toPromise()
-            .then(response => new Recipe(response.json()))
+            .map(response => new Recipe(response));
     }
 
-    delete(id: string): Promise<void> {
+    delete(id: string): Observable<any> {
         const url = `${this.apiUrl}/${id}`;
-        return this.http.delete(url, { headers: this.headers })
-            .toPromise()
-            .then(() => null)
+        return this.http.delete(url, { headers: this.headers });
     }
 
-    save(recipe: Recipe): Promise<Recipe> {
+    save(recipe: Recipe): Observable<Recipe> {
         if (recipe._id) {
             return this.update(recipe);
         }
@@ -67,29 +56,24 @@ export class RecipeService {
         return this.create(recipe);
     }
 
-    create(recipe: Recipe): Promise<Recipe> {
+    create(recipe: Recipe): Observable<Recipe> {
         return this.http
             .post(this.apiUrl, JSON.stringify(recipe), { headers: this.headers })
-            .toPromise()
-            .then(res => new Recipe(res.json()))
+            .map(response => new Recipe(response));
     }
 
-    update(recipe: Recipe): Promise<Recipe> {
+    update(recipe: Recipe): Observable<Recipe> {
         const url = `${this.apiUrl}/${recipe._id}`;
         return this.http
             .put(url, JSON.stringify(recipe), { headers: this.headers })
-            .toPromise()
-            .then(() => recipe)
+            .map(() => recipe);
     }
 
-    import(url: string): Promise<Recipe> {
+    import(url: string): Observable<Recipe> {
         return this.http
-            .post(`${this.apiUrl}/import`, JSON.stringify({ url }), { headers: this.headers })
-            .toPromise()
-            .then((response) => {
-                const result: RecipeImportResult = response.json();
-
-                return new Recipe(result.recipe);
+            .post<RecipeImportResult>(`${this.apiUrl}/import`, JSON.stringify({ url }), { headers: this.headers })
+            .map((response: RecipeImportResult) => {
+                return new Recipe(response.recipe);
             })
             .catch((response) => {
                 const result: RecipeImportResult = response.json();

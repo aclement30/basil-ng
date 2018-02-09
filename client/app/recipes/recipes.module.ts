@@ -11,7 +11,7 @@ import { RecipeService } from './recipe.service';
 
 import { FormSidebarComponent } from "./form-sidebar.component";
 import { RecipeDetailComponent, CanDeactivateRecipeDetail } from './recipe-detail.component';
-import { RecipeFormComponent } from './recipe-form.component';
+import { RecipeFormComponent } from './recipe-form/recipe-form.component';
 import { RecipesActions } from '../core/redux.actions';
 
 @NgModule({

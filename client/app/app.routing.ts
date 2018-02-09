@@ -8,7 +8,7 @@ import { LoginComponent } from './login/login.component';
 import { MainComponent } from './core/main.component';
 import { FormSidebarComponent } from './recipes/form-sidebar.component';
 import { RecipeDetailComponent, CanDeactivateRecipeDetail } from './recipes/recipe-detail.component';
-import { RecipeFormComponent } from './recipes/recipe-form.component';
+import { RecipeFormComponent } from './recipes/recipe-form/recipe-form.component';
 import { ShoppingListComponent } from './groceries/shopping-list.component';
 import { Gatekeeper } from './core/gatekeeper.service';
 import { TagsResolver } from './tags/tags.resolver';

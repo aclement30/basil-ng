@@ -1,74 +1,59 @@
-import { Injectable }    from '@angular/core';
-import { Headers, Http } from '@angular/http';
-
-import 'rxjs/add/operator/toPromise';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { NgRedux } from 'ng2-redux';
 import { IAppState } from '../redux';
 
-import { Recipe, RecipeSummary, Ingredient } from './recipe.model';
+import { Recipe, RecipeSummary } from './recipe.model';
 import { RecipesActions } from '../core/redux.actions';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class CookingRecipeService {
 
-    private headers = new Headers({'Content-Type': 'application/json'});
+    private queryOptions = { headers: { 'Content-Type': 'application/json' }, responseType: 'text' as 'text' };
     private apiUrl = 'api/cookingRecipes';
 
     constructor(
-        private http: Http,
+        private http: HttpClient,
         private recipesActions: RecipesActions,
         private ngRedux: NgRedux<IAppState>) { }
 
-    query(): Promise<RecipeSummary[]> {
-        return this.http.get(this.apiUrl)
-            .toPromise()
-            .then(response => {
-                const cookingRecipes = response.json();
+    query(): Observable<RecipeSummary[]> {
+        return this.http.get<RecipeSummary[]>(this.apiUrl)
+            .do((cookingRecipes: RecipeSummary[]) => {
                 this.recipesActions.setCookingRecipes(cookingRecipes);
                 return cookingRecipes;
-            })
-            .catch(this.handleError);
+            });
     }
 
-    startCooking(recipe: Recipe, multiplier: number): Promise<any> {
+    startCooking(recipe: Recipe, multiplier: number): Observable<any> {
         const url = `${this.apiUrl}/${recipe._id}/startCooking`;
         return this.http
-            .patch(url, { headers: this.headers, multiplier })
-            .toPromise()
-            .then(() => {
+            .patch(url, { multiplier }, this.queryOptions)
+            .do(() => {
                 this.recipesActions.startCooking(recipe, multiplier);
-            })
-            .catch(this.handleError);
+            });
     }
 
-    stopCooking(recipe: Recipe): Promise<any> {
+    stopCooking(recipe: Recipe): Observable<any> {
         const url = `${this.apiUrl}/${recipe._id}/stopCooking`;
         return this.http
-            .patch(url, { headers: this.headers })
-            .toPromise()
-            .then(() => {
+            .patch(url, null, this.queryOptions)
+            .do(() => {
                 this.recipesActions.stopCooking(recipe);
-            })
-            .catch(this.handleError);
+            });
     }
 
-    updateServings(recipe: Recipe, multiplier: number): Promise<any> {
+    updateServings(recipe: Recipe, multiplier: number): Observable<any> {
         const url = `${this.apiUrl}/${recipe._id}/servings`;
         return this.http
-            .patch(url, { headers: this.headers, multiplier })
-            .toPromise()
-            .then(() => {
+            .patch(url, { multiplier }, this.queryOptions)
+            .do(() => {
                 this.recipesActions.updateServings(recipe, multiplier);
-            })
-            .catch(this.handleError);
+            });
     }
 
     findCookingRecipe(id: string): RecipeSummary {
         return this.ngRedux.getState().cookingRecipes.list.find(recipe => (recipe._id === id));
-    }
-
-    private handleError(error: any): Promise<any> {
-        console.error('An error occurred', error); // for demo purposes only
-        return Promise.reject(error.message || error);
     }
 }

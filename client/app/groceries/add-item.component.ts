@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 
 import { GroceryService } from './grocery.service';
-import { NotificationService } from '../core/notification.service';
-import {GroceryItem} from "./grocery-item.model";
+import { GroceryItem } from './grocery-item.model';
 
 @Component({
     selector: 'add-item',
@@ -19,10 +18,7 @@ export class AddItemComponent {
 
     public newItemText: string;
 
-    constructor(
-        private groceryService: GroceryService,
-        private notificationService: NotificationService) {
-    }
+    constructor(private groceryService: GroceryService) {}
 
     onKeyUp = ($event: KeyboardEvent) => {
         if ($event.which === 13) {
@@ -35,7 +31,7 @@ export class AddItemComponent {
         const item = this.groceryService.parse(this.newItemText);
 
         this.groceryService.add([item])
-            .then((items) => {
+            .subscribe((items) => {
                 this.itemAdded.emit(items[0]);
             });
 

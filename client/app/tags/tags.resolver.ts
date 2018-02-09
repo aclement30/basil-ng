@@ -16,7 +16,7 @@ export class TagsResolver implements Resolve<Tag[]> {
         state: RouterStateSnapshot
     ): Observable<any>|Promise<any>|any {
         return this.tagService.query()
-            .then(tags => {
+            .subscribe(tags => {
                 this.tagsActions.setTags(tags);
 
                 return tags;

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Http, Response } from '@angular/http';
-import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
 import { select } from 'ng2-redux';
 
 import { ISession } from '../redux';
@@ -11,11 +11,11 @@ import User from './user.model';
 @Injectable()
 export class SecurityService {
     @select('session') session$: Observable<ISession>;
-    public isAuthenticated: boolean = false;
-    private isLoading: boolean = false;
+    public isAuthenticated = false;
+    private isLoading = false;
     public user$: Observable<User>;
 
-    constructor(private http: Http, private router: Router, private sessionActions: SessionActions) {
+    constructor(private http: HttpClient, private router: Router, private sessionActions: SessionActions) {
         this.session$.subscribe(this.onSessionChange);
     }
 
@@ -23,20 +23,18 @@ export class SecurityService {
         this.sessionActions.startLoading();
 
         this.session$.first().subscribe((session: ISession) => {
-            this.user$ = this.http.get('/api/user')
-                .map((response: Response) => {
-                    const user = response.json();
+            this.user$ = this.http.get<User>('/api/user')
+                .do((user: User) => {
                     this.sessionActions.setUser(user);
                     this.sessionActions.stopLoading();
-                    return user;
                 })
                 // Not logged in
-                .catch((error: Response | any) => {
+                .catch((error: any) => {
                     // If stored user has a refresh token, attempt to get a new access token
                     if (session.user && session.user.refreshToken) {
                         return this.refreshToken(session.user);
                     } else {
-                        return this.onAuthenticationError(error);
+                        return this.onAuthenticationError();
                     }
                 });
         });
@@ -48,8 +46,8 @@ export class SecurityService {
         this.sessionActions.startLoading();
 
         this.user$ = this.http.post('/auth/token', { token: user.refreshToken })
-            .map((response: Response) => {
-                user.accessToken = response.json().accessToken;
+            .map((response: any) => {
+                user.accessToken = response.accessToken;
                 this.sessionActions.setUser(user);
                 this.sessionActions.stopLoading();
                 return user;
@@ -60,7 +58,7 @@ export class SecurityService {
         return this.user$;
     }
 
-    onAuthenticationError(error: Response | any) {
+    onAuthenticationError() {
         this.sessionActions.resetUser();
         this.sessionActions.stopLoading();
         return Observable.throw('Unable to authenticate user');
@@ -68,7 +66,7 @@ export class SecurityService {
 
     logout() {
         return this.http.get('/auth/logout')
-            .map((response: Response) => {
+            .map(() => {
                 this.sessionActions.resetUser();
             });
     }

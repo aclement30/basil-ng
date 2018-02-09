@@ -1,6 +1,6 @@
 import { Component, OnInit, Injectable } from '@angular/core';
 import { ActivatedRoute, CanDeactivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { select } from 'ng2-redux';
 
 import { CookingRecipeService } from './cooking-recipe.service';
@@ -13,7 +13,7 @@ import { RecipeService } from './recipe.service';
 import { Recipe } from './recipe.model';
 import { Timer } from '../core/timer.model';
 import { TimerService } from '../core/timer.service';
-import {Tag} from "../tags/tag.model";
+import { Tag } from '../tags/tag.model';
 
 class ServingOption {
     label: string;
@@ -52,7 +52,8 @@ export class RecipeDetailComponent implements OnInit {
         this.paramsSubscriber = this.route.params.subscribe(params => {
             const id = params['id'];
 
-            this.recipeService.get(id).then((recipe) => {
+            this.recipeService.get(id)
+              .subscribe((recipe) => {
                 this.recipe = recipe;
                 this.selectedIngredients = {};
 
@@ -61,13 +62,13 @@ export class RecipeDetailComponent implements OnInit {
                 }).unsubscribe();
 
                 this.recipesActions.setCurrentRecipe(recipe);
-            });
+              });
         });
     }
 
     startCooking() {
         this.serving$.first().subscribe((serving: ServingOption) => {
-            this.cookingRecipeService.startCooking(this.recipe, serving.multiplier);
+            this.cookingRecipeService.startCooking(this.recipe, serving.multiplier).subscribe();
         });
     }
 
@@ -79,13 +80,13 @@ export class RecipeDetailComponent implements OnInit {
                     .then(() => {
                         activeTimers.forEach(timer => {
                             this.timerService.remove(timer);
-                        })
+                        });
                     }, () => {
-                    })
+                    });
             }
         });
 
-        this.cookingRecipeService.stopCooking(this.recipe);
+        this.cookingRecipeService.stopCooking(this.recipe).subscribe();
     }
 
     changeServing(serving: ServingOption) {
@@ -93,7 +94,7 @@ export class RecipeDetailComponent implements OnInit {
 
         this.isCooking$.first().subscribe(isCooking => {
             if (isCooking) {
-                this.cookingRecipeService.updateServings(this.recipe, serving.multiplier);
+                this.cookingRecipeService.updateServings(this.recipe, serving.multiplier).subscribe();
             }
         });
     }
@@ -103,7 +104,7 @@ export class RecipeDetailComponent implements OnInit {
             const items = this.recipeService.getShoppingListFromIngredients(this.recipe.ingredients, serving.multiplier);
 
             this.groceryService.add(items)
-                .then(() => {
+                .subscribe(() => {
                     this.notificationService.notify('Les ingrédients ont été ajoutés à la liste de course.');
                 });
         });

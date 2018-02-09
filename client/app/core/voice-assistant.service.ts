@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
 import { select } from 'ng2-redux';
 
 import { APP_CONFIG } from '../app.config';
@@ -11,7 +11,7 @@ import { RecipesActions, UIActions } from './redux.actions';
 import { SpeakerService } from './speaker.service';
 import { TimerService } from './timer.service';
 
-const BOT_HEADERS = new Headers({ 'Authorization': `Bearer ${APP_CONFIG.bot.accessToken}` });
+const BOT_HEADERS = { headers: { 'Authorization': `Bearer ${APP_CONFIG.bot.accessToken}` } };
 
 const IDLE_TIMEOUT = 10000;
 
@@ -26,13 +26,13 @@ export class VoiceAssistantService {
     @select('cookingRecipes') cookingRecipes$: Observable<ICookingRecipes>;
     @select('ui') ui$: Observable<IUI>;
     @select('session') session$: Observable<ISession>;
-    private voiceAssistantEnabled: boolean = false;
+    private voiceAssistantEnabled = false;
     private recognition: any;
     private currentRecipe: Recipe;
     private waitingTimeout: any;
 
     constructor(
-        private http: Http,
+        private http: HttpClient,
         private recipesActions: RecipesActions,
         private speakerService: SpeakerService,
         private timerService: TimerService,
@@ -79,8 +79,6 @@ export class VoiceAssistantService {
 
         this.currentRecipe = currentRecipe;
 
-        let options = new RequestOptions({ headers: BOT_HEADERS });
-
         this.session$.first().subscribe((session: ISession) => {
             if (currentRecipe) {
                 const params = {
@@ -92,16 +90,14 @@ export class VoiceAssistantService {
                 };
 
                 // Notify bot of current recipe
-                this.http.post(`${APP_CONFIG.bot.url}/contexts?v=${APP_CONFIG.bot.version}&sessionId=${session.user.id}`, params, options).subscribe();
+                this.http.post(`${APP_CONFIG.bot.url}/contexts?v=${APP_CONFIG.bot.version}&sessionId=${session.user.id}`, params, BOT_HEADERS).subscribe();
             }
         });
     }
 
     parseVoiceCommand = (event: any) => {
-        let last = event.results.length - 1;
-        let transcript = event.results[last][0].transcript;
-
-        let options = new RequestOptions({ headers: BOT_HEADERS });
+        const last = event.results.length - 1;
+        const transcript = event.results[last][0].transcript;
 
         this.session$.first().subscribe((session: ISession) => {
             const params = {
@@ -111,10 +107,8 @@ export class VoiceAssistantService {
             };
 
             // Send vocal transcript to bot
-            this.http.post(`${APP_CONFIG.bot.url}/query?v=${APP_CONFIG.bot.version}`, params, options)
-                .toPromise()
-                .then(this.executeCommand)
-                .catch(this.onBotError);
+            this.http.post(`${APP_CONFIG.bot.url}/query?v=${APP_CONFIG.bot.version}`, params, BOT_HEADERS)
+                .subscribe(this.executeCommand, this.onBotError);
         });
 
         // const command = this.matchCommand(transcript);

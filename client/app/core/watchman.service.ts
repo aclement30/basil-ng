@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { Observable } from 'rxjs';
-import { select } from "ng2-redux";
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
+import { select } from 'ng2-redux';
 
-import { IUI } from "../redux";
-import { NotificationService } from "./notification.service";
+import { IUI } from '../redux';
+import { NotificationService } from './notification.service';
 
 const PING_INTERVAL = 30000;
 
@@ -17,7 +17,7 @@ export class Watchman {
     private notificationHandle: any;
 
     constructor(
-        private http: Http,
+        private http: HttpClient,
         private notificationService: NotificationService) {
         document.addEventListener('visibilitychange', this.onVisibilityChange, false);
 
@@ -37,7 +37,7 @@ export class Watchman {
     ping = () => {
         return this.http.get('/api/ping')
             .timeout(2000)
-            .map((response: Response) => {
+            .map(() => {
                 this.ui$.first().subscribe((ui: IUI) => {
                     this.retryInterval = 2000;
 

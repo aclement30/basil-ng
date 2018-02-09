@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
     }
 
     onAuthResolve = () => {
-        this.cookingRecipeService.query();
+        this.cookingRecipeService.query().subscribe();
     }
 
     onAuthFailed = () => {}
