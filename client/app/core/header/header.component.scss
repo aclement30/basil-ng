@@ -1,6 +1,6 @@
-@import '../../styles/partials/variables';
-@import '../../styles/partials/mixins';
-@import '../../styles/partials/bootstrap-overrides';
+@import '../../../styles/partials/variables';
+@import '../../../styles/partials/mixins';
+@import '../../../styles/partials/bootstrap-overrides';
 
 :host {
   @extend .media;

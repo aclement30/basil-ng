@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { CookingRecipeService } from '../recipes/cooking-recipe.service';
 import { SecurityService } from './security.service';
-import { SessionActions } from './redux.actions';
+import { SessionActions } from '../store/session.actions';
 
 @Component({
     selector: 'body',

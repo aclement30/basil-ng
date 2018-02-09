@@ -1,15 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
-import { select } from 'ng2-redux';
+import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
 
 import { Recipe } from '../recipes/recipe.model';
 import { RecipeService } from '../recipes/recipe.service';
-import { TagsActions } from "../tags/tags.actions";
-import {ITags} from "../redux";
-import {Tag} from "../tags/tag.model";
+import { Tag } from '../tags/tag.model';
 import User from '../core/user.model';
 import { SecurityService } from '../core/security.service';
+import { getCurrentTag, getTags } from '../store/tags.reducer';
+import { Store } from '@ngrx/store';
+import { AppState } from '../store/index';
+import { TagsActions } from '../store/tags.actions';
 
 @Component({
     selector: 'recipes-list',
@@ -24,17 +26,18 @@ export class RecipesListComponent implements OnInit, OnDestroy {
     recipesLoaded = false;
     recipes: Recipe[] = [];
     _filteredRecipes: Recipe[] = [];
-
-    @select('tags') tags$: Observable<ITags>;
+    selectedTag$: Observable<Tag>;
 
     constructor(
         private recipeService: RecipeService,
         private route: ActivatedRoute,
         private router: Router,
         private securityService: SecurityService,
+        private store: Store<AppState>,
         private tagsActions: TagsActions) { }
 
     ngOnInit(): void {
+        this.selectedTag$ = this.store.select(getCurrentTag);
         this.paramsSubscriber = this.route.params.subscribe(this.onParamsChange);
     }
 
@@ -57,8 +60,9 @@ export class RecipesListComponent implements OnInit, OnDestroy {
 
         const alias = params.tag;
         if (alias) {
-            this.tags$.first().subscribe(tags => {
-                const currentTag = tags.list.find(listTag => listTag.alias === alias);
+            this.store.select(getTags).take(1)
+              .subscribe((tags: Tag[]) => {
+                const currentTag = tags.find(listTag => listTag.alias === alias);
 
                 if (currentTag) {
                     this.tagsActions.setCurrentTag(currentTag);
@@ -91,12 +95,6 @@ export class RecipesListComponent implements OnInit, OnDestroy {
             const textA = a.title.toUpperCase();
             const textB = b.title.toUpperCase();
             return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-        });
-    }
-
-    get selectedTag$(): Observable<Tag> {
-        return this.tags$.map((tags: ITags) => {
-            return tags.current;
         });
     }
 

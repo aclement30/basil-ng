@@ -1,9 +1,11 @@
-import { Component, HostBinding } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { select } from 'ng2-redux';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 
-import { IUI } from '../redux';
+import { AppState } from '../store/index';
+import { getCookmode } from '../store/ui.reducer';
 
 @Component({
     selector: 'main',
@@ -26,14 +28,27 @@ import { IUI } from '../redux';
     styleUrls: ['main.component.scss'],
 })
 
-export class MainComponent {
-    @select('ui') ui$: Observable<IUI>;
-    @HostBinding('class.cookmode') cookmodeEnabled: boolean = false;
+export class MainComponent implements OnInit, OnDestroy {
+    @HostBinding('class.cookmode') cookmodeEnabled = false;
 
-    constructor (private router: Router) {
-        this.ui$.subscribe((ui: IUI) => {
-            this.cookmodeEnabled = ui.cookmode;
-        });
+    private subscriptions: Subscription = Observable.never().subscribe();
+
+    constructor (
+      private router: Router,
+      private store: Store<AppState>
+    ) {}
+
+    ngOnInit() {
+      this.subscriptions.add(
+        this.store.select(getCookmode)
+          .subscribe((cookmode: boolean) => {
+            this.cookmodeEnabled = cookmode;
+          }),
+      );
+    }
+
+    ngOnDestroy() {
+      this.subscriptions.unsubscribe();
     }
 
     logout(): void {

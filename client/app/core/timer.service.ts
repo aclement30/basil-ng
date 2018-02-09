@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { select } from 'ng2-redux';
+import { Store } from '@ngrx/store';
 
-import { ICookingRecipes } from '../redux';
 import { Recipe } from '../recipes/recipe.model';
-import { TimersActions } from './redux.actions';
 import { Timer, TimerData } from './timer.model';
 import { SpeakerService } from './speaker.service';
+import { TimersActions } from '../store/timers.actions';
+import { getCurrentCookingRecipe } from '../store/cooking-recipes.reducer';
+import { AppState } from '../store/index';
 
 @Injectable()
 export class TimerService {
-    @select('cookingRecipes') cookingRecipes$: Observable<ICookingRecipes>;
-
     constructor(
         private speakerService: SpeakerService,
-        private timersActions: TimersActions) {}
+        private store: Store<AppState>,
+        private timersActions: TimersActions
+    ) {}
 
     create(duration: number, options: TimerData = {}) {
         const data = Object.assign({ duration }, options);
@@ -49,30 +49,34 @@ export class TimerService {
             this.timersActions.completeTimer(timer);
 
             if (timer.completed) {
-                this.currentRecipe$.first().subscribe((currentRecipe: Recipe) => {
-                    setTimeout(() => {
-                        let description: string;
-                        if (currentRecipe && timer.recipeId === currentRecipe._id) {
-                            if (timer.contextualDescription) {
-                                description = `${timer.contextualDescription} : temps écoulé`;
-                            } else {
-                                description = 'Temps écoulé';
-                            }
-                        } else {
-                            if (timer.title) {
-                                description = `${timer.title} : temps écoulé`;
-                            } else {
-                                description = 'Temps écoulé';
-                            }
-                        }
-
-                        this.speakerService.speak(description, {
-                            dialogTitle: 'Minuterie',
-                            chime: true,
-                            dialogCloseDelay: 3000
-                        });
-                    }, 1500);
+              let currentRecipe;
+              this.store.select(getCurrentCookingRecipe).take(1)
+                .subscribe((recipe: Recipe) => {
+                  currentRecipe = recipe;
                 });
+
+                setTimeout(() => {
+                    let description: string;
+                    if (currentRecipe && timer.recipeId === currentRecipe._id) {
+                        if (timer.contextualDescription) {
+                            description = `${timer.contextualDescription} : temps écoulé`;
+                        } else {
+                            description = 'Temps écoulé';
+                        }
+                    } else {
+                        if (timer.title) {
+                            description = `${timer.title} : temps écoulé`;
+                        } else {
+                            description = 'Temps écoulé';
+                        }
+                    }
+
+                    this.speakerService.speak(description, {
+                        dialogTitle: 'Minuterie',
+                        chime: true,
+                        dialogCloseDelay: 3000
+                    });
+                }, 1500);
             }
 
             setTimeout(() => {
@@ -85,12 +89,6 @@ export class TimerService {
 
     remove(timer: Timer) {
         this.stop(timer, true);
-    }
-
-    get currentRecipe$(): Observable<Recipe> {
-        return this.cookingRecipes$.map((cookingRecipes: ICookingRecipes) => {
-            return cookingRecipes.current;
-        });
     }
 
     private _tick = (timer: Timer) => {

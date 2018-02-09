@@ -46,7 +46,9 @@ export class Ingredient implements FoodItem {
     }
 
     multiply(multiplier: number) {
-        if (!multiplier) return;
+        if (!multiplier) {
+          return;
+        }
 
         let newQuantity;
         let matches;
@@ -56,7 +58,7 @@ export class Ingredient implements FoodItem {
         } else if (matches = String(this.quantity).match(/^([0-9])+\/([0-9])+$/)) {
             newQuantity = new Fraction(+matches[1] * multiplier, +matches[2]);
         } else if (matches = String(this.quantity).match(/^([0-9])+\s([0-9])+\/([0-9])+$/)) {
-            let numerator = (+matches[1] * +matches[3]) + +matches[2];
+            const numerator = (+matches[1] * +matches[3]) + +matches[2];
             newQuantity = new Fraction(numerator * multiplier, +matches[3]);
         }
 
@@ -90,14 +92,23 @@ export class Ingredient implements FoodItem {
     }
 }
 
-export class Recipe {
-    _id: string;
-    title: string;
+export class RecipeSummary {
+  _id: string;
+  title: string;
+  image: string;
+  multiplier?: number;
+  started?: string;
+
+  constructor(data: any = {}) {
+    Object.assign(this, data);
+  }
+}
+
+export class Recipe extends RecipeSummary {
     cookTime: number;
     prepTime: number;
     totalTime: number;
     recipeYield: number;
-    image: string;
     ingredientsUnit: string;
     ingredients: Ingredient[];
     recipeInstructions: string[];
@@ -110,6 +121,8 @@ export class Recipe {
     isDeleted: boolean;
 
     constructor(data: any = {}) {
+        super(data);
+
         Object.assign(this, data);
 
         if (this.ingredients) {
@@ -122,7 +135,9 @@ export class Recipe {
     get combinedIngredients(): string {
         const combinedIngredients: string[] = [];
 
-        if (!this.ingredients) return '';
+        if (!this.ingredients) {
+          return '';
+        }
 
         this.ingredients.forEach((ingredient: Ingredient) => {
             combinedIngredients.push(ingredient.description);
@@ -149,7 +164,9 @@ export class Recipe {
     get combinedInstructions(): string {
         const combinedInstructions: string[] = [];
 
-        if (!this.recipeInstructions) return '';
+        if (!this.recipeInstructions) {
+          return '';
+        }
 
         this.recipeInstructions.forEach((instruction: string) => {
             combinedInstructions.push(instruction);
@@ -163,7 +180,9 @@ export class Recipe {
         const instructions: string[] = [];
 
         instructionsList.forEach((instruction: string) => {
-            if (instruction && instruction != '') instructions.push(instruction);
+            if (instruction && instruction !== '') {
+              instructions.push(instruction);
+            }
         });
 
         this.recipeInstructions = instructions;
@@ -179,17 +198,5 @@ export class Recipe {
         }
 
         return parsedIngredient;
-    }
-}
-
-export class RecipeSummary {
-    _id: string;
-    title: string;
-    image: string;
-    multiplier: number;
-    started: string;
-
-    constructor(data: any = {}) {
-        Object.assign(this, data);
     }
 }

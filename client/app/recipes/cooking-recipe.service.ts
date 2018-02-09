@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { NgRedux } from 'ng2-redux';
-import { IAppState } from '../redux';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
 
 import { Recipe, RecipeSummary } from './recipe.model';
-import { RecipesActions } from '../core/redux.actions';
-import { Observable } from 'rxjs/Observable';
+import { CookingRecipesActions } from '../store/cooking-recipes.actions';
 
 @Injectable()
 export class CookingRecipeService {
@@ -15,8 +13,8 @@ export class CookingRecipeService {
 
     constructor(
         private http: HttpClient,
-        private recipesActions: RecipesActions,
-        private ngRedux: NgRedux<IAppState>) { }
+        private recipesActions: CookingRecipesActions,
+    ) { }
 
     query(): Observable<RecipeSummary[]> {
         return this.http.get<RecipeSummary[]>(this.apiUrl)
@@ -51,9 +49,5 @@ export class CookingRecipeService {
             .do(() => {
                 this.recipesActions.updateServings(recipe, multiplier);
             });
-    }
-
-    findCookingRecipe(id: string): RecipeSummary {
-        return this.ngRedux.getState().cookingRecipes.list.find(recipe => (recipe._id === id));
     }
 }

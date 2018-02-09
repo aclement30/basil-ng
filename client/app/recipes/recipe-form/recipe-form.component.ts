@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { select } from 'ng2-redux';
 
 import { DialogService } from '../../core/dialog.service';
 import { NotificationService } from '../../core/notification.service';
 import { RecipeService } from '../recipe.service';
 import { Recipe } from '../recipe.model';
 import { Tag } from '../../tags/tag.model';
-import { ITags } from '../../redux';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../store/index';
+import { getTags } from '../../store/tags.reducer';
 
 @Component({
     selector: 'recipe-form',
@@ -28,14 +28,14 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
     isParsed = false;
     tags: Tag[] = [];
 
-    @select('tags') tags$: Observable<ITags>;
-
     constructor(
         private route: ActivatedRoute,
         private router: Router,
         private dialogService: DialogService,
         private notificationService: NotificationService,
-        private recipeService: RecipeService) {}
+        private recipeService: RecipeService,
+        private store: Store<AppState>
+    ) {}
 
     ngOnInit(): void {
         this.paramsSubscriber = this.route.params.subscribe(params => {
@@ -53,9 +53,7 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
             }
         });
 
-        this.tags$.first().subscribe((tags: ITags) => {
-            this.tags = tags.list;
-        });
+        this.store.select(getTags).take(1).subscribe((tags: Tag[]) => { this.tags = tags; });
     }
 
     getSnapshotIngredients(ingredients: [string]) {

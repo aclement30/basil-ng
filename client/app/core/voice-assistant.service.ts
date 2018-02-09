@@ -1,15 +1,19 @@
 import { Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { select } from 'ng2-redux';
 
 import { APP_CONFIG } from '../app.config';
 import { Ingredient as IngredientCommands, Recipe as RecipeCommands, Steps as StepsCommands, Timer as TimerCommands } from './command.parser';
-import { ICookingRecipes, ISession, IUI } from '../redux';
 import { Recipe } from '../recipes/recipe.model';
-import { RecipesActions, UIActions } from './redux.actions';
 import { SpeakerService } from './speaker.service';
 import { TimerService } from './timer.service';
+import { getCurrentCookingRecipe } from '../store/cooking-recipes.reducer';
+import { getUIState, UIState } from '../store/ui.reducer';
+import { getCurrentUser } from '../store/session.reducer';
+import { UIActions } from '../store/ui.actions';
+import { CookingRecipesActions } from '../store/cooking-recipes.actions';
+import { Store } from '@ngrx/store';
+import { AppState } from '../store/index';
+import User from './user.model';
 
 const BOT_HEADERS = { headers: { 'Authorization': `Bearer ${APP_CONFIG.bot.accessToken}` } };
 
@@ -23,9 +27,6 @@ const { webkitSpeechRecognition }: IWindow = <IWindow>window;
 
 @Injectable()
 export class VoiceAssistantService {
-    @select('cookingRecipes') cookingRecipes$: Observable<ICookingRecipes>;
-    @select('ui') ui$: Observable<IUI>;
-    @select('session') session$: Observable<ISession>;
     private voiceAssistantEnabled = false;
     private recognition: any;
     private currentRecipe: Recipe;
@@ -33,12 +34,13 @@ export class VoiceAssistantService {
 
     constructor(
         private http: HttpClient,
-        private recipesActions: RecipesActions,
+        private recipesActions: CookingRecipesActions,
         private speakerService: SpeakerService,
+        private store: Store<AppState>,
         private timerService: TimerService,
         private uiActions: UIActions,
-        private zone: NgZone) {
-
+        private zone: NgZone
+    ) {
         if (APP_CONFIG.canSpeechRecognition) {
             this.recognition = new webkitSpeechRecognition();
             this.recognition.lang = 'fr-FR';
@@ -50,13 +52,13 @@ export class VoiceAssistantService {
             this.recognition.onerror = this.onRecognitionError;
         }
 
-        this.ui$.subscribe(this.onUIChange);
-        this.cookingRecipes$.subscribe(this.onCookingRecipesChange);
+        this.store.select(getUIState).subscribe(this.onUIChange);
+        this.store.select(getCurrentCookingRecipe).subscribe(this.onCookingRecipeChange);
 
         this.speakerService.speaking.subscribe(this.onSpeakerSpeaks);
     }
 
-    onUIChange = (ui: IUI) => {
+    onUIChange = (ui: UIState) => {
         if (this.recognition && ui.voiceAssistant.enabled !== this.voiceAssistantEnabled) {
             if (ui.voiceAssistant.enabled) {
                 this.speakerService.speak('Je suis à l\'écoute.', { ding: true });
@@ -70,39 +72,37 @@ export class VoiceAssistantService {
         }
     }
 
-    onCookingRecipesChange = (cookingRecipes: ICookingRecipes) => {
-        let currentRecipe = cookingRecipes.current;
-
+    onCookingRecipeChange = (currentRecipe: Recipe) => {
         if (currentRecipe && this.currentRecipe && currentRecipe._id === this.currentRecipe._id) {
             return;
         }
 
         this.currentRecipe = currentRecipe;
 
-        this.session$.first().subscribe((session: ISession) => {
-            if (currentRecipe) {
-                const params = {
-                    name: 'recipe',
-                    parameters: {
-                        id: currentRecipe._id,
-                        title: currentRecipe.title,
-                    },
-                };
+        if (currentRecipe) {
+          this.store.select(getCurrentUser).take(1).subscribe((user: User) => {
+            const params = {
+              name: 'recipe',
+              parameters: {
+                id: currentRecipe._id,
+                title: currentRecipe.title,
+              },
+            };
 
-                // Notify bot of current recipe
-                this.http.post(`${APP_CONFIG.bot.url}/contexts?v=${APP_CONFIG.bot.version}&sessionId=${session.user.id}`, params, BOT_HEADERS).subscribe();
-            }
-        });
+            // Notify bot of current recipe
+            this.http.post(`${APP_CONFIG.bot.url}/contexts?v=${APP_CONFIG.bot.version}&sessionId=${user.id}`, params, BOT_HEADERS).subscribe();
+          });
+        }
     }
 
     parseVoiceCommand = (event: any) => {
         const last = event.results.length - 1;
         const transcript = event.results[last][0].transcript;
 
-        this.session$.first().subscribe((session: ISession) => {
+        this.store.select(getCurrentUser).take(1).subscribe((user: User) => {
             const params = {
                 lang: 'fr',
-                sessionId: session.user.id,
+                sessionId: user.id,
                 query: transcript,
             };
 
@@ -182,136 +182,128 @@ export class VoiceAssistantService {
         const command = response.json().result;
         const commandType: string = command.action.split('.')[0];
 
-        this.currentRecipe$.first().subscribe((currentRecipe: Recipe) => {
-            this.zone.run(() => {
-                switch (commandType) {
-                    case 'ingredient':
-                        if (command.name === IngredientCommands.QUANTITY) {
-                            if (currentRecipe) {
-                                const matchingIngredients = currentRecipe.ingredients.filter((ingredient) => (ingredient.name.indexOf(command.parameters.ingredient) >= 0));
-                                if (matchingIngredients.length === 1) {
-                                    const ingredient = matchingIngredients[0];
-                                    let unit: string;
+          this.zone.run(() => {
+              switch (commandType) {
+                  case 'ingredient':
+                      if (command.name === IngredientCommands.QUANTITY) {
+                          if (this.currentRecipe) {
+                              const matchingIngredients = this.currentRecipe.ingredients.filter((ingredient) => (ingredient.name.indexOf(command.parameters.ingredient) >= 0));
+                              if (matchingIngredients.length === 1) {
+                                  const ingredient = matchingIngredients[0];
+                                  let unit: string;
 
-                                    switch (ingredient.unit) {
-                                        case 'cup':
-                                            unit = 'tasse de';
-                                            break;
-                                        case 'box':
-                                            unit = 'contenant de';
-                                            break;
-                                        case 'tsp':
-                                            unit = 'cuillère à thé de';
-                                            break;
-                                        case 'tbsp':
-                                            unit = 'cuillère à soupe de';
-                                            break;
-                                        case 'pinch':
-                                            unit = 'pincée de';
-                                            break;
-                                        default:
-                                            unit = ingredient.unit || '';
-                                    }
+                                  switch (ingredient.unit) {
+                                      case 'cup':
+                                          unit = 'tasse de';
+                                          break;
+                                      case 'box':
+                                          unit = 'contenant de';
+                                          break;
+                                      case 'tsp':
+                                          unit = 'cuillère à thé de';
+                                          break;
+                                      case 'tbsp':
+                                          unit = 'cuillère à soupe de';
+                                          break;
+                                      case 'pinch':
+                                          unit = 'pincée de';
+                                          break;
+                                      default:
+                                          unit = ingredient.unit || '';
+                                  }
 
-                                    this.speakerService.speak(`${ingredient.quantity} ${unit} ${ingredient.name}`, {dialogTitle: 'Ingrédient'});
-                                } else if (matchingIngredients.length > 1) {
-                                    this.speakerService.speak(`Il y a plusieurs ${command.parameters.ingredient} dans les ingrédients. Pouvez-vous préciser ?`);
-                                } else {
-                                    this.speakerService.speak(`Je ne trouve pas l'ingrédient ${command.parameters.ingredient}. Pouvez-vous préciser ?`);
-                                }
-                            } else {
-                                this.speakerService.speak('Vous n\'avez aucune recette en cours !');
-                            }
-                        }
-                        break;
-                    case 'recipe':
-                        if (command.action === RecipeCommands.STOP) {
-                            if (currentRecipe) {
-                                this.recipesActions.stopCooking(currentRecipe);
-                                this.speakerService.speak('La recette est terminée.');
-                            } else {
-                                this.speakerService.speak('Vous n\'avez aucune recette en cours !');
-                            }
-                        }
-                        break;
-                    case 'steps':
-                        let recipeInstruction: string;
-                        let responseTitle: string;
+                                  this.speakerService.speak(`${ingredient.quantity} ${unit} ${ingredient.name}`, {dialogTitle: 'Ingrédient'});
+                              } else if (matchingIngredients.length > 1) {
+                                  this.speakerService.speak(`Il y a plusieurs ${command.parameters.ingredient} dans les ingrédients. Pouvez-vous préciser ?`);
+                              } else {
+                                  this.speakerService.speak(`Je ne trouve pas l'ingrédient ${command.parameters.ingredient}. Pouvez-vous préciser ?`);
+                              }
+                          } else {
+                              this.speakerService.speak('Vous n\'avez aucune recette en cours !');
+                          }
+                      }
+                      break;
+                  case 'recipe':
+                      if (command.action === RecipeCommands.STOP) {
+                          if (this.currentRecipe) {
+                              this.recipesActions.stopCooking(this.currentRecipe);
+                              this.speakerService.speak('La recette est terminée.');
+                          } else {
+                              this.speakerService.speak('Vous n\'avez aucune recette en cours !');
+                          }
+                      }
+                      break;
+                  case 'steps':
+                      let recipeInstruction: string;
+                      let responseTitle: string;
 
-                        if (command.action === StepsCommands.READ_STEP) {
-                            responseTitle = `Étape ${command.parameters.step}`;
-                            recipeInstruction = currentRecipe.recipeInstructions[(command.parameters.step - 1)];
-                        } else if (command.action === StepsCommands.NEXT_STEP) {
-                            recipeInstruction = currentRecipe.recipeInstructions[1];
-                        } else if (command.action === StepsCommands.PREVIOUS_STEP) {
-                            recipeInstruction = currentRecipe.recipeInstructions[0];
-                        } else if (command.action === StepsCommands.LAST_STEP) {
-                            responseTitle = 'Dernière étape';
-                            recipeInstruction = currentRecipe.recipeInstructions[(currentRecipe.recipeInstructions.length - 1)];
-                        }
+                      if (command.action === StepsCommands.READ_STEP) {
+                          responseTitle = `Étape ${command.parameters.step}`;
+                          recipeInstruction = this.currentRecipe.recipeInstructions[(command.parameters.step - 1)];
+                      } else if (command.action === StepsCommands.NEXT_STEP) {
+                          recipeInstruction = this.currentRecipe.recipeInstructions[1];
+                      } else if (command.action === StepsCommands.PREVIOUS_STEP) {
+                          recipeInstruction = this.currentRecipe.recipeInstructions[0];
+                      } else if (command.action === StepsCommands.LAST_STEP) {
+                          responseTitle = 'Dernière étape';
+                          recipeInstruction = this.currentRecipe.recipeInstructions[(this.currentRecipe.recipeInstructions.length - 1)];
+                      }
 
-                        if (recipeInstruction) {
-                            this.speakerService.speak(`${responseTitle}: ${recipeInstruction}`, {
-                                dialogTitle: responseTitle,
-                                dialogText: recipeInstruction
-                            });
-                        } else {
-                            this.speakerService.speak('Je ne trouve pas cette étape dans la recette !', {dialogTitle: ':('});
-                        }
-                        break;
-                    case 'timer':
-                        if (command.action === TimerCommands.START) {
-                            let title = command.parameters.title || null;
-                            let contextualDescription = command.parameters.title || null;
+                      if (recipeInstruction) {
+                          this.speakerService.speak(`${responseTitle}: ${recipeInstruction}`, {
+                              dialogTitle: responseTitle,
+                              dialogText: recipeInstruction
+                          });
+                      } else {
+                          this.speakerService.speak('Je ne trouve pas cette étape dans la recette !', {dialogTitle: ':('});
+                      }
+                      break;
+                  case 'timer':
+                      if (command.action === TimerCommands.START) {
+                          let title = command.parameters.title || null;
+                          const contextualDescription = command.parameters.title || null;
 
-                            if (currentRecipe) {
-                                title = currentRecipe.title;
-                            }
+                          if (this.currentRecipe) {
+                              title = this.currentRecipe.title;
+                          }
 
-                            const options = {
-                                title: title,
-                                contextualDescription: contextualDescription,
-                                recipeId: currentRecipe ? currentRecipe._id : null,
-                            };
+                          const options = {
+                              title: title,
+                              contextualDescription: contextualDescription,
+                              recipeId: this.currentRecipe ? this.currentRecipe._id : null,
+                          };
 
-                            let duration = command.parameters.duration.amount;
-                            if (command.parameters.duration.unit === 'minute') {
-                                duration = duration * 60;
-                            } else if (command.parameters.duration.unit === 'h') {
-                                duration = duration * 3600;
-                            }
+                          let duration = command.parameters.duration.amount;
+                          if (command.parameters.duration.unit === 'minute') {
+                              duration = duration * 60;
+                          } else if (command.parameters.duration.unit === 'h') {
+                              duration = duration * 3600;
+                          }
 
-                            let humanDuration = '';
-                            const hours = Math.floor(duration / 3600);
-                            const minutes = Math.floor((duration - (hours * 3600)) / 60);
-                            const seconds = Math.floor((duration - (hours * 3600)) - (minutes * 60));
+                          let humanDuration = '';
+                          const hours = Math.floor(duration / 3600);
+                          const minutes = Math.floor((duration - (hours * 3600)) / 60);
+                          const seconds = Math.floor((duration - (hours * 3600)) - (minutes * 60));
 
-                            if (hours >= 1) {
-                                humanDuration += `${hours} heures `;
-                            }
-                            if (minutes >= 1) {
-                                humanDuration += `${minutes} minutes `;
-                            }
-                            if (seconds >= 1) {
-                                humanDuration += `${seconds} secondes `;
-                            }
+                          if (hours >= 1) {
+                              humanDuration += `${hours} heures `;
+                          }
+                          if (minutes >= 1) {
+                              humanDuration += `${minutes} minutes `;
+                          }
+                          if (seconds >= 1) {
+                              humanDuration += `${seconds} secondes `;
+                          }
 
-                            this.timerService.create(duration, options);
-                            this.speakerService.speak(`Minuterie : ${humanDuration}`, {dialogTitle: 'Minuterie'});
-                        }
+                          this.timerService.create(duration, options);
+                          this.speakerService.speak(`Minuterie : ${humanDuration}`, {dialogTitle: 'Minuterie'});
+                      }
 
-                        break;
-                    default:
-                        this.speakerService.speak('Désolé. Je ne supporte pas encore cette commande.', {dialogTitle: ':('});
-                        console.log('Unknown command:', command);
-                }
-            });
-        });
-    }
-
-    get currentRecipe$(): Observable<Recipe> {
-        return this.cookingRecipes$.map((cookingRecipes: ICookingRecipes) => {
-            return cookingRecipes.current;
-        });
+                      break;
+                  default:
+                      this.speakerService.speak('Désolé. Je ne supporte pas encore cette commande.', {dialogTitle: ':('});
+                      console.log('Unknown command:', command);
+              }
+          });
     }
 }

@@ -1,28 +1,34 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { select } from 'ng2-redux';
 
-import { ISession } from '../redux';
-import { SessionActions } from './redux.actions';
 import User from './user.model';
+import { getCurrentUser, getSessionState, SessionState } from '../store/session.reducer';
+import { AppState } from '../store/index';
+import { SessionActions } from '../store/session.actions';
 
 @Injectable()
 export class SecurityService {
-    @select('session') session$: Observable<ISession>;
-    public isAuthenticated = false;
-    private isLoading = false;
-    public user$: Observable<User>;
+    isAuthenticated = false;
+    user$: Observable<User>;
+    session$: Observable<SessionState>;
 
-    constructor(private http: HttpClient, private router: Router, private sessionActions: SessionActions) {
-        this.session$.subscribe(this.onSessionChange);
+    constructor(
+      private http: HttpClient,
+      private router: Router,
+      private sessionActions: SessionActions,
+      private store: Store<AppState>,
+    ) {
+        this.session$ = this.store.select(getSessionState);
+        this.store.select(getCurrentUser).subscribe(this.onUserChange);
     }
 
     authenticate(): Observable<User> {
         this.sessionActions.startLoading();
 
-        this.session$.first().subscribe((session: ISession) => {
+        this.store.select(getCurrentUser).take(1).subscribe((currentUser: User) => {
             this.user$ = this.http.get<User>('/api/user')
                 .do((user: User) => {
                     this.sessionActions.setUser(user);
@@ -31,8 +37,8 @@ export class SecurityService {
                 // Not logged in
                 .catch((error: any) => {
                     // If stored user has a refresh token, attempt to get a new access token
-                    if (session.user && session.user.refreshToken) {
-                        return this.refreshToken(session.user);
+                    if (currentUser && currentUser.refreshToken) {
+                        return this.refreshToken(currentUser);
                     } else {
                         return this.onAuthenticationError();
                     }
@@ -71,12 +77,12 @@ export class SecurityService {
             });
     }
 
-    onSessionChange = (session: ISession) => {
-        const isAuthenticated = !!session.user;
+    onUserChange = (user: User) => {
+        const isAuthenticated = !!user;
         const routeName = this.router.routerState.snapshot.url;
 
-        if (!!session.user !== this.isAuthenticated || session.loading !== this.isLoading) {
-            this.isAuthenticated = !!session.user && !!session.user.id;
+        if (!!user !== this.isAuthenticated) {
+            this.isAuthenticated = !!user && !!user.id;
 
             if (isAuthenticated && routeName === 'login') {
                 this.router.navigate(['']);

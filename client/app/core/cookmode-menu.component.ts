@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
-import { select } from 'ng2-redux';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 
 import { APP_CONFIG } from '../app.config';
-import { IUI } from '../redux';
-import { UIActions } from './redux.actions';
+import { Store } from '@ngrx/store';
+import { AppState } from '../store/index';
+import { getUIState, UIState } from '../store/ui.reducer';
+import { UIActions } from '../store/ui.actions';
 
 @Component({
     selector: 'cookmode-menu',
@@ -27,12 +28,18 @@ import { UIActions } from './redux.actions';
     styleUrls: ['cookmode-menu.component.scss'],
 })
 
-export class CookmodeMenuComponent {
-    @select('ui') ui$: Observable<IUI>;
+export class CookmodeMenuComponent implements OnInit {
     public vocalAssistant: boolean = APP_CONFIG.canSpeechRecognition;
+    private ui$: Observable<UIState>;
 
     constructor(
-        private uiActions: UIActions) {}
+        private store: Store<AppState>,
+        private uiActions: UIActions
+    ) {}
+
+    ngOnInit() {
+      this.ui$ = this.store.select(getUIState);
+    }
 
     toggleVoiceAssistant() {
         this.voiceAssistantEnabled$.first().subscribe(isEnabled => {
@@ -58,7 +65,7 @@ export class CookmodeMenuComponent {
     }
 
     get voiceAssistantEnabled$(): Observable<boolean> {
-        return this.ui$.map((ui: IUI) => {
+        return this.ui$.map((ui: UIState) => {
             return ui.voiceAssistant.enabled;
         });
     }

@@ -1,19 +1,22 @@
 import { Component, OnInit, Injectable } from '@angular/core';
 import { ActivatedRoute, CanDeactivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import { select } from 'ng2-redux';
+import { Store } from '@ngrx/store';
 
 import { CookingRecipeService } from './cooking-recipe.service';
 import { DialogService } from '../core/dialog.service';
 import { GroceryService } from '../groceries/grocery.service';
-import {ICookingRecipes, ITags} from '../redux';
 import { NotificationService } from '../core/notification.service';
-import { RecipesActions } from '../core/redux.actions';
 import { RecipeService } from './recipe.service';
-import { Recipe } from './recipe.model';
+import { Recipe, RecipeSummary } from './recipe.model';
 import { Timer } from '../core/timer.model';
 import { TimerService } from '../core/timer.service';
 import { Tag } from '../tags/tag.model';
+import { AppState } from '../store/index';
+import { getTimers } from '../store/timers.reducer';
+import { getCookingRecipes } from '../store/cooking-recipes.reducer';
+import { getTags } from '../store/tags.reducer';
+import { CookingRecipesActions } from '../store/cooking-recipes.actions';
 
 class ServingOption {
     label: string;
@@ -27,10 +30,6 @@ class ServingOption {
 })
 
 export class RecipeDetailComponent implements OnInit {
-    @select('cookingRecipes') cookingRecipes$: Observable<ICookingRecipes>;
-    @select('timers') timers$: Observable<Timer[]>;
-    @select('tags') tags$: Observable<ITags>;
-
     paramsSubscriber: any;
     recipe: Recipe;
     _serving: ServingOption;
@@ -38,30 +37,41 @@ export class RecipeDetailComponent implements OnInit {
     selectedIngredients = {};
     tags: Tag[];
 
+    private cookingRecipes$: Observable<RecipeSummary[]>;
+    private timers$: Observable<Timer[]>;
+    private tags$: Observable<Tag[]>;
+
     constructor(
         private cookingRecipeService: CookingRecipeService,
         private dialogService: DialogService,
         private groceryService: GroceryService,
         private notificationService: NotificationService,
         private route: ActivatedRoute,
-        private recipesActions: RecipesActions,
+        private recipesActions: CookingRecipesActions,
         private recipeService: RecipeService,
-        private timerService: TimerService) {}
+        private store: Store<AppState>,
+        private timerService: TimerService
+    ) {}
 
     ngOnInit(): void {
-        this.paramsSubscriber = this.route.params.subscribe(params => {
+        this.cookingRecipes$ = this.store.select(getCookingRecipes);
+        this.timers$ = this.store.select(getTimers);
+        this.tags$ = this.store.select(getTags);
+
+      this.paramsSubscriber = this.route.params.subscribe(params => {
             const id = params['id'];
 
             this.recipeService.get(id)
-              .subscribe((recipe) => {
-                this.recipe = recipe;
+              .combineLatest(
+                this.tags$,
+                (recipe: Recipe, tags: Tag[]) => ({ recipe, tags }),
+              )
+              .subscribe((data) => {
+                this.recipe = data.recipe;
                 this.selectedIngredients = {};
+                this.tags = data.recipe.tags.map(tagId => data.tags.find(tag => tag._id === tagId));
 
-                this.tags$.first().subscribe((tags: ITags) => {
-                    this.tags = recipe.tags.map(tagId => tags.list.find(tag => tag._id === tagId));
-                }).unsubscribe();
-
-                this.recipesActions.setCurrentRecipe(recipe);
+                this.recipesActions.setCurrentRecipe(data.recipe);
               });
         });
     }
@@ -145,8 +155,8 @@ export class RecipeDetailComponent implements OnInit {
     }
 
     get serving$(): Observable<ServingOption> {
-        return this.cookingRecipes$.map((cookingRecipes: ICookingRecipes) => {
-            const cookingRecipe = cookingRecipes.list.find(recipe => (recipe._id === this.recipe._id));
+        return this.cookingRecipes$.map((cookingRecipes: RecipeSummary[]) => {
+            const cookingRecipe = cookingRecipes.find(recipe => (recipe._id === this.recipe._id));
 
             let multiplier: number;
 
@@ -163,15 +173,15 @@ export class RecipeDetailComponent implements OnInit {
     }
 
     get isCooking$(): Observable<boolean> {
-        return this.cookingRecipes$.map((cookingRecipes: ICookingRecipes) => {
-            return cookingRecipes.list.some(recipe => (recipe._id === this.recipe._id));
+        return this.cookingRecipes$.map((cookingRecipes: RecipeSummary[]) => {
+            return cookingRecipes.some(recipe => (recipe._id === this.recipe._id));
         });
     }
 }
 
 @Injectable()
 export class CanDeactivateRecipeDetail implements CanDeactivate<RecipeDetailComponent> {
-    constructor(private recipesActions: RecipesActions) {}
+    constructor(private recipesActions: CookingRecipesActions) {}
 
     canDeactivate(
         component: RecipeDetailComponent,

@@ -1,9 +1,10 @@
-import { Component, HostListener } from '@angular/core';
-import { Observable } from 'rxjs';
-import { select } from 'ng2-redux';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
 
-import { IUI } from '../../redux';
-import { UIActions } from '../redux.actions';
+import { AppState } from '../../store/index';
+import { getCookmode } from '../../store/ui.reducer';
+import { UIActions } from '../../store/ui.actions';
 
 @Component({
     selector: '[cookmode-button]',
@@ -13,11 +14,17 @@ import { UIActions } from '../redux.actions';
     `
 })
 
-export class CookmodeButtonComponent {
-    @select('ui') ui$: Observable<IUI>;
+export class CookmodeButtonComponent implements OnInit {
+    cookmodeEnabled$: Observable<boolean>;
 
     constructor(
-        private uiActions: UIActions) {}
+        private store: Store<AppState>,
+        private uiActions: UIActions
+    ) {}
+
+    ngOnInit() {
+      this.cookmodeEnabled$ = this.store.select(getCookmode);
+    }
 
     @HostListener('click') toggleCookmode() {
         this.cookmodeEnabled$.first().subscribe(isEnabled => {
@@ -26,12 +33,6 @@ export class CookmodeButtonComponent {
             } else {
                 this.uiActions.enableCookmode();
             }
-        });
-    }
-
-    get cookmodeEnabled$(): Observable<boolean> {
-        return this.ui$.map((ui: IUI) => {
-            return ui.cookmode;
         });
     }
 }

@@ -1,10 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { select } from 'ng2-redux';
 import * as $ from 'jquery';
 
 import { DialogService } from './dialog.service';
-import { IUI } from '../redux';
 
 export interface IWindow extends Window {
     SpeechSynthesisUtterance: any;
@@ -12,11 +9,11 @@ export interface IWindow extends Window {
 }
 
 export class SpeakerOptions {
-    dialogTitle?: string = '';
+    dialogTitle? = '';
     dialogText?: string;
-    dialogCloseDelay?: number = 0;
-    chime?: boolean = false;
-    ding?: boolean = false;
+    dialogCloseDelay? = 0;
+    chime? = false;
+    ding? = false;
 }
 
 const { SpeechSynthesisUtterance }: IWindow = <IWindow>window;
@@ -24,21 +21,12 @@ const { speechSynthesis }: IWindow = <IWindow>window;
 
 @Injectable()
 export class SpeakerService {
-    @select('ui') ui$: Observable<IUI>;
     public speaking: EventEmitter<boolean> = new EventEmitter<boolean>();
-    private voiceAssistantEnabled: boolean = false;
     private _message: any;  // Speech message is stored locally to avoid GC destruction before onEnd callback
 
     constructor(
-        private dialogService: DialogService) {
-        this.ui$.subscribe(this.onUIChange);
-    }
-
-    onUIChange = (ui: IUI) => {
-        if (ui.voiceAssistant.enabled !== this.voiceAssistantEnabled) {
-            this.voiceAssistantEnabled = ui.voiceAssistant.enabled;
-        }
-    }
+        private dialogService: DialogService
+    ) {}
 
     async speak(text: string, options: SpeakerOptions = {}) {
         this._message = new SpeechSynthesisUtterance();

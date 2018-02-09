@@ -1,5 +1,5 @@
-@import '../../styles/partials/variables';
-@import '../../styles/partials/mixins';
+@import '../../../styles/partials/variables';
+@import '../../../styles/partials/mixins';
 
 :host {
   left: 0;
@@ -57,7 +57,7 @@
 }
 
 .smm-header {
-  background: url('../../assets/img/menu-bg.jpg');
+  background: url('../../../assets/img/menu-bg.jpg');
   background-size: cover;
   height: 80px;
   position: fixed;

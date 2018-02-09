@@ -4,14 +4,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TagInputModule } from 'ngx-chips';
-
-import { NgReduxModule } from 'ng2-redux';
+import { Store, StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { EffectsModule } from '@ngrx/effects';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgRedux } from 'ng2-redux';
-import { createLogger } from 'redux-logger';
-import * as persistState from 'redux-localstorage';
-
-import { IAppState, rootReducer } from './redux';
+import './store/rxjs-operators';
 
 import { AppComponent } from './core/app.component';
 
@@ -23,9 +20,15 @@ import { RecipesModule } from './recipes/recipes.module';
 
 import { AppRoutingModule } from './app.routing';
 
-import { Timer, TimerData } from './core/timer.model';
+import { Timer } from './core/timer.model';
 import { TimerService } from './core/timer.service';
-import { RecipesActions, SessionActions, TimersActions, UIActions } from './core/redux.actions';
+import { AppState, reducers } from './store/index';
+import { CookingRecipesEffects } from './store/cooking-recipes.effects';
+import { CookingRecipesActions } from './store/cooking-recipes.actions';
+import { SessionActions } from './store/session.actions';
+import { TimersActions } from './store/timers.actions';
+import { UIActions } from './store/ui.actions';
+import { getTimers } from './store/timers.reducer';
 
 @NgModule({
     imports: [
@@ -33,19 +36,23 @@ import { RecipesActions, SessionActions, TimersActions, UIActions } from './core
         BrowserAnimationsModule,
         BrowserModule,
         CoreModule,
+        EffectsModule.forRoot([CookingRecipesEffects]),
         FormsModule,
         GroceriesModule,
         HomeModule,
         HttpClientModule,
         LoginModule,
         NgbModule.forRoot(),
-        NgReduxModule,
         RecipesModule,
+        StoreModule.forRoot(reducers),
+        StoreDevtoolsModule.instrument({
+            maxAge: 10
+        }),
         TagInputModule,
     ],
     declarations: [],
     providers: [
-        RecipesActions,
+        CookingRecipesActions,
         SessionActions,
         TimersActions,
         UIActions,
@@ -55,64 +62,27 @@ import { RecipesActions, SessionActions, TimersActions, UIActions } from './core
 
 export class AppModule {
     constructor(
-        private ngRedux: NgRedux<IAppState>,
-        private timerService: TimerService) {
-        const enhancers = [
-            persistState('session', { key: 'basil.session' }),
-            persistState('timers', { key: 'basil.timers', deserialize: (data: string) => {
-                const timers: Timer[] = [];
+        private store: Store<AppState>,
+        private timerService: TimerService,
+    ) {
+        // const enhancers = [
+        //     persistState('session', { key: 'basil.session' }),
+        //     persistState('timers', { key: 'basil.timers', deserialize: (data: string) => {
+        //         const timers: Timer[] = [];
+        //
+        //         const unserializedState = JSON.parse(data);
+        //         unserializedState.timers.forEach((timerData: TimerData) => {
+        //             if (!timerData.completed) {
+        //                 timers.push(new Timer(timerData));
+        //             }
+        //         });
+        //
+        //         return { timers };
+        //     } }),
+        // ];
 
-                const unserializedState = JSON.parse(data);
-                unserializedState.timers.forEach((timerData: TimerData) => {
-                    if (!timerData.completed) {
-                        timers.push(new Timer(timerData));
-                    }
-                });
-
-                return { timers };
-            } }),
-        ];
-
-        this.ngRedux.configureStore(
-            rootReducer,
-            {
-                cookingRecipes: {
-                    list: [],
-                    current: null,
-                },
-                session: {
-                    user: null,
-                    loading: false,
-                },
-                tags: {
-                    list: [],
-                    current: null,
-                },
-                timers: [],
-                ui: {
-                    cookmode: false,
-                    kitchenSidebar: {
-                        displayed: false,
-                    },
-                    navigationMenu: {
-                        displayed: false,
-                    },
-                    voiceAssistant: {
-                        enabled: false,
-                        listening: false,
-                    },
-                },
-            },
-            [
-                createLogger({
-                    level: 'info',
-                    collapsed: true
-                })
-            ],
-            [ ...enhancers ]
-        );
-
-        const timers: Timer[] = this.ngRedux.getState().timers;
+        let timers: Timer[];
+        this.store.select(getTimers).take(1).subscribe((stateTimers: Timer[]) => { timers = stateTimers; });
         timers.forEach((timer) => {
             this.timerService.start(timer);
         });

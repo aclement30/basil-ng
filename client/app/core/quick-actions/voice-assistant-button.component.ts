@@ -1,9 +1,10 @@
-import { Component, HostListener } from '@angular/core';
-import { Observable } from 'rxjs';
-import { select } from 'ng2-redux';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
 
-import { IUI } from '../../redux';
-import { UIActions } from '../redux.actions';
+import { getUIState, UIState } from '../../store/ui.reducer';
+import { UIActions } from '../../store/ui.actions';
+import { AppState } from '../../store/index';
 
 @Component({
     selector: '[voice-assistant-button]',
@@ -14,11 +15,17 @@ import { UIActions } from '../redux.actions';
     `
 })
 
-export class VoiceAssistantButtonComponent {
-    @select('ui') ui$: Observable<IUI>;
+export class VoiceAssistantButtonComponent implements OnInit {
+    private ui$: Observable<UIState>;
 
     constructor(
-        private uiActions: UIActions) {}
+        private store: Store<AppState>,
+        private uiActions: UIActions
+    ) {}
+
+    ngOnInit() {
+      this.ui$ = this.store.select(getUIState);
+    }
 
     @HostListener('click') toggleVoiceAssistant() {
         this.voiceAssistantEnabled$.first().subscribe(isEnabled => {
@@ -31,13 +38,13 @@ export class VoiceAssistantButtonComponent {
     }
 
     get voiceAssistantEnabled$(): Observable<boolean> {
-        return this.ui$.map((ui: IUI) => {
+        return this.ui$.map((ui: UIState) => {
             return ui.voiceAssistant.enabled;
         });
     }
 
     get voiceAssistantListening$(): Observable<boolean> {
-        return this.ui$.map((ui: IUI) => {
+        return this.ui$.map((ui: UIState) => {
             return ui.voiceAssistant.listening;
         });
     }

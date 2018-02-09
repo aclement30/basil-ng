@@ -1,0 +1,29 @@
+<aside class="menu">
+  <div class="smm-header">
+    <i class="zmdi zmdi-long-arrow-left" (click)="hideMenu()"></i>
+  </div>
+
+  <ul class="main-menu">
+    <li class="sub-menu recipes toggled">
+      <a (click)="navigateTo(['/recipes'])"><i class="zmdi zmdi-apps"></i> Recettes</a>
+      <ul class="cooking-recipes">
+        <li *ngFor="let recipe of cookingRecipes$ | async">
+          <a (click)="navigateTo(['/recipes/detail', recipe._id])">{{ recipe.title }}</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a (click)="navigateTo(['/recipes/add'])"><i class="zmdi zmdi-plus"></i> Ajouter une recette</a>
+    </li>
+    <li>
+      <a (click)="navigateTo(['/groceries'])"><i class="zmdi zmdi-assignment"></i> Liste de courses</a>
+    </li>
+    <li>
+      <a (click)="logout()"><i class="zmdi zmdi-time-restore"></i> Déconnexion</a>
+    </li>
+  </ul>
+
+  <div class="timers">
+    <timer *ngFor="let timer of timers$ | async" [timer]="timer"></timer>
+  </div>
+</aside>

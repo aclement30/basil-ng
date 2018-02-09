@@ -1,23 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { select } from 'ng2-redux';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
 
-import { ICookingRecipes, IUI } from '../redux';
 import { RecipeSummary } from '../recipes/recipe.model';
-import { UIActions } from './redux.actions';
+import { AppState } from '../store/index';
+import { getCookingRecipes } from '../store/cooking-recipes.reducer';
+import { getKitchenSidebar, IKitchenSidebar } from '../store/ui.reducer';
+import { UIActions } from '../store/ui.actions';
 
 @Component({
     selector: 'kitchen-sidebar',
     template: `
-        <aside class="sidebar" [ngClass]="{'toggled': sidebarDisplayed$ | async}">
+        <aside class="sidebar" [ngClass]="{'toggled': (kitchenSidebar$ | async)?.displayed}">
             <ul class="sua-menu list-inline list-unstyled">
                 <!--<li><a href=""><i class="zmdi zmdi-check-all"></i> Arrêter tous</a></li>-->
                 <li><button (click)="closeSidebar()" data-ma-action="sidebar-close"><i class="zmdi zmdi-close"></i> Fermer</button></li>
             </ul>
 
             <div class="list-group lg-alt c-overflow">
-                <a *ngFor="let recipe of recipes$ | async" (click)="showRecipe(recipe._id)" class="list-group-item media">
+                <a *ngFor="let recipe of cookingRecipes$ | async" (click)="showRecipe(recipe._id)" class="list-group-item media">
                     <div class="pull-left">
                         <img class="avatar-img" [src]="recipe.image">
                     </div>
@@ -33,13 +35,20 @@ import { UIActions } from './redux.actions';
     styleUrls: ['kitchen-sidebar.component.scss'],
 })
 
-export class KitchenSidebarComponent {
-    @select('cookingRecipes') cookingRecipes$: Observable<ICookingRecipes>;
-    @select('ui') ui$: Observable<IUI>;
+export class KitchenSidebarComponent implements OnInit {
+    cookingRecipes$: Observable<RecipeSummary[]>;
+    kitchenSidebar$: Observable<IKitchenSidebar>;
 
     constructor(
         private router: Router,
-        private uiActions: UIActions) {}
+        private store: Store<AppState>,
+        private uiActions: UIActions,
+    ) {}
+
+    ngOnInit() {
+      this.cookingRecipes$ = this.store.select(getCookingRecipes);
+      this.kitchenSidebar$ = this.store.select(getKitchenSidebar);
+    }
 
     closeSidebar() {
         this.uiActions.hideKitchenSidebar();
@@ -49,17 +58,5 @@ export class KitchenSidebarComponent {
         this.router.navigate(['/recipes/detail', recipeId]);
 
         this.closeSidebar();
-    }
-
-    get sidebarDisplayed$(): Observable<boolean> {
-        return this.ui$.map((ui: IUI) => {
-            return ui.kitchenSidebar.displayed;
-        });
-    }
-
-    get recipes$(): Observable<RecipeSummary[]> {
-        return this.cookingRecipes$.map((cookingRecipes: ICookingRecipes) => {
-            return cookingRecipes.list;
-        });
     }
 }
