@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { CookingRecipeService } from '../recipes/cooking-recipe.service';
-import { SecurityService } from './security.service';
+import { CookingRecipeService } from '../services/cooking-recipe.service';
+import { SecurityService } from '../services/security.service';
 import { SessionActions } from '../store/session.actions';
 
 @Component({

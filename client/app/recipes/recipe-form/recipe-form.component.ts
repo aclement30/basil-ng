@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { DialogService } from '../../core/dialog.service';
-import { NotificationService } from '../../core/notification.service';
-import { RecipeService } from '../recipe.service';
+import { DialogService } from '../../services/dialog.service';
+import { NotificationService } from '../../services/notification.service';
+import { RecipeService } from '../../services/recipe.service';
 import { Recipe } from '../../models/recipe.model';
 import { Tag } from '../../models/tag.model';
 import { Store } from '@ngrx/store';

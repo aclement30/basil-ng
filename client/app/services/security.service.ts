@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 
-import User from './user.model';
+import User from '../core/user.model';
 import { getCurrentUser, getSessionState, SessionState } from '../store/session.reducer';
 import { AppState } from '../store/index';
 import { SessionActions } from '../store/session.actions';

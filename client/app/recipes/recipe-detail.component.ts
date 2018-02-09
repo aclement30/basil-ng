@@ -3,14 +3,14 @@ import { ActivatedRoute, CanDeactivate, ActivatedRouteSnapshot, RouterStateSnaps
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
-import { CookingRecipeService } from './cooking-recipe.service';
-import { DialogService } from '../core/dialog.service';
-import { GroceryService } from '../groceries/grocery.service';
-import { NotificationService } from '../core/notification.service';
-import { RecipeService } from './recipe.service';
+import { CookingRecipeService } from '../services/cooking-recipe.service';
+import { DialogService } from '../services/dialog.service';
+import { GroceryService } from '../services/grocery.service';
+import { NotificationService } from '../services/notification.service';
+import { RecipeService } from '../services/recipe.service';
 import { Recipe, RecipeSummary } from '../models/recipe.model';
 import { Timer } from '../models/timer.model';
-import { TimerService } from '../core/timer.service';
+import { TimerService } from '../services/timer.service';
 import { Tag } from '../models/tag.model';
 import { AppState } from '../store/index';
 import { getTimers } from '../store/timers.reducer';

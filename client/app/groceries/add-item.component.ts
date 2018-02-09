@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 
-import { GroceryService } from './grocery.service';
+import { GroceryService } from '../services/grocery.service';
 import { GroceryItem } from '../models/grocery-item.model';
 
 @Component({

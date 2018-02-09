@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
-import { SecurityService } from '../security.service';
+import { SecurityService } from '../../services/security.service';
 import { RecipeSummary } from '../../models/recipe.model';
 import { Timer } from '../../models/timer.model';
 import { UIActions } from '../../store/ui.actions';

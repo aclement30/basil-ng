@@ -6,8 +6,8 @@ import { RouterModule } from '@angular/router';
 import { TagInputModule } from 'ngx-chips';
 
 import { CoreModule } from '../core/core.module';
-import { CookingRecipeService } from './cooking-recipe.service';
-import { RecipeService } from './recipe.service';
+import { CookingRecipeService } from '../services/cooking-recipe.service';
+import { RecipeService } from '../services/recipe.service';
 
 import { FormSidebarComponent } from './form-sidebar.component';
 import { RecipeDetailComponent, CanDeactivateRecipeDetail } from './recipe-detail.component';

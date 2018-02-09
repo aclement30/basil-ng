@@ -2,7 +2,7 @@ import { Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { APP_CONFIG } from '../app.config';
-import { Ingredient as IngredientCommands, Recipe as RecipeCommands, Steps as StepsCommands, Timer as TimerCommands } from './command.parser';
+import { Ingredient as IngredientCommands, Recipe as RecipeCommands, Steps as StepsCommands, Timer as TimerCommands } from '../core/command.parser';
 import { Recipe } from '../models/recipe.model';
 import { SpeakerService } from './speaker.service';
 import { TimerService } from './timer.service';
@@ -13,7 +13,7 @@ import { UIActions } from '../store/ui.actions';
 import { CookingRecipesActions } from '../store/cooking-recipes.actions';
 import { Store } from '@ngrx/store';
 import { AppState } from '../store/index';
-import User from './user.model';
+import User from '../core/user.model';
 
 const BOT_HEADERS = { headers: { 'Authorization': `Bearer ${APP_CONFIG.bot.accessToken}` } };
 

@@ -6,7 +6,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CoreModule } from '../core/core.module';
 
 import { TagsResolver } from './tags.resolver';
-import { TagService } from './tag.service';
+import { TagService } from '../services/tag.service';
 import { TagsActions } from '../store/tags.actions';
 
 @NgModule({

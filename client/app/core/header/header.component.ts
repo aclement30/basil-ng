@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { APP_CONFIG } from '../../app.config';
-import { SecurityService } from '../security.service';
+import { SecurityService } from '../../services/security.service';
 import { UIActions } from '../../store/ui.actions';
 
 @Component({

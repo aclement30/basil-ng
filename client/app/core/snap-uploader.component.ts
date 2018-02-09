@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, HostBinding, Output, NgZone } from '@angular/core';
 
-import { OCRService } from './ocr.service';
-import { NotificationService } from './notification.service';
+import { OCRService } from '../services/ocr.service';
+import { NotificationService } from '../services/notification.service';
 
 export const SCAN_INGREDIENTS = 'ocr/SCAN_INGREDIENTS';
 export const SCAN_INSTRUCTIONS = 'ocr/SCAN_INSTRUCTIONS';

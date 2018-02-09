@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { GroceryItem } from '../models/grocery-item.model';
-import { GroceryService } from './grocery.service';
+import { GroceryService } from '../services/grocery.service';
 
 @Component({
     selector: 'shopping-list',

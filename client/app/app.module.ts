@@ -21,7 +21,7 @@ import { RecipesModule } from './recipes/recipes.module';
 import { AppRoutingModule } from './app.routing';
 
 import { Timer } from './models/timer.model';
-import { TimerService } from './core/timer.service';
+import { TimerService } from './services/timer.service';
 import { AppState, reducers } from './store/index';
 import { CookingRecipesEffects } from './store/cooking-recipes.effects';
 import { CookingRecipesActions } from './store/cooking-recipes.actions';

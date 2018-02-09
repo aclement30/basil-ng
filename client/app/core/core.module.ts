@@ -21,15 +21,15 @@ import { TimerComponent } from './timer.component';
 import { VoiceAssistantButtonComponent } from './quick-actions/voice-assistant-button.component';
 
 import { CommandParser } from './command.parser';
-import { DialogService } from './dialog.service';
-import { Gatekeeper } from './gatekeeper.service';
-import { NotificationService } from './notification.service';
-import { OCRService } from './ocr.service';
-import { SecurityService } from './security.service';
-import { SpeakerService } from './speaker.service';
-import { TimerService } from './timer.service';
-import { VoiceAssistantService } from './voice-assistant.service';
-import { Watchman } from "./watchman.service";
+import { DialogService } from '../services/dialog.service';
+import { Gatekeeper } from '../services/gatekeeper.service';
+import { NotificationService } from '../services/notification.service';
+import { OCRService } from '../services/ocr.service';
+import { SecurityService } from '../services/security.service';
+import { SpeakerService } from '../services/speaker.service';
+import { TimerService } from '../services/timer.service';
+import { VoiceAssistantService } from '../services/voice-assistant.service';
+import { Watchman } from "../services/watchman.service";
 
 @NgModule({
     imports: [ CommonModule, FormsModule, NgbModule, RouterModule ],

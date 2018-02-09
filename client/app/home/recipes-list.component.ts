@@ -4,10 +4,10 @@ import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 
 import { Recipe } from '../models/recipe.model';
-import { RecipeService } from '../recipes/recipe.service';
+import { RecipeService } from '../services/recipe.service';
 import { Tag } from '../models/tag.model';
 import User from '../core/user.model';
-import { SecurityService } from '../core/security.service';
+import { SecurityService } from '../services/security.service';
 import { getCurrentTag, getTags } from '../store/tags.reducer';
 import { Store } from '@ngrx/store';
 import { AppState } from '../store/index';

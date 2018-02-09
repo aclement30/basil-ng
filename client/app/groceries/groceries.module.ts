@@ -6,7 +6,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { CoreModule } from '../core/core.module';
 
-import { GroceryService } from './grocery.service';
+import { GroceryService } from '../services/grocery.service';
 
 import { AddItemComponent } from './add-item.component';
 import { ShoppingListComponent } from './shopping-list.component';

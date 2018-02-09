@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import * as moment from 'moment';
 
 import { Timer } from '../models/timer.model';
-import { TimerService } from './timer.service';
+import { TimerService } from '../services/timer.service';
 
 @Component({
     selector: 'timer',
