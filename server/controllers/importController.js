@@ -1,30 +1,35 @@
-const config = require('../../config/server.js'),
-    errorHandler = require('../errorHandler'),
-    requireAuth = require('../services/auth').check;
-
+const authorize = require('../middlewares/authorization');
 const ImportService = require('../services/import.js');
 
-function init(app) {
-    app.post('/api/recipes/import', requireAuth, (req, res) => {
-        const recipeUrl = req.body.url;
+class ImportController {
 
-        ImportService.parseUrl(recipeUrl, (error, recipe) => {
-            if (error) {
-                res.status(400).send({
-                    url: recipeUrl,
-                    errorMessage: error,
-                });
-                return;
-            }
+  constructor(app) {
+    // Configure routes
+    app.post('/api/recipes/import', authorize, this.importRecipe);
+  }
 
-            recipe.originalUrl = recipeUrl;
+  importRecipe(req, res) {
+    const recipeUrl = req.body.url;
 
-            res.send({
-                url: recipeUrl,
-                recipe,
-            });
+    ImportService.parseUrl(recipeUrl, (error, recipe) => {
+      if (error) {
+        res.status(400).send({
+          url: recipeUrl,
+          errorMessage: error,
         });
+        return;
+      }
+
+      recipe.originalUrl = recipeUrl;
+
+      res.send({
+        url: recipeUrl,
+        recipe,
+      });
     });
+  }
 }
 
-module.exports.init = init;
+module.exports = function(expressApp) {
+  return new ImportController(expressApp);
+};

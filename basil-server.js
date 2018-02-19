@@ -40,17 +40,17 @@ app.use(bodyParser.urlencoded({'extended': 'true'}));           // parse applica
 app.use(bodyParser.json());
 
 // -------------------------------------------------------------------------
-// EXPRESS ROUTING
+// CONTROLLERS ROUTING
 // -------------------------------------------------------------------------
 
-authController.init(app, passport);
-cookingRecipeController.init(app);
-groceryController.init(app);
-importController.init(app);
-ingredientController.init(app);
-instructionController.init(app);
-recipeController.init(app);
-tagController.init(app);
+const authController = require('./server/controllers/authController')(app);
+const cookingRecipeController = require('./server/controllers/cookingRecipeController')(app);
+const groceryController = require('./server/controllers/groceryController')(app);
+const importController = require('./server/controllers/importController')(app);
+const ingredientController = require('./server/controllers/ingredientController')(app);
+const instructionController = require('./server/controllers/instructionController')(app);
+const recipeController = require('./server/controllers/recipeController')(app);
+const tagController = require('./server/controllers/tagController')(app);
 
 // -------------------------------------------------------------------------
 
@@ -62,16 +62,16 @@ async.series([
     (callback) => {
         // Fire it up (start our server)
         app.listen(CONFIG.express.port, (error) => {
-            process.stdout.write(`\x1b[32mExpress server listening on port ${CONFIG.express.port}\x1b[0m`);
+            process.stdout.write(`\x1b[32mExpress server listening on port ${CONFIG.express.port}\x1b[0m` + '\n');
             callback(error);
         });
     },
 ], (error) => {
     if (error) {
         if (error.name == 'MongoError') {
-            process.stderr.write(`\x1b[31mMongoDB error: ${error.message}\x1b[0m`);
+            process.stderr.write(`\x1b[31mMongoDB error: ${error.message}\x1b[0m` + '\n');
         } else {
-            process.stderr.write(`\x1b[31mExpress error: ${error.message}\x1b[0m`);
+            process.stderr.write(`\x1b[31mExpress error: ${error.message}\x1b[0m` + '\n');
         }
         process.exit(1);
     }

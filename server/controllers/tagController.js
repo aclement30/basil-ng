@@ -1,15 +1,21 @@
 const TagService = require('../services/tag');
+const authorize = require('../middlewares/authorization');
 
-const errorHandler = require('../errorHandler');
-const requireAuth = require('../services/auth').check;
+class TagController {
 
-function init(app) {
-    app.get('/api/tags', requireAuth, (req, res) => {
-        TagService.getTags((error, tags) => {
-            res.header('X-Total-Count', tags.length);
-            res.send(tags);
-        });
+  constructor(app) {
+    // Configure routes
+    app.get('/api/tags', authorize, this.getTags);
+  }
+
+  getTags(req, res) {
+    TagService.getTags((error, tags) => {
+      res.header('X-Total-Count', tags.length);
+      res.send(tags);
     });
+  }
 }
 
-module.exports.init = init;
+module.exports = function(expressApp) {
+  return new TagController(expressApp);
+};

@@ -1,112 +1,123 @@
 const CookingRecipe = require('../models/cookingRecipe');
 const Recipe = require('../models/recipe');
 const errorHandler = require('../errorHandler');
-const requireAuth = require('../services/auth').check;
+const authorize = require('../middlewares/authorization');
 
-function init(app) {
-    app.get('/api/cookingRecipes', requireAuth, (req, res) => {
-        if (req.user) {
-            CookingRecipe.find({ isCooking: true, user: req.user._id }).exec((error, cookingRecipes) => {
-                let cookingRecipeIds = cookingRecipes.reduce((ids, object) => {
-                    ids.push(object.recipe);
-                    return ids;
-                }, []);
+class CookingRecipeController {
 
-                Recipe.find({ isDeleted: false, _id: { $in: cookingRecipeIds } }).exec((err, recipes) => {
-                    let flattenRecipes = recipes.map((recipe) => {
-                        const cookingRecipe = cookingRecipes.find(listRecipe => (String(listRecipe.recipe) === String(recipe._id)));
+  constructor(app) {
+    // Configure routes
+    app.get('/api/cookingRecipes', authorize, this.getCookingRecipes);
+    app.patch('/api/cookingRecipes/:recipeId/startCooking', authorize, this.startCooking);
+    app.patch('/api/cookingRecipes/:recipeId/servings', authorize, this.updateServings);
+    app.patch('/api/cookingRecipes/:recipeId/stopCooking', authorize, this.stopCooking);
+  }
 
-                        return {
-                            _id: recipe._id,
-                            title: recipe.title,
-                            image: recipe.image,
-                            started: cookingRecipe.started,
-                            multiplier: cookingRecipe.multiplier,
-                        };
-                    });
+  getCookingRecipes(req, res) {
+    if (req.user) {
+      CookingRecipe.find({ isCooking: true, user: req.user._id }).exec((error, cookingRecipes) => {
+        let cookingRecipeIds = cookingRecipes.reduce((ids, object) => {
+          ids.push(object.recipe);
+          return ids;
+        }, []);
 
-                    res.send(flattenRecipes);
-                });
-            });
+        Recipe.find({ isDeleted: false, _id: { $in: cookingRecipeIds } }).exec((err, recipes) => {
+          let flattenRecipes = recipes.map((recipe) => {
+            const cookingRecipe = cookingRecipes.find(listRecipe => (String(listRecipe.recipe) === String(recipe._id)));
+
+            return {
+              _id: recipe._id,
+              title: recipe.title,
+              image: recipe.image,
+              started: cookingRecipe.started,
+              multiplier: cookingRecipe.multiplier,
+            };
+          });
+
+          res.send(flattenRecipes);
+        });
+      });
+    } else {
+      res.status(403).send();
+    }
+  }
+
+  startCooking(req, res) {
+    const recipeId = req.params.recipeId;
+    const multiplier = req.body.multiplier;
+
+    if (req.user) {
+      CookingRecipe.findOne({ recipe: recipeId, user: req.user._id }).exec((error, cookingRecipe) => {
+        if (cookingRecipe) {
+          CookingRecipe.update({ _id: cookingRecipe._id }, { $set: { isCooking: true, multiplier } }, (err) => {
+            if (!err) {
+              res.sendStatus(200);
+            }
+          });
         } else {
-            res.status(403).send();
+          // Create a new model instance with our object
+          const cookingRecipe = new CookingRecipe({
+            recipe: recipeId,
+            multiplier,
+            user: req.user,
+          });
+
+          cookingRecipe.save((error) => {
+            if (!error) {
+              res.sendStatus(200);
+            } else {
+              errorHandler.client(error, res);
+            }
+          });
         }
-    });
+      });
+    } else {
+      res.status(403).send();
+    }
+  }
 
-    app.patch('/api/cookingRecipes/:recipeId/startCooking', requireAuth, (req, res) => {
-        const recipeId = req.params.recipeId;
-        const multiplier = req.body.multiplier;
+  updateServings(req, res) {
+    const recipeId = req.params.recipeId;
+    const multiplier = req.body.multiplier;
 
-        if (req.user) {
-            CookingRecipe.findOne({ recipe: recipeId, user: req.user._id }).exec((error, cookingRecipe) => {
-                if (cookingRecipe) {
-                    CookingRecipe.update({ _id: cookingRecipe._id }, { $set: { isCooking: true, multiplier } }, (err) => {
-                        if (!err) {
-                            res.sendStatus(200);
-                        }
-                    });
-                } else {
-                    // Create a new model instance with our object
-                    const cookingRecipe = new CookingRecipe({
-                        recipe: recipeId,
-                        multiplier,
-                        user: req.user,
-                    });
-
-                    cookingRecipe.save((error) => {
-                        if (!error) {
-                            res.sendStatus(200);
-                        } else {
-                            errorHandler.client(error, res);
-                        }
-                    });
-                }
-            });
+    if (req.user) {
+      CookingRecipe.findOne({ recipe: recipeId, user: req.user._id }).exec((error, cookingRecipe) => {
+        if (cookingRecipe) {
+          CookingRecipe.update({ _id: cookingRecipe._id }, { $set: { multiplier } }, (err) => {
+            if (!err) {
+              res.sendStatus(200);
+            }
+          });
         } else {
-            res.status(403).send();
+          res.sendStatus(200);
         }
-    });
+      });
+    } else {
+      res.status(403).send();
+    }
+  }
 
-    app.patch('/api/cookingRecipes/:recipeId/servings', requireAuth, (req, res) => {
-        const recipeId = req.params.recipeId;
-        const multiplier = req.body.multiplier;
+  stopCooking(req, res) {
+    const recipeId = req.params.recipeId;
 
-        if (req.user) {
-            CookingRecipe.findOne({ recipe: recipeId, user: req.user._id }).exec((error, cookingRecipe) => {
-                if (cookingRecipe) {
-                    CookingRecipe.update({ _id: cookingRecipe._id }, { $set: { multiplier } }, (err) => {
-                        if (!err) {
-                            res.sendStatus(200);
-                        }
-                    });
-                } else {
-                    res.sendStatus(200);
-                }
-            });
+    if (req.user) {
+      CookingRecipe.findOne({ recipe: recipeId, user: req.user._id }).exec((error, cookingRecipe) => {
+        if (cookingRecipe) {
+          CookingRecipe.update({ _id: cookingRecipe._id }, { $set: { isCooking: false } }, (err) => {
+            if (!err) {
+              res.sendStatus(200);
+            }
+          });
         } else {
-            res.status(403).send();
+          res.sendStatus(200);
         }
-    });
-
-    app.patch('/api/cookingRecipes/:recipeId/stopCooking', requireAuth, function (req, res) {
-        const recipeId = req.params.recipeId;
-
-        if (req.user) {
-            CookingRecipe.findOne({ recipe: recipeId, user: req.user._id }).exec((error, cookingRecipe) => {
-                if (cookingRecipe) {
-                    CookingRecipe.update({_id: cookingRecipe._id}, {$set: { isCooking: false } }, (err) => {
-                        if (!err) {
-                            res.sendStatus(200);
-                        }
-                    });
-                } else {
-                    res.sendStatus(200);
-                }
-            });
-        } else {
-            res.status(403).send();
-        }
-    });
+      });
+    } else {
+      res.status(403).send();
+    }
+  }
 }
 
-module.exports.init = init;
+module.exports = function(expressApp) {
+  return new CookingRecipeController(expressApp);
+};
