@@ -34,7 +34,7 @@ export class RecipeService {
     constructor(private http: HttpClient) {}
 
     query(params: any): Observable<Recipe[]> {
-        return this.http.get(this.apiUrl, params)
+        return this.http.get(this.apiUrl, { params })
             .map(response => (response as any).map((data: any) => new Recipe(data)));
     }
 
