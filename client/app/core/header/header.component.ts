@@ -2,12 +2,11 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { APP_CONFIG } from '../../app.config';
-import { SecurityService } from '../../services/security.service';
 import { UIActions } from '../../store/ui.actions';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
     selector: 'header',
-    providers: [ SecurityService ],
     templateUrl: './header.component.html',
     styleUrls: ['header.component.scss'],
 })
@@ -17,7 +16,7 @@ export class HeaderComponent {
 
     constructor(
         private router: Router,
-        private securityService: SecurityService,
+        private authService: AuthService,
         private uiActions: UIActions,
     ) {}
 
@@ -26,7 +25,7 @@ export class HeaderComponent {
     }
 
     logout() {
-        this.securityService.logout().subscribe(() => {
+        this.authService.logoutUser().subscribe(() => {
             this.router.navigate(['/login']);
         });
     }

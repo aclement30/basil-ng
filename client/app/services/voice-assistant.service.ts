@@ -13,7 +13,7 @@ import { UIActions } from '../store/ui.actions';
 import { CookingRecipesActions } from '../store/cooking-recipes.actions';
 import { Store } from '@ngrx/store';
 import { AppState } from '../store/index';
-import User from '../core/user.model';
+import { User } from '../models/user.model';
 
 const BOT_HEADERS = { headers: { 'Authorization': `Bearer ${APP_CONFIG.bot.accessToken}` } };
 

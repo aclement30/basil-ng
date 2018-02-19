@@ -1,11 +1,10 @@
 const async = require('async');
 const bodyParser = require('body-parser');
 const express = require('express');
-const expressSession = require('express-session');
 const mongoose = require('mongoose');
-const mongoDBStore = require('connect-mongodb-session')(expressSession);
-const passport = require('passport');
 const compression = require('compression');
+const passport = require('passport');
+const authStrategy = require('./server/authStrategy');
 
 // -------------------------------------------------------------------------
 // CONFIG
@@ -16,36 +15,6 @@ require('dotenv').config();
 
 const CONFIG = require('./config/server');
 
-const cookieStore = new mongoDBStore({
-    uri: CONFIG.db,
-    collection: 'sessions',
-});
-
-// Catch errors
-cookieStore.on('error', (error) => {
-    assert.ifError(error);
-    assert.ok(false);
-});
-
-// -------------------------------------------------------------------------
-// CONTROLLERS
-// -------------------------------------------------------------------------
-
-const authController = require('./server/controllers/authController');
-const cookingRecipeController = require('./server/controllers/cookingRecipeController');
-const groceryController = require('./server/controllers/groceryController');
-const importController = require('./server/controllers/importController');
-const ingredientController = require('./server/controllers/ingredientController');
-const instructionController = require('./server/controllers/instructionController');
-const recipeController = require('./server/controllers/recipeController');
-const tagController = require('./server/controllers/tagController');
-
-// -------------------------------------------------------------------------
-// SERVICES
-// -------------------------------------------------------------------------
-
-const AuthService = require('./server/services/auth');
-
 // -------------------------------------------------------------------------
 // EXPRESS SETUP
 // -------------------------------------------------------------------------
@@ -55,26 +24,11 @@ const PROD = process.env.NODE_ENV === 'production';
 // Create an express instance
 const app = express();
 
-// Configure session & Passport auth
-app.use(expressSession({
-    secret: CONFIG.sessionSecretKey,
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
-    },
-    name: 'basil',
-    rolling: true,
-    resave: true,
-    store: cookieStore,
-    saveUninitialized: true
-}));
-app.use(passport.initialize());
-app.use(passport.session());
-
-// Setup Passport for authentication
-AuthService.setup(passport);
-
 // Disable etag headers on responses
 app.disable('etag');
+
+// Authenticate user with access token
+passport.use(authStrategy);
 
 // Serve compressed (.gz) files
 app.use(compression());

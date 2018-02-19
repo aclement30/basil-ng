@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TagInputModule } from 'ngx-chips';
@@ -29,6 +29,8 @@ import { SessionActions } from './store/session.actions';
 import { TimersActions } from './store/timers.actions';
 import { UIActions } from './store/ui.actions';
 import { getTimers } from './store/timers.reducer';
+import { ErrorInterceptor } from './interceptors/error.interceptor';
+import { TokenInterceptor } from './interceptors/token.interceptor';
 
 @NgModule({
     imports: [
@@ -56,6 +58,8 @@ import { getTimers } from './store/timers.reducer';
         SessionActions,
         TimersActions,
         UIActions,
+        { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     ],
     bootstrap: [ AppComponent ]
 })

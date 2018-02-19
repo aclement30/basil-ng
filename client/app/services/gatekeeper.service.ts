@@ -2,27 +2,34 @@ import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
-import { SecurityService } from './security.service';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class Gatekeeper implements CanActivate {
     constructor(
-        private router: Router,
-        private securityService: SecurityService
+      private authService: AuthService,
+      private router: Router,
     ) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | boolean {
-        const routeName = route.url.join('');
+      const url: string = state.url;
 
-        if (routeName === 'login' && this.securityService.isAuthenticated) {
-            this.router.navigate(['/']);
-            return false;
-        } else if (routeName !== 'login' && !this.securityService.isAuthenticated) {
-            return this.securityService.session$
-                .skipWhile((session) => (session.loading))
-                .map(() => (this.securityService.isAuthenticated));
+      if (this.authService.userAuthenticated$.getValue()) {
+        if (url === '/login') {
+          this.router.navigate(['/recipes']);
+          return false;
         }
 
         return true;
+      }
+
+      if (url === '/login') { return true; }
+
+      // Store the attempted URL for redirecting
+      this.authService.redirectUrl = url;
+
+      // Navigate to the login page with extras
+      this.router.navigate(['/login']);
+      return false;
     }
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Action, Store } from '@ngrx/store';
 
 import { ActionWithPayload, AppState } from './index';
-import User from '../core/user.model';
+import { User } from '../models/user.model';
 
 class SetUser implements ActionWithPayload {
   readonly type = SessionActions.SET_USER;

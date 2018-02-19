@@ -1,6 +1,6 @@
 import { ActionWithPayload, AppState } from './index';
 import { SessionActions } from './session.actions';
-import User from '../core/user.model';
+import { User } from '../models/user.model';
 import { createSelector } from '@ngrx/store';
 
 export interface SessionState {

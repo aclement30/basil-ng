@@ -1,64 +1,55 @@
-const authService = require('../services/auth');
-const requireAuth = authService.check;
+const { OAuth2Client } = require('google-auth-library');
 
-function init(app, passport) {
+const CONFIG = require('../../config/server');
+const GoogleAuthService = require('../services/google-auth-service');
+const authorize = require('../middlewares/authorization');
 
-    // Google OAuth redirection page
-    app.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'], accessType: 'offline' }));
+class AuthController {
 
-    // Callback after Google authenticates user
-    app.get('/auth/google/callback', (req, res, next) => {
-        passport.authenticate('google', (error, user, info) =>{
-            if (error) {
-                return res.redirect('/login?error=' + error);
-            }
+  constructor(app) {
+    this.authClient = new OAuth2Client(
+      CONFIG.googleOAuth.clientID,
+      CONFIG.googleOAuth.clientSecret,
+    );
 
-            if (!user) {
-                return res.redirect('/login');
-            }
+    // Configure routes
+    app.post('/api/access_token', this.authenticate.bind(this));
+    app.get('/api/user', authorize, this.getUserProfile.bind(this));
+  }
 
-            req.logIn(user, (err) => {
-                if (err) {
-                    return res.redirect('/login?error=' + err);
-                }
+  authenticate(req, res) {
+    let authService;
 
-                return res.redirect('/?uid=' + user._id);
-            });
+    if (req.body.provider === 'google') {
+      authService = new GoogleAuthService();
+    } else {
+      res.status(400).send({ error: 'Unsupported auth provider: ' + req.body.provider});
+      return;
+    }
 
-        })(req, res, next);
+    authService.authenticateUserFromToken(req.body, (error, tokens) => {
+      if (error) {
+        res.status(401).send({ error });
+        return;
+      }
+
+      res.status(200).send(tokens);
     });
+  }
 
-    // Connected user info page
-    app.get('/api/user', requireAuth, (req, res) => {
-        if (req.user) {
-            res.send({
-                id: req.user._id,
-                name: req.user.name,
-                email: req.user.email,
-                accessToken: req.user.google.accessToken,
-                refreshToken: req.user.google.refreshToken,
-            });
-        } else {
-            res.status(403).send();
-        }
-    });
-
-    app.get('/api/ping', (req, res) => {
-        res.status(200).send();
-    });
-
-    // User logout
-    app.post('/auth/token', authService.validateRefreshToken, authService.generateAccessToken, (req, res) => {
-        res.status(201).json({
-            accessToken: res.accessToken
-        });
-    });
-
-    // User logout
-    app.get('/auth/logout', (req, res) => {
-        req.logout();
-        res.redirect('/');
-    });
+  getUserProfile(req, res) {
+    if (req.user) {
+      res.send({
+        id: req.user._id,
+        name: req.user.name,
+        email: req.user.email,
+      });
+    } else {
+      res.status(403).send();
+    }
+  }
 }
 
-module.exports.init = init;
+module.exports = function(expressApp) {
+  return new AuthController(expressApp);
+};

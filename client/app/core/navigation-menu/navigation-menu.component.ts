@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
-import { SecurityService } from '../../services/security.service';
+import { AuthService } from '../../services/auth.service';
 import { RecipeSummary } from '../../models/recipe.model';
 import { Timer } from '../../models/timer.model';
 import { UIActions } from '../../store/ui.actions';
@@ -29,7 +29,7 @@ export class NavigationMenuComponent implements OnInit, OnDestroy {
 
     constructor(
         private router: Router,
-        private securityService: SecurityService,
+        private authService: AuthService,
         private store: Store<AppState>,
         private uiActions: UIActions,
     ) {}
@@ -70,7 +70,7 @@ export class NavigationMenuComponent implements OnInit, OnDestroy {
     }
 
     logout() {
-        this.securityService.logout().subscribe(() => {
+        this.authService.logoutUser().subscribe(() => {
             this.router.navigate(['/login']);
         });
     }

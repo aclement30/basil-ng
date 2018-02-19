@@ -25,11 +25,12 @@ import { DialogService } from '../services/dialog.service';
 import { Gatekeeper } from '../services/gatekeeper.service';
 import { NotificationService } from '../services/notification.service';
 import { OCRService } from '../services/ocr.service';
-import { SecurityService } from '../services/security.service';
 import { SpeakerService } from '../services/speaker.service';
 import { TimerService } from '../services/timer.service';
 import { VoiceAssistantService } from '../services/voice-assistant.service';
 import { Watchman } from "../services/watchman.service";
+import { AuthService } from '../services/auth.service';
+import { GoogleAuthService } from '../services/google-auth.service';
 
 @NgModule({
     imports: [ CommonModule, FormsModule, NgbModule, RouterModule ],
@@ -51,12 +52,15 @@ import { Watchman } from "../services/watchman.service";
         VoiceAssistantButtonComponent
     ],
     providers: [
+        {
+            provide: AuthService,
+            useClass: GoogleAuthService,
+        },
         CommandParser,
         DialogService,
         Gatekeeper,
         NotificationService,
         OCRService,
-        SecurityService,
         SpeakerService,
         TimerService,
         VoiceAssistantService,

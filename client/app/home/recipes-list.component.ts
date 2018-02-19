@@ -6,12 +6,12 @@ import { Observable } from 'rxjs/Observable';
 import { Recipe } from '../models/recipe.model';
 import { RecipeService } from '../services/recipe.service';
 import { Tag } from '../models/tag.model';
-import User from '../core/user.model';
-import { SecurityService } from '../services/security.service';
+import { User } from '../models/user.model';
 import { getCurrentTag, getTags } from '../store/tags.reducer';
 import { Store } from '@ngrx/store';
 import { AppState } from '../store/index';
 import { TagsActions } from '../store/tags.actions';
+import { getCurrentUser } from '../store/session.reducer';
 
 @Component({
     selector: 'recipes-list',
@@ -32,7 +32,6 @@ export class RecipesListComponent implements OnInit, OnDestroy {
         private recipeService: RecipeService,
         private route: ActivatedRoute,
         private router: Router,
-        private securityService: SecurityService,
         private store: Store<AppState>,
         private tagsActions: TagsActions) { }
 
@@ -48,12 +47,10 @@ export class RecipesListComponent implements OnInit, OnDestroy {
     onParamsChange = (params) => {
         const userId = params.userId;
         if (!userId) {
-          this.securityService.user$
-              .filter(Boolean)
-              .take(1)
-              .subscribe((currentUser: User) => {
-                  this.router.navigate(['recipes', 'user', currentUser.id]);
-              });
+          this.store.select(getCurrentUser).take(1)
+            .subscribe((currentUser: User) => {
+                this.router.navigate(['recipes', 'user', currentUser.id]);
+            });
         } else {
           this.getRecipes(userId);
         }
