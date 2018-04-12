@@ -93,4 +93,21 @@
     display: block;
     margin: 20px auto 0;
   }
+
+  .links {
+    border-top: 1px solid rgba($m-gray, 0.3);
+    text-align: center;
+    padding: 5px 0 20px;
+    margin: 0 30px;
+
+    a {
+      color: $m-gray;
+      cursor: pointer;
+      font-size: 12px;
+
+      &:hover {
+        color: $brand-primary;
+      }
+    }
+  }
 }

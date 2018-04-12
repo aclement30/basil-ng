@@ -31,6 +31,8 @@
     "@ngrx/effects": "^5.0.1",
     "@ngrx/store": "^5.0.0",
     "@ngrx/store-devtools": "^5.0.1",
+    "@ngx-translate/core": "^9.1.1",
+    "@ngx-translate/http-loader": "^3.0.1",
     "angular2-uuid": "^1.1.1",
     "async": "^2.5.0",
     "bcryptjs": "^2.4.3",

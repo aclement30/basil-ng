@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
 import { TagInputModule } from 'ngx-chips';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { CoreModule } from '../core/core.module';
 import { CookingRecipeService } from '../services/cooking-recipe.service';
@@ -22,6 +23,7 @@ import { CookingRecipesActions } from '../store/cooking-recipes.actions';
       NgbModule,
       RouterModule,
       TagInputModule,
+      TranslateModule,
     ],
     declarations: [
       FormSidebarComponent,

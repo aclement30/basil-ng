@@ -13,16 +13,25 @@ export class RecipeImportResult {
 
 export const ignoredGroceryItems = [
     'sel',
+    'salt',
     'sel et poivre',
+    'salt and pepper',
     'poivre',
+    'pepper',
     'poivre du moulin',
     'poivre noir',
+    'black pepper',
     'poivre noir du moulin',
     'huile d\'olive',
+    'olive oil',
     'huile',
+    'oil',
     'sucre',
+    'sugar',
     'farine',
+    'floor',
     'eau',
+    'water',
 ];
 
 @Injectable()

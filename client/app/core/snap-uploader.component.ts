@@ -14,10 +14,10 @@ export const SCAN_INSTRUCTIONS = 'ocr/SCAN_INSTRUCTIONS';
             
             <div class="thumbnail" *ngIf="selectedPicture" [ngStyle]="{'background-image': 'url(' + thumbnail + ')'}"></div>
             
-            <p class="description" *ngIf="type === '${SCAN_INGREDIENTS}'"><strong>Ajouter des ingrédients</strong><br><small>en prenant une photo</small></p>
-            <p class="description" *ngIf="type === '${SCAN_INSTRUCTIONS}'"><strong>Ajouter des étapes</strong><br><small>en prenant une photo</small></p>
+            <p class="description" *ngIf="type === '${SCAN_INGREDIENTS}'"><strong>{{ 'recipeForm.addIngredients' | translate }}</strong><br><small>{{ 'recipeForm.byTakingPicture' | translate }}</small></p>
+            <p class="description" *ngIf="type === '${SCAN_INSTRUCTIONS}'"><strong>{{ 'recipeForm.addInstructions' | translate }}</strong><br><small>{{ 'recipeForm.byTakingPicture' | translate }}</small></p>
             
-            <p class="loading-message">Analyse de la photo</p>
+            <p class="loading-message">{{ 'recipeForm.analyzingPicture' | translate }}</p>
         </button>
         
         <input type="file" (change)="fileChangeEvent($event)" accept="image/*" capture="camera">
@@ -28,7 +28,7 @@ export const SCAN_INSTRUCTIONS = 'ocr/SCAN_INSTRUCTIONS';
 export class SnapUploaderComponent {
     @Input() type: string;
     @Output() getResult = new EventEmitter<Array<string>>();
-    @HostBinding('class.processing') isProcessing: boolean = false;
+    @HostBinding('class.processing') isProcessing = false;
 
     public selectedPicture: File;
     public thumbnail: string = null;

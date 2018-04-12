@@ -1,0 +1,103 @@
+{
+  "common": {
+    "tagline": "Livre de recettes",
+    "vocalAssistant": "Assistant vocal",
+    "cookMode": "Cookmode",
+    "cookingRecipes": "Recettes en cours",
+    "searchRecipe": "Rechercher une recette",
+    "step": "Étape",
+    "recipe": "Recette",
+    "ingredient": "Ingrédient",
+    "ingredients": "Ingrédients",
+    "preparation": "Préparation",
+    "portions": "Portions",
+    "categories": "Catégories",
+    "source": "Source",
+    "timer": "Minuterie",
+    "timeElapsed": "Temps écoulé",
+    "timeElapsedForTimer": "{{ timer }} : temps écoulé",
+    "hours": "heures",
+    "minutes": "minutes",
+    "seconds": "secondes",
+    "actions": {
+      "add": "Ajouter",
+      "cancel": "Annuler",
+      "finish": "Terminer",
+      "import": "Importer",
+      "save": "Enregistrer"
+    },
+    "unknownError": "Une erreur est survenue (code {{ status }})",
+    "sessionExpired": "Vous avez été déconnecté suite à l'expiration de la session.",
+    "retryConnection": "Reconnexion au serveur en cours..."
+  },
+  "groceries": {
+    "title": "Liste de courses",
+    "empty": "Votre liste de courses est vide",
+    "addItem": "Ajouter un ingrédient",
+    "clearCrossedItems": "Effacer les items rayés"
+  },
+  "home": {
+    "title": "Recettes",
+    "loading": "Chargement des recettes...",
+    "empty": "La liste de recettes est vide",
+    "allRecipes": "Toutes les recettes",
+    "addRecipe": "Ajouter une recette",
+    "emptyCategory": "Cette catégorie ne contient aucune recette"
+  },
+  "login": {
+    "welcome": "Bienvenue !",
+    "invite": "Connectez-vous à votre compte pour continuer.",
+    "loginWithGoogle": "Connexion avec Google"
+  },
+  "menu": {
+    "recipes": "Recettes",
+    "addRecipe": "Ajouter une recette",
+    "groceriesList": "Liste de courses",
+    "logout": "Déconnexion"
+  },
+  "recipeDetail": {
+    "currentRecipe": "en cours",
+    "finishRecipe": "la recette",
+    "addShoppingList": "Ajouter à la liste de courses",
+    "oneExistingTimer": "Il y a 1 minuterie en cours pour cette recette. Voulez-vous l'arrêter maintenant ?",
+    "manyExistingTimers": "Il y a {{ count }} minuteries en cours pour cette recette. Voulez-vous les arrêter maintenant ?",
+    "ingredientsAddedShoppingList": "Les ingrédients ont été ajoutés à la liste de course."
+  },
+  "recipeForm": {
+    "createTitle": "Ajouter une recette",
+    "editTitle": "Modifier la recette",
+    "webImport": "Recette Web",
+    "newRecipe": "Nouvelle recette",
+    "enterWebpageUrl": "Entrez l'URL de la page Web contenant la recette",
+    "titleField": "Titre",
+    "requiredField": "Champ requis",
+    "preparationSteps": "Étapes de préparation",
+    "yield": "Rendement",
+    "otherCategories": "Autres catégories",
+    "categoriesPlaceholder": "Cakes, entrées...",
+    "photo": "Photo",
+    "photoUrl": "Photo (URL)",
+    "sourceUrl": "Source (URL)",
+    "notes": "Notes",
+    "addIngredients": "Ajouter des ingrédients",
+    "addInstructions": "Ajouter des étapes",
+    "byTakingPicture": "en prenant une photo",
+    "analyzingPicture": "Analyse de la photo",
+    "deleteRecipe": "Supprimer la recette",
+    "recipeSaved": "La recette a été enregistrée.",
+    "recipeAdded": "La recette a été ajoutée.",
+    "askDeleteRecipe": "Voulez-vous vraiment supprimer cette recette ?",
+    "recipeDeleted": "La recette a été supprimée.",
+    "parseError": "Erreur lors de l'analyse de l'image !"
+  },
+  "voiceAssistant": {
+    "listening": "Je suis à l'écoute.",
+    "manySimilarIngredients": "Il y a plusieurs {{ ingredient }} dans les ingrédients. Pouvez-vous préciser ?",
+    "cannotFindIngredient": "Je ne trouve pas l'ingrédient {{ ingredient }}. Pouvez-vous préciser ?",
+    "noCookingRecipe": "Vous n'avez aucune recette en cours !",
+    "recipeCompleted": "La recette est terminée.",
+    "lastStep": "Dernière étape",
+    "cannotFindStep": "Je ne trouve pas cette étape dans la recette !",
+    "unknownCommand": "Désolé. Je ne supporte pas encore cette commande."
+  }
+}

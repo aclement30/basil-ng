@@ -5,7 +5,7 @@
 
   <ul class="main-menu">
     <li class="sub-menu recipes toggled">
-      <a (click)="navigateTo(['/recipes'])"><i class="zmdi zmdi-apps"></i> Recettes</a>
+      <a (click)="navigateTo(['/recipes'])"><i class="zmdi zmdi-apps"></i> {{ 'menu.recipes' | translate }}</a>
       <ul class="cooking-recipes">
         <li *ngFor="let recipe of cookingRecipes$ | async">
           <a (click)="navigateTo(['/recipes/detail', recipe._id])">{{ recipe.title }}</a>
@@ -13,13 +13,13 @@
       </ul>
     </li>
     <li>
-      <a (click)="navigateTo(['/recipes/add'])"><i class="zmdi zmdi-plus"></i> Ajouter une recette</a>
+      <a (click)="navigateTo(['/recipes/add'])"><i class="zmdi zmdi-plus"></i> {{ 'menu.addRecipe' | translate }}</a>
     </li>
     <li>
-      <a (click)="navigateTo(['/groceries'])"><i class="zmdi zmdi-assignment"></i> Liste de courses</a>
+      <a (click)="navigateTo(['/groceries'])"><i class="zmdi zmdi-assignment"></i> {{ 'menu.groceriesList' | translate }}</a>
     </li>
     <li>
-      <a (click)="logout()"><i class="zmdi zmdi-time-restore"></i> Déconnexion</a>
+      <a (click)="logout()"><i class="zmdi zmdi-time-restore"></i> {{ 'menu.logout' | translate }}</a>
     </li>
   </ul>
 

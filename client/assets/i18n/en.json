@@ -1,0 +1,103 @@
+{
+  "common": {
+    "tagline": "Recipes book",
+    "vocalAssistant": "Voice assistant",
+    "cookMode": "Cookmode",
+    "cookingRecipes": "Cooking recipes",
+    "searchRecipe": "Find a recipe",
+    "step": "Step",
+    "recipe": "Recipe",
+    "ingredient": "Ingredient",
+    "ingredients": "Ingredients",
+    "preparation": "Preparation",
+    "portions": "Portions",
+    "categories": "Categories",
+    "source": "Source",
+    "timer": "Timer",
+    "timeElapsed": "Elapsed time",
+    "timeElapsedForTimer": "{{ timer }} : time's up",
+    "hours": "hours",
+    "minutes": "minutes",
+    "seconds": "seconds",
+    "actions": {
+      "add": "Add",
+      "cancel": "Cancel",
+      "finish": "Complete",
+      "import": "Import",
+      "save": "Save"
+    },
+    "unknownError": "Something happened! (error code {{ status }})",
+    "sessionExpired": "You have been logged out after your session expired.",
+    "retryConnection": "Reconnecting to server..."
+  },
+  "groceries": {
+    "title": "Groceries list",
+    "empty": "Your groceries list is empty",
+    "addItem": "Add an ingredient",
+    "clearCrossedItems": "Clear crossed items"
+  },
+  "home": {
+    "title": "Recipes",
+    "loading": "Loading recipes...",
+    "empty": "Your recipes list is empty",
+    "allRecipes": "All recipes",
+    "addRecipe": "Add a recipe",
+    "emptyCategory": "This category doesn't contain any recipe"
+  },
+  "login": {
+    "welcome": "Welcome!",
+    "invite": "Please login with your account to continue.",
+    "loginWithGoogle": "Login with Google"
+  },
+  "menu": {
+    "recipes": "Recipes",
+    "addRecipe": "Add a recipe",
+    "groceriesList": "Groceries list",
+    "logout": "Logout"
+  },
+  "recipeDetail": {
+    "currentRecipe": "cooking",
+    "finishRecipe": "the recipe",
+    "addShoppingList": "Add to groceries list",
+    "oneExistingTimer": "There is 1 active timer this recipe. Do you want to stop it now?",
+    "manyExistingTimers": "There are {{ count }} active timers for this recipe. Do you want to stop those now?",
+    "ingredientsAddedShoppingList": "Ingredients have been added to your groceries list."
+  },
+  "recipeForm": {
+    "createTitle": "Add a recipe",
+    "editTitle": "Edit recipe",
+    "webImport": "Web recipe",
+    "newRecipe": "New recipe",
+    "enterWebpageUrl": "Enter the URL of the webpage containing the recipe",
+    "titleField": "Title",
+    "requiredField": "Required field",
+    "preparationSteps": "Preparation steps",
+    "yield": "Yield",
+    "otherCategories": "Other categories",
+    "categoriesPlaceholder": "Cakes, soups...",
+    "photo": "Photo",
+    "photoUrl": "Photo (URL)",
+    "sourceUrl": "Source (URL)",
+    "notes": "Notes",
+    "addIngredients": "Add ingredients",
+    "addInstructions": "Add steps",
+    "byTakingPicture": "by taking a picture",
+    "analyzingPicture": "Processing the picture",
+    "deleteRecipe": "Delete the recipe",
+    "recipeSaved": "Recipe saved.",
+    "recipeAdded": "Recipe added.",
+    "askDeleteRecipe": "Do you really want to delete this recipe?",
+    "recipeDeleted": "Recipe deleted.",
+    "parseError": "Error while processing the picture!"
+  },
+  "voiceAssistant": {
+    "listening": "I'm listening.",
+    "manySimilarIngredients": "There are many {{ ingredient }} in the ingredients. Can you clarify?",
+    "cannotFindIngredient": "I cannot find the ingredient {{ ingredient }}. Can you clarify?",
+    "noCookingRecipe": "You have no cooking recipe!",
+    "recipeCompleted": "Recipe completed.",
+    "lastStep": "Last step",
+    "cannotFindStep": "I cannot find this step in the recipe!",
+    "unknownCommand": "Sorry. I doesn't understand this command yet."
+  }
+}

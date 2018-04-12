@@ -8,6 +8,7 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import * as urlParser from 'url-parse';
+import { TranslateService } from '@ngx-translate/core';
 
 import { AuthService } from '../services/auth.service';
 import { NotificationService } from '../services/notification.service';
@@ -17,7 +18,8 @@ export class TokenInterceptor implements HttpInterceptor {
 
   constructor(
     private injector: Injector,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private translate: TranslateService,
   ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -39,7 +41,7 @@ export class TokenInterceptor implements HttpInterceptor {
 
         authService.logoutUser().subscribe(() => {
           this.notificationService.notify(
-            'Vous avez été déconnecté suite à l\'expiration de la session.',
+            this.translate.instant('common.sessionExpired'),
             'warning',
             { icon: 'zmdi zmdi-alert-triangle' },
           );

@@ -6,7 +6,7 @@ import { GroceryItem } from '../models/grocery-item.model';
 @Component({
     selector: 'add-item',
     template: `
-        <input type="search" [(ngModel)]="newItemText" placeholder="Ajouter un ingrédient" class="form-control" (keyup)="onKeyUp($event)">
+        <input type="search" [(ngModel)]="newItemText" [placeholder]="'groceries.addItem' | translate" class="form-control" (keyup)="onKeyUp($event)">
         <button type="button" class="btn btn-default" (click)="exitEditMode()">OK</button>
     `,
     styleUrls: ['add-item.component.scss'],

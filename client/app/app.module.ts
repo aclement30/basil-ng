@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TagInputModule } from 'ngx-chips';
@@ -8,6 +8,8 @@ import { Store, StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import './store/rxjs-operators';
 
 import { AppComponent } from './core/app.component';
@@ -32,6 +34,10 @@ import { getTimers } from './store/timers.reducer';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { TokenInterceptor } from './interceptors/token.interceptor';
 
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
+
 @NgModule({
     imports: [
         AppRoutingModule,
@@ -51,6 +57,13 @@ import { TokenInterceptor } from './interceptors/token.interceptor';
             maxAge: 10
         }),
         TagInputModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useFactory: HttpLoaderFactory,
+            deps: [HttpClient]
+          }
+        }),
     ],
     declarations: [],
     providers: [
@@ -68,6 +81,7 @@ export class AppModule {
     constructor(
         private store: Store<AppState>,
         private timerService: TimerService,
+        private translate: TranslateService,
     ) {
         // const enhancers = [
         //     persistState('session', { key: 'basil.session' }),
@@ -90,5 +104,11 @@ export class AppModule {
         timers.forEach((timer) => {
             this.timerService.start(timer);
         });
+
+        this.translate.setDefaultLang('fr');
+
+        // Use user-selected language or fallback on browser language
+        const language = localStorage.getItem('basil-language') || this.translate.getBrowserLang();
+        this.translate.use(language);
     }
 }

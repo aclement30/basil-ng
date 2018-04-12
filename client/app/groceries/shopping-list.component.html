@@ -1,8 +1,8 @@
 <div class="c-header" [ngClass]="{editing: editModeEnabled}">
-  <h2>Liste de courses</h2>
+  <h2>{{ 'groceries.title' | translate }}</h2>
   <ul class="actions" *ngIf="!editModeEnabled">
     <li>
-      <a (click)="toggleEditMode()" class="btn btn-icon-text btn-link"><i class="zmdi zmdi-plus"></i> Ajouter</a>
+      <a (click)="toggleEditMode()" class="btn btn-icon-text btn-link"><i class="zmdi zmdi-plus"></i> {{ 'common.actions.add' | translate }}</a>
     </li>
   </ul>
   <add-item *ngIf="editModeEnabled" (toggleEditMode)="toggleEditMode()" (itemAdded)="itemAdded($event)"></add-item>
@@ -25,12 +25,12 @@
 <div class="card blank-state" *ngIf="!items.length">
   <div class="card-body card-padding">
     <i class="blank-icon zmdi zmdi-assignment-check"></i>
-    <p class="lead">Votre liste de courses est vide</p>
+    <p class="lead">{{ 'groceries.empty' | translate }}</p>
 
-    <button [routerLink]="['add']" class="btn btn-primary btn-icon-text waves-effect"><i class="zmdi zmdi-plus"></i> Ajouter un item</button>
+    <button [routerLink]="['add']" class="btn btn-primary btn-icon-text waves-effect"><i class="zmdi zmdi-plus"></i> {{ 'groceries.addItem' | translate }}</button>
   </div>
 </div>
 
 <div class="text-center" *ngIf="items.length">
-  <button type="button" class="btn btn-warning btn-icon-text waves-effect" (click)="clearCrossedItems()"><i class="zmdi zmdi-delete"></i> Effacer les items rayés</button>
+  <button type="button" class="btn btn-warning btn-icon-text waves-effect" (click)="clearCrossedItems()"><i class="zmdi zmdi-delete"></i> {{ 'groceries.clearCrossedItems' | translate }}</button>
 </div>

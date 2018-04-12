@@ -1,6 +1,7 @@
 import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
+import { TranslateService } from '@ngx-translate/core';
 
 import { NotificationService } from './notification.service';
 
@@ -14,7 +15,8 @@ export class Watchman implements OnInit {
 
     constructor(
         private http: HttpClient,
-        private notificationService: NotificationService
+        private notificationService: NotificationService,
+        private translate: TranslateService,
     ) {}
 
     ngOnInit() {
@@ -54,7 +56,11 @@ export class Watchman implements OnInit {
 
     onPingFailed = (error: Response | any) => {
         if (!this.notificationHandle) {
-            this.notificationHandle = this.notificationService.notify('Reconnexion au serveur en cours...', 'danger', { icon: 'zmdi zmdi-input-antenna', delay: 0, allow_dismiss: false });
+            this.notificationHandle = this.notificationService.notify(
+              this.translate.instant('common.retryConnection'),
+              'danger',
+              { icon: 'zmdi zmdi-input-antenna', delay: 0, allow_dismiss: false },
+            );
         }
 
         // Stop trying to ping server after 4 minutes

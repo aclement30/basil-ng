@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 import { DialogService } from '../../services/dialog.service';
 import { NotificationService } from '../../services/notification.service';
@@ -34,7 +35,8 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
         private dialogService: DialogService,
         private notificationService: NotificationService,
         private recipeService: RecipeService,
-        private store: Store<AppState>
+        private store: Store<AppState>,
+        private translate: TranslateService,
     ) {}
 
     ngOnInit(): void {
@@ -92,9 +94,9 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
         this.recipeService.save(this.recipe)
             .subscribe((recipe: Recipe) => {
                 if (isExisting) {
-                    this.notificationService.notify('La recette a été enregistrée.');
+                    this.notificationService.notify(this.translate.instant('recipeForm.recipeSaved'));
                 } else {
-                    this.notificationService.notify('La recette a été ajoutée.');
+                    this.notificationService.notify(this.translate.instant('recipeForm.recipeAdded'));
                 }
 
                 this.router.navigate(['recipes', 'detail', recipe._id]);
@@ -110,12 +112,12 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
     }
 
     remove(): void {
-        this.dialogService.confirm('Voulez-vous vraiment supprimer cette recette ?')
+        this.dialogService.confirm(this.translate.instant('recipeForm.askDeleteRecipe'))
             .then(() => {
                 return this.recipeService.delete(this.recipe._id).subscribe();
             }, () => {})
             .then(() => {
-                this.notificationService.notify('La recette a été supprimée.');
+                this.notificationService.notify(this.translate.instant('recipeForm.recipeDeleted'));
                 this.router.navigate(['/']);
             });
     }

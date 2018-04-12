@@ -1,5 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 import { APP_CONFIG } from '../app.config';
 import { Ingredient as IngredientCommands, Recipe as RecipeCommands, Steps as StepsCommands, Timer as TimerCommands } from '../core/command.parser';
@@ -38,6 +39,7 @@ export class VoiceAssistantService {
         private speakerService: SpeakerService,
         private store: Store<AppState>,
         private timerService: TimerService,
+        private translate: TranslateService,
         private uiActions: UIActions,
         private zone: NgZone
     ) {
@@ -61,7 +63,7 @@ export class VoiceAssistantService {
     onUIChange = (ui: UIState) => {
         if (this.recognition && ui.voiceAssistant.enabled !== this.voiceAssistantEnabled) {
             if (ui.voiceAssistant.enabled) {
-                this.speakerService.speak('Je suis à l\'écoute.', { ding: true });
+                this.speakerService.speak(this.translate.instant('voiceAssistant.listening'), { ding: true });
                 this.startIdleTimeout();
             } else {
                 this.recognition.stop();
@@ -212,14 +214,14 @@ export class VoiceAssistantService {
                                           unit = ingredient.unit || '';
                                   }
 
-                                  this.speakerService.speak(`${ingredient.quantity} ${unit} ${ingredient.name}`, {dialogTitle: 'Ingrédient'});
+                                  this.speakerService.speak(`${ingredient.quantity} ${unit} ${ingredient.name}`, { dialogTitle: this.translate.instant('common.ingredient') });
                               } else if (matchingIngredients.length > 1) {
-                                  this.speakerService.speak(`Il y a plusieurs ${command.parameters.ingredient} dans les ingrédients. Pouvez-vous préciser ?`);
+                                  this.speakerService.speak(this.translate.instant('voiceAssistant.manySimilarIngredients', { ingredient: command.parameters.ingredient }));
                               } else {
-                                  this.speakerService.speak(`Je ne trouve pas l'ingrédient ${command.parameters.ingredient}. Pouvez-vous préciser ?`);
+                                  this.speakerService.speak(this.translate.instant('voiceAssistant.cannotFindIngredient', { ingredient: command.parameters.ingredient }));
                               }
                           } else {
-                              this.speakerService.speak('Vous n\'avez aucune recette en cours !');
+                              this.speakerService.speak(this.translate.instant('voiceAssistant.noCookingRecipe'));
                           }
                       }
                       break;
@@ -227,9 +229,9 @@ export class VoiceAssistantService {
                       if (command.action === RecipeCommands.STOP) {
                           if (this.currentRecipe) {
                               this.recipesActions.stopCooking(this.currentRecipe);
-                              this.speakerService.speak('La recette est terminée.');
+                              this.speakerService.speak(this.translate.instant('voiceAssistant.recipeCompleted'));
                           } else {
-                              this.speakerService.speak('Vous n\'avez aucune recette en cours !');
+                              this.speakerService.speak(this.translate.instant('voiceAssistant.noCookingRecipe'));
                           }
                       }
                       break;
@@ -238,14 +240,14 @@ export class VoiceAssistantService {
                       let responseTitle: string;
 
                       if (command.action === StepsCommands.READ_STEP) {
-                          responseTitle = `Étape ${command.parameters.step}`;
+                          responseTitle = `${this.translate.instant('common.step')} ${command.parameters.step}`;
                           recipeInstruction = this.currentRecipe.recipeInstructions[(command.parameters.step - 1)];
                       } else if (command.action === StepsCommands.NEXT_STEP) {
                           recipeInstruction = this.currentRecipe.recipeInstructions[1];
                       } else if (command.action === StepsCommands.PREVIOUS_STEP) {
                           recipeInstruction = this.currentRecipe.recipeInstructions[0];
                       } else if (command.action === StepsCommands.LAST_STEP) {
-                          responseTitle = 'Dernière étape';
+                          responseTitle = this.translate.instant('voiceAssistant.lastStep');
                           recipeInstruction = this.currentRecipe.recipeInstructions[(this.currentRecipe.recipeInstructions.length - 1)];
                       }
 
@@ -255,7 +257,7 @@ export class VoiceAssistantService {
                               dialogText: recipeInstruction
                           });
                       } else {
-                          this.speakerService.speak('Je ne trouve pas cette étape dans la recette !', {dialogTitle: ':('});
+                          this.speakerService.speak(this.translate.instant('voiceAssistant.cannotFindStep'), {dialogTitle: ':('});
                       }
                       break;
                   case 'timer':
@@ -286,22 +288,22 @@ export class VoiceAssistantService {
                           const seconds = Math.floor((duration - (hours * 3600)) - (minutes * 60));
 
                           if (hours >= 1) {
-                              humanDuration += `${hours} heures `;
+                              humanDuration += `${hours} ${this.translate.instant('common.hours')} `;
                           }
                           if (minutes >= 1) {
-                              humanDuration += `${minutes} minutes `;
+                              humanDuration += `${minutes} ${this.translate.instant('common.minutes')} `;
                           }
                           if (seconds >= 1) {
-                              humanDuration += `${seconds} secondes `;
+                              humanDuration += `${seconds} ${this.translate.instant('common.seconds')} `;
                           }
 
                           this.timerService.create(duration, options);
-                          this.speakerService.speak(`Minuterie : ${humanDuration}`, {dialogTitle: 'Minuterie'});
+                          this.speakerService.speak(`${this.translate.instant('common.timer')}: ${humanDuration}`, {dialogTitle: this.translate.instant('common.timer')});
                       }
 
                       break;
                   default:
-                      this.speakerService.speak('Désolé. Je ne supporte pas encore cette commande.', {dialogTitle: ':('});
+                      this.speakerService.speak(this.translate.instant('voiceAssistant.unknownCommand'), {dialogTitle: ':('});
                       console.log('Unknown command:', command);
               }
           });

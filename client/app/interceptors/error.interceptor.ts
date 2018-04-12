@@ -6,6 +6,7 @@ import {
   HttpInterceptor, HttpErrorResponse
 } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
+import { TranslateService } from '@ngx-translate/core';
 
 import { NotificationService } from '../services/notification.service';
 
@@ -13,7 +14,8 @@ import { NotificationService } from '../services/notification.service';
 export class ErrorInterceptor implements HttpInterceptor {
 
   constructor(
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private translate: TranslateService,
   ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -22,7 +24,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 
       if (response instanceof HttpErrorResponse && !ignoredStatusCodes.includes(response.status)) {
         this.notificationService.notify(
-          `Une erreur est survenue (code ${response.status})`,
+          this.translate.instant('common.unknwonError', { status: response.status }),
           'warning',
           { icon: 'zmdi zmdi-alert-triangle' },
         );

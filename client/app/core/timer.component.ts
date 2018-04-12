@@ -27,7 +27,7 @@ import { TimerService } from '../services/timer.service';
             <div class="description">
                 <div class="title" *ngIf="timer.title">{{ timer.title }}</div>
                 <div class="contextual-description" *ngIf="timer.contextualDescription">{{ timer.contextualDescription }}</div>
-                <small *ngIf="timer.recipeStep">Étape {{ timer.recipeStep }}</small>
+                <small *ngIf="timer.recipeStep">{{ 'common.step' | translate }} {{ timer.recipeStep }}</small>
             </div>
         </div>
     `,

@@ -1,10 +1,10 @@
 <form #recipeForm="ngForm" *ngIf="recipe">
   <div class="c-header">
-    <h2>{{ recipe._id ? 'Modifier la recette' : 'Ajouter une recette' }}</h2>
+    <h2>{{ (recipe._id ? 'recipeForm.editTitle' : 'recipeForm.createTitle') | translate }}</h2>
 
     <ul class="actions a-alt">
       <li>
-        <button class="btn btn-icon-text btn-link" (click)="submit()" [disabled]="!recipeForm.valid"><i class="zmdi zmdi-check"></i> Enregistrer</button>
+        <button class="btn btn-icon-text btn-link" (click)="submit()" [disabled]="!recipeForm.valid"><i class="zmdi zmdi-check"></i> {{ 'common.actions.save' | translate }}</button>
       </li>
     </ul>
   </div>
@@ -12,36 +12,36 @@
   <div class="card">
     <div class="card-body card-padding">
       <ul class="tab-nav" *ngIf="!this.recipe._id">
-        <li [ngClass]="{active: activeTab === 'web-import'}"><a (click)="toggleTab('web-import')">Recette Web</a></li>
-        <li [ngClass]="{active: activeTab === 'normal'}"><a (click)="toggleTab('normal')">Nouvelle recette</a></li>
+        <li [ngClass]="{active: activeTab === 'web-import'}"><a (click)="toggleTab('web-import')">{{ 'recipeForm.webRecipe' | translate }}</a></li>
+        <li [ngClass]="{active: activeTab === 'normal'}"><a (click)="toggleTab('normal')">{{ 'recipeForm.newRecipe' | translate }}</a></li>
       </ul>
 
       <div class="form-group web-recipe-import" *ngIf="activeTab === 'web-import' && !isParsed && !this.recipe._id" [ngClass]="{'has-error': importError && recipe.originalUrl}">
         <div class="fg-line">
           <div class="row">
             <input type="url" [(ngModel)]="recipe.originalUrl" name="url" class="form-control" placeholder="http://" #sourceUrl="ngModel" required>
-            <button type="button" (click)="importRecipe()" class="btn btn-primary waves-effect" [disabled]="!sourceUrl.valid || isImporting">Importer</button>
+            <button type="button" (click)="importRecipe()" class="btn btn-primary waves-effect" [disabled]="!sourceUrl.valid || isImporting">{{ 'common.actions.import' | translate }}</button>
           </div>
-          <small class="c-gray" [hidden]="importError && recipe.originalUrl">Entrez l'URL de la page Web contenant la recette</small>
+          <small class="c-gray" [hidden]="importError && recipe.originalUrl">{{ 'recipeForm.enterWebpageUrl' | translate }}</small>
           <small [hidden]="!importError || !recipe.originalUrl" class="help-block">{{ importError }}</small>
         </div>
       </div>
 
       <div class="recipe-fields" *ngIf="activeTab === 'normal' || isParsed || this.recipe._id">
         <div class="form-group" [ngClass]="{'has-error': title.invalid && title.dirty}">
-          <label>Titre</label>
+          <label>{{ 'recipeForm.titleField' | translate }}</label>
           <div class="fg-line">
-            <input type="text" [(ngModel)]="recipe.title" name="title" class="form-control" placeholder="Titre" #title="ngModel" required>
+            <input type="text" [(ngModel)]="recipe.title" name="title" class="form-control" [placeholder]="'recipeForm.titleField' | translate" #title="ngModel" required>
           </div>
-          <small [hidden]="title.valid || title.pristine" class="help-block">Champ requis</small>
+          <small [hidden]="title.valid || title.pristine" class="help-block">{{ 'recipeForm.requiredField' | translate }}</small>
         </div>
 
         <div class="row">
           <div class="col-sm-4">
             <div class="form-group fg-float" [ngClass]="{'has-error': ingredients.invalid && ingredients.dirty}">
-              <label>Ingrédients</label>
-              <textarea autosize [(ngModel)]="recipe.combinedIngredients" class="form-control" name="ingredients" placeholder="Ingrédients" #ingredients="ngModel" required></textarea>
-              <small [hidden]="ingredients.valid || ingredients.pristine" class="help-block">Champ requis</small>
+              <label>{{ 'common.ingredients' | translate }}</label>
+              <textarea autosize [(ngModel)]="recipe.combinedIngredients" class="form-control" name="ingredients" [placeholder]="'common.ingredients' | translate" #ingredients="ngModel" required></textarea>
+              <small [hidden]="ingredients.valid || ingredients.pristine" class="help-block">{{ 'recipeForm.requiredField' | translate }}</small>
             </div>
 
             <snap-uploader type="ocr/SCAN_INGREDIENTS" (getResult)="getSnapshotIngredients($event)"></snap-uploader>
@@ -49,11 +49,11 @@
 
           <div class="col-sm-8">
             <div class="form-group fg-float" [ngClass]="{'has-error': instructions.invalid && instructions.dirty}">
-              <label>Étapes de préparation</label>
+              <label>{{ 'recipeForm.preparationSteps' | translate }}</label>
               <div class="fg-line">
-                <textarea autosize [(ngModel)]="recipe.combinedInstructions" class="form-control" name="instructions" placeholder="Étapes de préparation" #instructions="ngModel" required></textarea>
+                <textarea autosize [(ngModel)]="recipe.combinedInstructions" class="form-control" name="instructions" [placeholder]="'recipeForm.preparationSteps' | translate" #instructions="ngModel" required></textarea>
               </div>
-              <small [hidden]="instructions.valid || instructions.pristine" class="help-block">Champ requis</small>
+              <small [hidden]="instructions.valid || instructions.pristine" class="help-block">{{ 'recipeForm.requiredField' | translate }}</small>
             </div>
 
             <snap-uploader type="ocr/SCAN_INSTRUCTIONS" (getResult)="getSnapshotInstructions($event)"></snap-uploader>
@@ -63,17 +63,17 @@
         <div class="row">
           <div class="col-sm-3">
             <div class="form-group">
-              <label>Portions</label>
+              <label>{{ 'common.portions' | translate }}</label>
               <div class="fg-line">
-                <input type="text" [(ngModel)]="recipe.recipeYield" name="yield" class="form-control" placeholder="Rendement">
+                <input type="text" [(ngModel)]="recipe.recipeYield" name="yield" class="form-control" [placeholder]="'recipeForm.yield' | translate">
               </div>
             </div>
           </div>
           <div class="col-sm-9">
             <div class="form-group">
-              <label>Catégories</label>
+              <label>{{ 'common.categories' | translate }}</label>
               <div class="fg-line">
-                <tag-input [(ngModel)]="recipeTags" name="tags" placeholder="Autres catégories" secondaryPlaceholder="Cakes, Entrées..." [identifyBy]="'_id'" [displayBy]="'name'" onlyFromAutocomplete="true">
+                <tag-input [(ngModel)]="recipeTags" name="tags" [placeholder]="'recipeForm.otherCategories' | translate" [secondaryPlaceholder]="'categoriesPlaceholder' | translate" [identifyBy]="'_id'" [displayBy]="'name'" onlyFromAutocomplete="true">
                   <tag-input-dropdown [autocompleteItems]="tags" [identifyBy]="'_id'" [displayBy]="'name'"></tag-input-dropdown>
                 </tag-input>
               </div>
@@ -84,17 +84,17 @@
         <div class="row">
           <div class="col-sm-6">
             <div class="form-group">
-              <label>Photo</label>
+              <label>{{ 'recipeForm.photo' }}</label>
               <div class="fg-line">
-                <input type="url" [(ngModel)]="recipe.image" name="image" class="form-control" placeholder="Photo (URL)">
+                <input type="url" [(ngModel)]="recipe.image" name="image" class="form-control" [placeholder]="'photoUrl' | translate">
               </div>
             </div>
           </div>
           <div class="col-sm-6">
             <div class="form-group">
-              <label>Source</label>
+              <label>{{ 'common.source' | translate }}</label>
               <div class="fg-line">
-                <input type="url" [(ngModel)]="recipe.originalUrl" name="image" class="form-control" placeholder="Source (URL)">
+                <input type="url" [(ngModel)]="recipe.originalUrl" name="image" class="form-control" [placeholder]="'sourceUrl' | translate">
               </div>
             </div>
           </div>
@@ -102,7 +102,7 @@
 
         <div class="form-group">
           <div class="fg-line">
-            <input type="text" [(ngModel)]="recipe.notes" name="notes" class="form-control" placeholder="Notes">
+            <input type="text" [(ngModel)]="recipe.notes" name="notes" class="form-control" [placeholder]="'recipeForm.notes' | translate">
           </div>
         </div>
       </div>
@@ -110,6 +110,6 @@
   </div>
 
   <div class="text-center" *ngIf="recipe._id">
-    <button type="button" class="btn btn-warning btn-icon-text waves-effect" (click)="remove()"><i class="zmdi zmdi-delete"></i> Supprimer la recette</button>
+    <button type="button" class="btn btn-warning btn-icon-text waves-effect" (click)="remove()"><i class="zmdi zmdi-delete"></i> {{ 'recipeForm.deleteRecipe' | translate }}</button>
   </div>
 </form>

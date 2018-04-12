@@ -12,10 +12,10 @@
   <div class="left">
     <div class="recipe-picture" [style.background-image]="recipe.image ? 'url(' + recipe.image + ')' : null">
       <div class="cooking-recipe" *ngIf="isCooking$ | async">
-        <i class="zmdi zmdi-fire"></i> <span class="hidden-xs">Recette </span>en cours
+        <i class="zmdi zmdi-fire"></i> <span class="hidden-xs">{{ 'common.recipe' | translate }} </span>{{ 'recipeDetail.currentRecipe' | translate }}
       </div>
       <button (click)="stopCooking()" class="stop-cooking" *ngIf="isCooking$ | async">
-        <i class="zmdi zmdi-assignment-check"></i> Terminer<span class="hidden-xs"> la recette</span>
+        <i class="zmdi zmdi-assignment-check"></i> {{ 'common.actions.finish' | translate }}<span class="hidden-xs"> {{ 'recipeDetail.finishRecipe' | translate }}</span>
       </button>
     </div>
 
@@ -23,7 +23,7 @@
 
     <div class="pmo-block">
       <h2>
-        <span>Ingrédients</span>
+        <span>{{ 'common.ingredients' | translate }}</span>
 
         <div class="dropdown" ngbDropdown>
           <button class="btn btn-default multiplier" ngbDropdownToggle>{{ (serving$ | async)?.label }}</button>
@@ -53,15 +53,14 @@
         </li>
       </ul>
 
-      <button (click)="addIngredientsToShoppingList()" *ngIf="!canSelectIngredients" class="btn btn-icon-text btn-default btn-groceries waves-effect"><i class="zmdi zmdi-assignment-check"></i> Ajouter à la liste de courses</button>
-      <!--<button (click)="addIngredientsToShoppingList()" *ngIf="canSelectIngredients" class="btn btn-icon-text btn-success"><i class="zmdi zmdi-check"></i> Valider</button>-->
+      <button (click)="addIngredientsToShoppingList()" *ngIf="!canSelectIngredients" class="btn btn-icon-text btn-default btn-groceries waves-effect"><i class="zmdi zmdi-assignment-check"></i> {{ 'recipeDetail.addShoppingList' | translate }}</button>
     </div>
   </div>
 
   <div class="pm-body clearfix">
     <div class="pmb-block">
       <div class="pmbb-header">
-        <h2>Préparation</h2>
+        <h2>{{ 'common.preparation' | translate }}</h2>
       </div>
 
       <div class="pmbb-body">
@@ -79,7 +78,7 @@
         </div>
         <div class="pmbb-view" *ngIf="recipe.originalUrl">
           <hr>
-          Source : <a [href]="recipe.originalUrl" target="_blank">{{ recipe.originalUrl }}</a>
+          {{ 'common.source' | translate }} : <a [href]="recipe.originalUrl" target="_blank">{{ recipe.originalUrl }}</a>
         </div>
         <div class="pmbb-view clearfix" *ngIf="tags.length">
           <hr>

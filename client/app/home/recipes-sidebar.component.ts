@@ -12,7 +12,7 @@ import { getCurrentTag, getTags } from '../store/tags.reducer';
         <aside class="sidebar">
             <ul class="main-menu">
                 <li>
-                    <a [routerLink]="['/recipes']" [ngClass]="{'active': !(selectedTag$ | async)}">Toutes les recettes</a>
+                    <a [routerLink]="['/recipes']" [ngClass]="{'active': !(selectedTag$ | async)}">{{ 'home.allRecipes' | translate }}</a>
                 </li>
                 <li *ngFor="let tag of (tags$ | async).list">
                     <a [routerLink]="['tag', tag.alias]" [ngClass]="{'active': (selectedTag$ | async) === tag}">{{ tag.name }}</a>

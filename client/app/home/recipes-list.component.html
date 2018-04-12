@@ -1,8 +1,8 @@
 <div class="c-header">
-  <h2>Recettes</h2>
+  <h2>{{ 'home.title' | translate }}</h2>
   <ul class="actions">
     <li>
-      <a [routerLink]="['/recipes/add']" class="btn btn-icon-text btn-link"><i class="zmdi zmdi-plus"></i> Ajouter</a>
+      <a [routerLink]="['/recipes/add']" class="btn btn-icon-text btn-link"><i class="zmdi zmdi-plus"></i> {{ 'common.actions.add' | translate }}</a>
     </li>
   </ul>
 </div>
@@ -11,11 +11,11 @@
   <div class="action-header">
     <div class="dropdown" ngbDropdown>
       <button class="btn btn-link btn-icon-text" ngbDropdownToggle *ngIf="(selectedTag$ | async)">{{ (selectedTag$ | async)?.name }}&nbsp;&nbsp;<i class="zmdi zmdi-chevron-down"></i></button>
-      <button class="btn btn-link btn-icon-text" ngbDropdownToggle *ngIf="!(selectedTag$ | async)">Toutes les recettes&nbsp;&nbsp;<i class="zmdi zmdi-chevron-down"></i></button>
+      <button class="btn btn-link btn-icon-text" ngbDropdownToggle *ngIf="!(selectedTag$ | async)">{{ 'home.allRecipes' | translate }}&nbsp;&nbsp;<i class="zmdi zmdi-chevron-down"></i></button>
 
       <ul class="dropdown-menu dm-icon">
         <li>
-          <a [routerLink]="['/recipes']" [ngClass]="{'selected': !(selectedTag$ | async)}">Toutes les recettes</a>
+          <a [routerLink]="['/recipes']" [ngClass]="{'selected': !(selectedTag$ | async)}">{{ 'home.allRecipes' | translate }}</a>
         </li>
         <li class="dropdown-item" *ngFor="let tag of (tags$ | async)?.list">
           <a [routerLink]="['/recipes/tag', tag.alias]" [ngClass]="{selected: (selectedTag$ | async)?._id === tag._id}">{{ tag.name }}</a>
@@ -42,18 +42,18 @@
         <circle class="plc-path" cx="50" cy="50" r="20"></circle>
       </svg>
     </div>
-    <p class="lead">Chargement des recettes...</p>
+    <p class="lead">{{ 'home.loading' | translate }}</p>
   </div>
 
   <div class="card-body card-padding" *ngIf="recipesLoaded && !recipes.length">
     <i class="blank-icon zmdi zmdi-cutlery"></i>
-    <p class="lead">La liste de recettes est vide</p>
+    <p class="lead">{{ 'home.empty' | translate }}</p>
 
-    <button [routerLink]="['add']" class="btn btn-primary btn-icon-text waves-effect"><i class="zmdi zmdi-plus"></i> Ajouter une recette</button>
+    <button [routerLink]="['add']" class="btn btn-primary btn-icon-text waves-effect"><i class="zmdi zmdi-plus"></i> {{ 'home.addRecipe' | translate }}</button>
   </div>
 
   <div class="card-body card-padding" *ngIf="recipesLoaded && (selectedTag$ | async)">
     <i class="blank-icon zmdi zmdi-folder-outline"></i>
-    <p class="lead">Cette catégorie ne contient aucune recette</p>
+    <p class="lead">{{ 'home.emptyCategory' | translate }}</p>
   </div>
 </div>

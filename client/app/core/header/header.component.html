@@ -1,7 +1,7 @@
 <div class="pull-left h-logo">
   <a [routerLink]="['/']" class="hidden-xs">
     <h1>Basil</h1>
-    <small>Livre de recettes</small>
+    <small>{{ 'common.tagline' | translate }}</small>
   </a>
 
   <div class="menu-collapse" (click)="toggleSidebar()">
@@ -15,13 +15,13 @@
 
 <ul class="pull-right h-menu">
   <li *ngIf="vocalAssistant">
-    <button voice-assistant-button title="Assistant vocal"></button>
+    <button voice-assistant-button [title]="'common.vocalAssistant' | translate"></button>
   </li>
   <li>
-    <button cookmode-button title="Cookmode"></button>
+    <button cookmode-button [title]="'common.cookmode' | translate"></button>
   </li>
   <!--<li>
-      <button kitchen-sidebar-button class="larger" title="Recettes en cours"></button>
+      <button kitchen-sidebar-button class="larger" [title]="'common.cookingRecipes' | translate"></button>
   </li>
   <li class="hm-search-trigger">-->
   <!--<a class="larger">-->
@@ -32,7 +32,7 @@
 
 <!--<div class="media-body h-search">-->
 <!--<form class="p-relative">-->
-<!--<input type="text" class="hs-input" placeholder="Rechercher une recette">-->
+<!--<input type="text" class="hs-input" [placeholder]="'common.searchRecipe' | translate'">-->
 <!--<i class="zmdi zmdi-search hs-reset" data-ma-action="search-clear"></i>-->
 <!--</form>-->
 <!--</div>-->

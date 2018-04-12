@@ -12,13 +12,13 @@ import { UIActions } from '../store/ui.actions';
     template: `
         <ul class="quick-actions">
             <li *ngIf="vocalAssistant">
-                <button voice-assistant-button title="Assistant vocal"></button>
+                <button voice-assistant-button [title]="'common.vocalAssistant' | translate"></button>
             </li>
             <li>
-                <button cookmode-button title="Cookmode"></button>
+                <button cookmode-button [title]="'common.cookmode' | translate"></button>
             </li>
             <!--<li>
-                <button kitchen-sidebar-button class="larger" title="Recettes en cours"></button>
+                <button kitchen-sidebar-button class="larger" [title]="'common.cookingRecipes' | translate"></button>
             </li>-->
         </ul>
     `,

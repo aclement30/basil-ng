@@ -2,6 +2,7 @@ import { Component, OnInit, Injectable } from '@angular/core';
 import { ActivatedRoute, CanDeactivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { TranslateService } from '@ngx-translate/core';
 
 import { CookingRecipeService } from '../services/cooking-recipe.service';
 import { DialogService } from '../services/dialog.service';
@@ -50,7 +51,8 @@ export class RecipeDetailComponent implements OnInit {
         private recipesActions: CookingRecipesActions,
         private recipeService: RecipeService,
         private store: Store<AppState>,
-        private timerService: TimerService
+        private timerService: TimerService,
+        private translate: TranslateService,
     ) {}
 
     ngOnInit(): void {
@@ -85,7 +87,7 @@ export class RecipeDetailComponent implements OnInit {
     stopCooking() {
         this.activeTimers$.first().subscribe((activeTimers: Timer[]) => {
             if (activeTimers.length) {
-                const message = activeTimers.length > 1 ? `Il y a ${activeTimers.length} minuteries en cours pour cette recette. Voulez-vous les arrêter maintenant ?` : 'Il y a 1 minuterie en cours pour cette recette. Voulez-vous l\'arrêter maintenant ?';
+                const message = activeTimers.length > 1 ? this.translate.instant('recipeDetail.manyExistingTimers', { count: activeTimers.length }) : this.translate.instant('recipeDetail.oneExistingTimer');
                 this.dialogService.confirm(message)
                     .then(() => {
                         activeTimers.forEach(timer => {
@@ -115,7 +117,7 @@ export class RecipeDetailComponent implements OnInit {
 
             this.groceryService.add(items)
                 .subscribe(() => {
-                    this.notificationService.notify('Les ingrédients ont été ajoutés à la liste de course.');
+                    this.notificationService.notify(this.translate.instant('recipeDetail.ingredientsAddedShoppingList'));
                 });
         });
 

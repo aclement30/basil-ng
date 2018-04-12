@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { AppComponent } from './app.component';
 import { Autosize } from './autosize.directive';
@@ -28,12 +29,18 @@ import { OCRService } from '../services/ocr.service';
 import { SpeakerService } from '../services/speaker.service';
 import { TimerService } from '../services/timer.service';
 import { VoiceAssistantService } from '../services/voice-assistant.service';
-import { Watchman } from "../services/watchman.service";
+import { Watchman } from '../services/watchman.service';
 import { AuthService } from '../services/auth.service';
 import { GoogleAuthService } from '../services/google-auth.service';
 
 @NgModule({
-    imports: [ CommonModule, FormsModule, NgbModule, RouterModule ],
+    imports: [
+      CommonModule,
+      FormsModule,
+      NgbModule,
+      RouterModule,
+      TranslateModule,
+    ],
     declarations: [
         AppComponent,
         Autosize,

@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { GoogleAuthService } from '../services/google-auth.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'login',
@@ -15,6 +16,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private element: ElementRef,
     private router: Router,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit() {
@@ -32,5 +34,14 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     (this.authService as GoogleAuthService).bindSignInButton(this.element.nativeElement.querySelector('button.google-oauth'));
+  }
+
+  get language(): string {
+    return this.translate.currentLang;
+  }
+
+  switchLanguage(language: string) {
+    this.translate.use(language);
+    localStorage.setItem('basil-language', language);
   }
 }

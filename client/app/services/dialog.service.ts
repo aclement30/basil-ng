@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
-
 import * as swal from 'bootstrap-sweetalert';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class DialogService {
 
-    constructor() {}
+    constructor(
+      private translate: TranslateService,
+    ) {}
 
     confirm(title: string, text: string = null): Promise<{}> {
         return new Promise((resolve, reject) => {
@@ -14,7 +16,7 @@ export class DialogService {
                 text,
                 type: 'warning',
                 showCancelButton: true,
-                cancelButtonText: 'Annuler',
+                cancelButtonText: this.translate.instant('common.actions.cancel'),
                 confirmButtonText: 'OK',
                 confirmButtonClass: 'btn-warning',
             }, (choice: boolean) => {

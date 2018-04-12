@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { TranslateService } from '@ngx-translate/core';
 
 import { Recipe } from '../models/recipe.model';
 import { Timer, TimerData } from '../models/timer.model';
@@ -13,7 +14,8 @@ export class TimerService {
     constructor(
         private speakerService: SpeakerService,
         private store: Store<AppState>,
-        private timersActions: TimersActions
+        private timersActions: TimersActions,
+        private translate: TranslateService,
     ) {}
 
     create(duration: number, options: TimerData = {}) {
@@ -59,20 +61,20 @@ export class TimerService {
                     let description: string;
                     if (currentRecipe && timer.recipeId === currentRecipe._id) {
                         if (timer.contextualDescription) {
-                            description = `${timer.contextualDescription} : temps écoulé`;
+                            description = this.translate.instant('common.timeElapsedForTimer', { timer: timer.contextualDescription });
                         } else {
-                            description = 'Temps écoulé';
+                            description = this.translate.instant('common.elapsedTime');
                         }
                     } else {
                         if (timer.title) {
-                            description = `${timer.title} : temps écoulé`;
+                            description = this.translate.instant('common.timeElapsedForTimer', { timer: timer.title });
                         } else {
-                            description = 'Temps écoulé';
+                            description = this.translate.instant('common.elapsedTime');
                         }
                     }
 
                     this.speakerService.speak(description, {
-                        dialogTitle: 'Minuterie',
+                        dialogTitle: this.translate.instant('common.timer'),
                         chime: true,
                         dialogCloseDelay: 3000
                     });

@@ -7,9 +7,14 @@
   </div>
 
   <div class="lb-body palette-Teal bg">
-    <strong>Bienvenue !</strong><br>
-    Connectez-vous à votre compte pour continuer.
+    <strong>{{ 'login.welcome' | translate }}</strong><br>
+    {{ 'login.invite' | translate }}
 
-    <button type="button" class="btn btn-primary btn-icon-text waves-effect login bg google-oauth"><i class="zmdi zmdi-google"></i> Connexion avec Google</button>
+    <button type="button" class="btn btn-primary btn-icon-text waves-effect login bg google-oauth"><i class="zmdi zmdi-google"></i> {{ 'login.loginWithGoogle' | translate }}</button>
+  </div>
+
+  <div class="links">
+    <a (click)="switchLanguage('en')" *ngIf="language !== 'en'">English</a>
+    <a (click)="switchLanguage('fr')" *ngIf="language !== 'fr'">Français</a>
   </div>
 </div>
