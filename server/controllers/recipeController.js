@@ -110,7 +110,7 @@ class RecipeController {
 
     RecipeService.deleteRecipe(req.user, recipeId, (error) => {
       if (!error) {
-        res.sendStatus(200);
+        res.sendStatus(204);
       } else {
         errorHandler.server('Recipe could not be deleted', res);
       }

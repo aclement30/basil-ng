@@ -152,7 +152,7 @@ class GroceryController {
             }
           });
         } else {
-          res.sendStatus(200);
+          res.sendStatus(204);
         }
       });
     } else {
@@ -167,7 +167,7 @@ class GroceryController {
       user: req.user._id
     }, { $set: { isDeleted: true } }, { multi: true }, (err) => {
       if (!err) {
-        res.sendStatus(200);
+        res.sendStatus(204);
       }
     });
   }
@@ -177,7 +177,7 @@ class GroceryController {
 
     GroceryItem.update({ _id: itemId, user: req.user._id }, { $set: { isDeleted: true } }, (err) => {
       if (!err) {
-        res.sendStatus(200);
+        res.sendStatus(204);
       }
     });
   }
