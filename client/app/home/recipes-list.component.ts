@@ -27,6 +27,7 @@ export class RecipesListComponent implements OnInit, OnDestroy {
     recipes: Recipe[] = [];
     _filteredRecipes: Recipe[] = [];
     selectedTag$: Observable<Tag>;
+    tags$: Observable<Tag[]>;
 
     constructor(
         private recipeService: RecipeService,
@@ -37,6 +38,7 @@ export class RecipesListComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.selectedTag$ = this.store.select(getCurrentTag);
+        this.tags$ = this.store.select(getTags);
         this.paramsSubscriber = this.route.params.subscribe(this.onParamsChange);
     }
 
@@ -75,6 +77,10 @@ export class RecipesListComponent implements OnInit, OnDestroy {
 
     select(recipe: Recipe): void {
         this.router.navigate(['/recipes/detail', recipe._id]);
+    }
+
+    selectTag(tag: Tag): void {
+        this.router.navigate(['tag', tag.alias], { relativeTo: this.route.parent });
     }
 
     filterRecipes() {

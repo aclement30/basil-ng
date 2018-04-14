@@ -9,7 +9,8 @@ class TagController {
   }
 
   getTags(req, res) {
-    TagService.getTags((error, tags) => {
+    const lang = req.query.lang || 'fr';
+    TagService.getTags(lang, (error, tags) => {
       res.header('X-Total-Count', tags.length);
       res.send(tags);
     });

@@ -17,8 +17,8 @@
         <li>
           <a [routerLink]="['/recipes']" [ngClass]="{'selected': !(selectedTag$ | async)}">{{ 'home.allRecipes' | translate }}</a>
         </li>
-        <li class="dropdown-item" *ngFor="let tag of (tags$ | async)?.list">
-          <a [routerLink]="['/recipes/tag', tag.alias]" [ngClass]="{selected: (selectedTag$ | async)?._id === tag._id}">{{ tag.name }}</a>
+        <li class="dropdown-item" *ngFor="let tag of (tags$ | async)">
+          <a (click)="selectTag(tag)" [ngClass]="{selected: (selectedTag$ | async)?._id === tag._id}">{{ tag.name }}</a>
         </li>
       </ul>
     </div>
