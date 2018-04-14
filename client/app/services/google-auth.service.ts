@@ -1,4 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
+import { Router } from '@angular/router';
 import { AsyncSubject } from 'rxjs/AsyncSubject';
 import { Observable } from 'rxjs/Observable';
 
@@ -18,10 +19,11 @@ export class GoogleAuthService extends AuthService {
 
   constructor(
     protected http: HttpClient,
+    protected router: Router,
     protected sessionActions: SessionActions,
     protected zone: NgZone,
   ) {
-    super(http, sessionActions);
+    super(http, router, sessionActions);
   }
 
   waitForGoogleApi = () => {

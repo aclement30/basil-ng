@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 
@@ -16,8 +17,11 @@ export abstract class AuthService {
 
   constructor(
     protected http: HttpClient,
+    protected router: Router,
     protected sessionActions: SessionActions,
-  ) {}
+  ) {
+    this.userAuthenticated$.filter(isAuthenticated => (isAuthenticated === false)).subscribe(this.onUserDeauthenticated);
+  }
 
   initUser(): Observable<boolean> {
     const accessToken = localStorage.getItem('basil-token');
@@ -35,6 +39,7 @@ export abstract class AuthService {
   }
 
   logoutUser(): Observable<any>  {
+    this.accessToken = null;
     return Observable.of(this.clearLocalUser());
   }
 
@@ -73,7 +78,12 @@ export abstract class AuthService {
    */
   protected clearLocalUser(): void {
     this.sessionActions.resetUser();
-    this.accessToken = null;
     localStorage.removeItem('basil-token');
+  }
+
+  private onUserDeauthenticated = (): void => {
+    if (this.router.url !== '/login') {
+      this.router.navigate(['/login']);
+    }
   }
 }

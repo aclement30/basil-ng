@@ -39,18 +39,7 @@ export class TokenInterceptor implements HttpInterceptor {
       if (error instanceof HttpErrorResponse && error.status === 401) {
         const authService = this.injector.get(AuthService);
 
-        authService.logoutUser().subscribe(() => {
-          this.notificationService.notify(
-            this.translate.instant('common.sessionExpired'),
-            'warning',
-            { icon: 'zmdi zmdi-alert-triangle' },
-          );
-
-          const router = this.injector.get(Router);
-          if (router.url !== '/login') {
-            router.navigate(['/login']);
-          }
-        });
+        authService.logoutUser().subscribe();
 
         // REQUEST RETRY DOES NOT WORK
         // return authService.refreshAccessToken()
