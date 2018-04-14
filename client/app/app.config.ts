@@ -21,7 +21,8 @@ interface IBotConfig {
 }
 
 export const APP_CONFIG: IAppConfig = {
-    canSpeechRecognition: !!webkitSpeechRecognition,
+    //canSpeechRecognition: !!webkitSpeechRecognition,
+    canSpeechRecognition: false,
     bot: _BASIL_API_AI_,
 }
 
