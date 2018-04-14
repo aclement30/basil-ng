@@ -101,5 +101,15 @@
     "lastStep": "Dernière étape",
     "cannotFindStep": "Je ne trouve pas cette étape dans la recette !",
     "unknownCommand": "Désolé. Je ne supporte pas encore cette commande."
+  },
+  "units": {
+    "cup": "tasse",
+    "box": "boîte",
+    "tablet": "tablette",
+    "bit": "morceau",
+    "packet": "sachet",
+    "tsp": "c. à c.",
+    "tbsp": "c. à s.",
+    "pinch": "pincée"
   }
 }

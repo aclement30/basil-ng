@@ -101,5 +101,15 @@
     "lastStep": "Last step",
     "cannotFindStep": "I cannot find this step in the recipe!",
     "unknownCommand": "Sorry. I doesn't understand this command yet."
+  },
+  "units": {
+    "cup": "cup",
+    "box": "box",
+    "tablet": "tablet",
+    "bit": "bit",
+    "packet": "packet",
+    "tsp": "tsp.",
+    "tbsp": "tbsp.",
+    "pinch": "pinch"
   }
 }
