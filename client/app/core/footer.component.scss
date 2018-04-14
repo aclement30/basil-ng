@@ -1,23 +1,54 @@
+@import '../../styles/partials/variables';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/variables';
+
 :host {
-  display: none;
+  display: flex;
+  justify-content: center;
   text-align: center;
   width: 100%;
-  color: #a2a2a2;
+  color: rgba($m-gray, 0.7);
   padding-bottom: 20px;
   padding-top: 20px;
 
-  .f-menu {
+  .menu {
+    list-style-type: none;
     display: block;
-    width: 100%;
-    margin-top: 8px;
-    margin-bottom: 0;
+    margin-right: 15px;
 
     & > li > a {
-      color: #a2a2a2;
+      color: $m-bluegray;
+      cursor: pointer;
 
       &:hover {
-        color: #777;
+        color: #0a6ebd;
       }
+    }
+  }
+
+  .copyright {
+    border-left: 1px solid rgba($m-gray, 0.3);
+    height: 22px;
+    padding-left: 15px;
+
+    a {
+      color: $m-bluegray;
+
+      &:hover {
+        color: #0a6ebd;
+      }
+    }
+  }
+
+  @media (max-width: $screen-xs-max) {
+    flex-direction: column;
+
+    .menu {
+      margin-right: 0;
+    }
+
+    .copyright {
+      padding-left: 0;
+      border-left: 0;
     }
   }
 }
