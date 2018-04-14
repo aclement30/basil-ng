@@ -6,20 +6,21 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { CoreModule } from '../core/core.module';
 import { TagsModule } from '../tags/tags.module';
+import { RecipesModule } from '../recipes/recipes.module';
 
 import { RecipesListComponent } from './recipes-list.component';
-import { RecipesSidebarComponent } from './recipes-sidebar.component';
 
 @NgModule({
     imports: [
       CoreModule,
       CommonModule,
       NgbModule,
+      RecipesModule,
       RouterModule,
       TagsModule,
       TranslateModule,
     ],
-    declarations: [ RecipesListComponent, RecipesSidebarComponent ],
+    declarations: [ RecipesListComponent ],
     providers: [ ],
 })
 

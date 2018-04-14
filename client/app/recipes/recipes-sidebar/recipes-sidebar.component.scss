@@ -1,0 +1,7 @@
+@import '../../../styles/partials/variables';
+
+:host {
+  a.active {
+    color: $brand-primary;
+  }
+}

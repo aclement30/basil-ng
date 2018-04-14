@@ -14,28 +14,33 @@ import { FormSidebarComponent } from './form-sidebar.component';
 import { RecipeDetailComponent, CanDeactivateRecipeDetail } from './recipe-detail.component';
 import { RecipeFormComponent } from './recipe-form/recipe-form.component';
 import { CookingRecipesActions } from '../store/cooking-recipes.actions';
+import { RecipesSidebarComponent } from './recipes-sidebar/recipes-sidebar.component';
 
 @NgModule({
-    imports: [
-      CoreModule,
-      CommonModule,
-      FormsModule,
-      NgbModule,
-      RouterModule,
-      TagInputModule,
-      TranslateModule,
-    ],
-    declarations: [
-      FormSidebarComponent,
-      RecipeDetailComponent,
-      RecipeFormComponent,
-    ],
-    providers: [
-      CanDeactivateRecipeDetail,
-      CookingRecipeService,
-      CookingRecipesActions,
-      RecipeService,
-    ],
+  imports: [
+    CoreModule,
+    CommonModule,
+    FormsModule,
+    NgbModule,
+    RouterModule,
+    TagInputModule,
+    TranslateModule,
+  ],
+  declarations: [
+    FormSidebarComponent,
+    RecipeDetailComponent,
+    RecipeFormComponent,
+    RecipesSidebarComponent,
+  ],
+  providers: [
+    CanDeactivateRecipeDetail,
+    CookingRecipeService,
+    CookingRecipesActions,
+    RecipeService,
+  ],
+  exports: [
+    RecipesSidebarComponent,
+  ]
 })
 
 export class RecipesModule {}

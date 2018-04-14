@@ -3,7 +3,7 @@
 
   <ul class="actions a-alt">
     <li>
-      <a [routerLink]="['/recipes/edit', recipe._id]" class="btn btn-icon btn-link"><i class="zmdi zmdi-edit"></i></a>
+      <a [routerLink]="['/recipes/edit', recipe._id]" class="btn btn-icon btn-link" [title]="'recipeDetail.editRecipe' | translate"><i class="zmdi zmdi-edit"></i></a>
     </li>
   </ul>
 </div>
@@ -19,7 +19,7 @@
       </button>
     </div>
 
-    <button (click)="startCooking()" *ngIf="!(isCooking$ | async)" class="btn start-cooking btn-float btn-primary btn-icon waves-effect waves-circle waves-float"><i class="zmdi zmdi-cutlery"></i></button>
+    <button (click)="startCooking()" *ngIf="!(isCooking$ | async)" class="btn start-cooking btn-float btn-primary btn-icon waves-effect waves-circle waves-float" [title]="'recipeDetail.startRecipe' | translate"><i class="zmdi zmdi-cutlery"></i></button>
 
     <div class="pmo-block">
       <h2>
@@ -92,3 +92,5 @@
     </div>
   </div>
 </div>
+
+<recipes-sidebar></recipes-sidebar>
