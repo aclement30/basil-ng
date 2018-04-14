@@ -9,7 +9,8 @@
 
   .action-header {
     @include clearfix;
-    padding: 15px 30px;
+    padding: 15px 30px 14px;
+    min-height: inherit;
 
     .dropdown {
       float: left;

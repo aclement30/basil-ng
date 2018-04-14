@@ -15,7 +15,7 @@ import { UIActions } from '../store/ui.actions';
                 <button voice-assistant-button [title]="'common.vocalAssistant' | translate"></button>
             </li>
             <li>
-                <button cookmode-button [title]="'common.cookmode' | translate"></button>
+                <button cookmode-button [title]="'common.cookMode' | translate"></button>
             </li>
             <!--<li>
                 <button kitchen-sidebar-button class="larger" [title]="'common.cookingRecipes' | translate"></button>

@@ -58,6 +58,8 @@
   "recipeDetail": {
     "currentRecipe": "en cours",
     "finishRecipe": "la recette",
+    "editRecipe": "Modifier la recette",
+    "startRecipe": "Commencer la recette",
     "addShoppingList": "Ajouter à la liste de courses",
     "oneExistingTimer": "Il y a 1 minuterie en cours pour cette recette. Voulez-vous l'arrêter maintenant ?",
     "manyExistingTimers": "Il y a {{ count }} minuteries en cours pour cette recette. Voulez-vous les arrêter maintenant ?",
@@ -66,7 +68,7 @@
   "recipeForm": {
     "createTitle": "Ajouter une recette",
     "editTitle": "Modifier la recette",
-    "webImport": "Recette Web",
+    "webRecipe": "Recette Web",
     "newRecipe": "Nouvelle recette",
     "enterWebpageUrl": "Entrez l'URL de la page Web contenant la recette",
     "titleField": "Titre",

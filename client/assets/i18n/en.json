@@ -58,6 +58,8 @@
   "recipeDetail": {
     "currentRecipe": "cooking",
     "finishRecipe": "the recipe",
+    "editRecipe": "Edit recipe",
+    "startRecipe": "Start cooking",
     "addShoppingList": "Add to groceries list",
     "oneExistingTimer": "There is 1 active timer this recipe. Do you want to stop it now?",
     "manyExistingTimers": "There are {{ count }} active timers for this recipe. Do you want to stop those now?",
@@ -66,7 +68,7 @@
   "recipeForm": {
     "createTitle": "Add a recipe",
     "editTitle": "Edit recipe",
-    "webImport": "Web recipe",
+    "webRecipe": "Web recipe",
     "newRecipe": "New recipe",
     "enterWebpageUrl": "Enter the URL of the webpage containing the recipe",
     "titleField": "Title",
@@ -82,7 +84,7 @@
     "addIngredients": "Add ingredients",
     "addInstructions": "Add steps",
     "byTakingPicture": "by taking a picture",
-    "analyzingPicture": "Processing the picture",
+    "analyzingPicture": "Processing picture",
     "deleteRecipe": "Delete the recipe",
     "recipeSaved": "Recipe saved.",
     "recipeAdded": "Recipe added.",

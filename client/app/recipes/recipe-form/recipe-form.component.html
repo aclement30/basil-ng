@@ -73,7 +73,7 @@
             <div class="form-group">
               <label>{{ 'common.categories' | translate }}</label>
               <div class="fg-line">
-                <tag-input [(ngModel)]="recipeTags" name="tags" [placeholder]="'recipeForm.otherCategories' | translate" [secondaryPlaceholder]="'categoriesPlaceholder' | translate" [identifyBy]="'_id'" [displayBy]="'name'" onlyFromAutocomplete="true">
+                <tag-input [(ngModel)]="recipeTags" name="tags" [placeholder]="'recipeForm.otherCategories' | translate" [secondaryPlaceholder]="'recipeForm.categoriesPlaceholder' | translate" [identifyBy]="'_id'" [displayBy]="'name'" onlyFromAutocomplete="true">
                   <tag-input-dropdown [autocompleteItems]="tags" [identifyBy]="'_id'" [displayBy]="'name'"></tag-input-dropdown>
                 </tag-input>
               </div>
@@ -84,9 +84,9 @@
         <div class="row">
           <div class="col-sm-6">
             <div class="form-group">
-              <label>{{ 'recipeForm.photo' }}</label>
+              <label>{{ 'recipeForm.photo' | translate }}</label>
               <div class="fg-line">
-                <input type="url" [(ngModel)]="recipe.image" name="image" class="form-control" [placeholder]="'photoUrl' | translate">
+                <input type="url" [(ngModel)]="recipe.image" name="image" class="form-control" [placeholder]="'recipeForm.photoUrl' | translate">
               </div>
             </div>
           </div>
@@ -94,7 +94,7 @@
             <div class="form-group">
               <label>{{ 'common.source' | translate }}</label>
               <div class="fg-line">
-                <input type="url" [(ngModel)]="recipe.originalUrl" name="image" class="form-control" [placeholder]="'sourceUrl' | translate">
+                <input type="url" [(ngModel)]="recipe.originalUrl" name="image" class="form-control" [placeholder]="'recipeForm.sourceUrl' | translate">
               </div>
             </div>
           </div>

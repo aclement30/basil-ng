@@ -39,7 +39,7 @@ export class RecipeDetailComponent implements OnInit {
     tags: Tag[];
 
     private cookingRecipes$: Observable<RecipeSummary[]>;
-    private timers$: Observable<Timer[]>;
+    private activeTimers$: Observable<Timer[]>;
     private tags$: Observable<Tag[]>;
 
     constructor(
@@ -57,7 +57,8 @@ export class RecipeDetailComponent implements OnInit {
 
     ngOnInit(): void {
         this.cookingRecipes$ = this.store.select(getCookingRecipes);
-        this.timers$ = this.store.select(getTimers);
+        this.activeTimers$ = this.store.select(getTimers)
+          .map((timers: Timer[]) => (timers.filter(timer => (timer.recipeId === this.recipe._id && !timer.completed))));
         this.tags$ = this.store.select(getTags);
 
       this.paramsSubscriber = this.route.params.subscribe(params => {
@@ -148,12 +149,6 @@ export class RecipeDetailComponent implements OnInit {
         }
 
         return options;
-    }
-
-    get activeTimers$(): Observable<Timer[]> {
-        return this.timers$.map((timers: Timer[]) => {
-            return timers.filter(timer => (timer.recipeId === this.recipe._id && !timer.completed));
-        });
     }
 
     get serving$(): Observable<ServingOption> {

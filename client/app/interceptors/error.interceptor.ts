@@ -24,7 +24,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 
       if (response instanceof HttpErrorResponse && !ignoredStatusCodes.includes(response.status)) {
         this.notificationService.notify(
-          this.translate.instant('common.unknwonError', { status: response.status }),
+          this.translate.instant('common.unknownError', { status: response.status }),
           'warning',
           { icon: 'zmdi zmdi-alert-triangle' },
         );

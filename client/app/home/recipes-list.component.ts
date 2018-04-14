@@ -49,7 +49,9 @@ export class RecipesListComponent implements OnInit, OnDestroy {
     onParamsChange = (params) => {
         const userId = params.userId;
         if (!userId) {
-          this.store.select(getCurrentUser).take(1)
+          this.store.select(getCurrentUser)
+            .filter(Boolean)
+            .take(1)
             .subscribe((currentUser: User) => {
                 this.router.navigate(['recipes', 'user', currentUser.id]);
             });

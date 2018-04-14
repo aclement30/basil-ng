@@ -49,7 +49,7 @@
     <i class="blank-icon zmdi zmdi-cutlery"></i>
     <p class="lead">{{ 'home.empty' | translate }}</p>
 
-    <button [routerLink]="['add']" class="btn btn-primary btn-icon-text waves-effect"><i class="zmdi zmdi-plus"></i> {{ 'home.addRecipe' | translate }}</button>
+    <button [routerLink]="['/recipes/add']" class="btn btn-primary btn-icon-text waves-effect"><i class="zmdi zmdi-plus"></i> {{ 'home.addRecipe' | translate }}</button>
   </div>
 
   <div class="card-body card-padding" *ngIf="recipesLoaded && (selectedTag$ | async)">

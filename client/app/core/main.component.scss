@@ -49,6 +49,10 @@
       }
     }
 
+    /deep/ recipes-list .action-header {
+      padding-bottom: 12px;
+    }
+
     /deep/ sidebar {
       display: none;
     }
