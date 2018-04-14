@@ -1,4 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import * as $ from 'jquery';
 
 import { DialogService } from './dialog.service';
@@ -25,12 +26,13 @@ export class SpeakerService {
     private _message: any;  // Speech message is stored locally to avoid GC destruction before onEnd callback
 
     constructor(
-        private dialogService: DialogService
+        private dialogService: DialogService,
+        private translate: TranslateService,
     ) {}
 
     async speak(text: string, options: SpeakerOptions = {}) {
         this._message = new SpeechSynthesisUtterance();
-        this._message.lang = 'fr-FR';
+        this._message.lang = this.translate.currentLang === 'fr' ? 'fr-FR' : 'en-CA';
         this._message.rate = 1.2;
         this._message.text = text;
 

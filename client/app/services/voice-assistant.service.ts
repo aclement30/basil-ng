@@ -45,7 +45,7 @@ export class VoiceAssistantService {
     ) {
         if (APP_CONFIG.canSpeechRecognition) {
             this.recognition = new webkitSpeechRecognition();
-            this.recognition.lang = 'fr-FR';
+            this.recognition.lang = this.translate.currentLang === 'fr' ? 'fr-FR' : 'en-CA';
             //this.recognition.continuous = true;
             this.recognition.interimResults = false;
             this.recognition.onresult = this.parseVoiceCommand;
@@ -181,7 +181,7 @@ export class VoiceAssistantService {
     }
 
     executeCommand = (response: any) => {
-        const command = response.json().result;
+        const command = response.result;
         const commandType: string = command.action.split('.')[0];
 
           this.zone.run(() => {
