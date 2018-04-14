@@ -38,6 +38,11 @@ export class OCRService {
             };
 
             xhr.open('POST', url, true);
+
+            // XMLHttpRequest bypasses the TokenInterceptor, so we must set the auth token manually
+            const token = localStorage.getItem('basil-token');
+            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+
             xhr.send(formData);
         });
     }

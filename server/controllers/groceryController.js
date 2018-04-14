@@ -66,26 +66,28 @@ class GroceryController {
 
           const itemData = {
             quantity: data['quantity'] ? parseInt(data['quantity']) : null,
-            name: data['name'],
+            name: data['name'] ? data['name'] : data['description'],
             unit: data['unit'],
             position: data['position'] ? parseInt(data['position']) : null,
             recipe: data['recipe'],
             user: req.user._id
           };
 
-          // Check if an existing item in shopping list match with new item name
-          const matchingItem = GroceryService.findMatchingItem(itemData, existingItems);
+          if (data['name']) {
+            // Check if an existing item in shopping list match with new item name
+            const matchingItem = GroceryService.findMatchingItem(itemData, existingItems);
 
-          if (matchingItem) {
-            // Merge the existing item with the new item
-            const mergedItem = GroceryService.mergeItems(matchingItem, itemData);
+            if (matchingItem) {
+              // Merge the existing item with the new item
+              const mergedItem = GroceryService.mergeItems(matchingItem, itemData);
 
-            if (mergedItem) {
-              mergedItem.save((err) => {
-                mapCallback(err, mergedItem);
-              });
+              if (mergedItem) {
+                mergedItem.save((err) => {
+                  mapCallback(err, mergedItem);
+                });
 
-              return;
+                return;
+              }
             }
           }
 
