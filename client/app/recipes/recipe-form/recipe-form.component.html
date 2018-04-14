@@ -38,9 +38,9 @@
 
         <div class="row">
           <div class="col-sm-4">
-            <div class="form-group fg-float" [ngClass]="{'has-error': ingredients.invalid && ingredients.dirty}">
+            <div class="form-group fg-float ingredients" [ngClass]="{'has-error': ingredients.invalid && ingredients.dirty}">
               <label>{{ 'common.ingredients' | translate }}</label>
-              <textarea autosize [(ngModel)]="recipe.combinedIngredients" class="form-control" name="ingredients" [placeholder]="'common.ingredients' | translate" #ingredients="ngModel" required></textarea>
+              <textarea [(ngModel)]="recipe.combinedIngredients" class="form-control" name="ingredients" [placeholder]="'common.ingredients' | translate" #ingredients="ngModel" required></textarea>
               <small [hidden]="ingredients.valid || ingredients.pristine" class="help-block">{{ 'recipeForm.requiredField' | translate }}</small>
             </div>
 
@@ -48,10 +48,10 @@
           </div>
 
           <div class="col-sm-8">
-            <div class="form-group fg-float" [ngClass]="{'has-error': instructions.invalid && instructions.dirty}">
+            <div class="form-group fg-float steps" [ngClass]="{'has-error': instructions.invalid && instructions.dirty}">
               <label>{{ 'recipeForm.preparationSteps' | translate }}</label>
               <div class="fg-line">
-                <textarea autosize [(ngModel)]="recipe.combinedInstructions" class="form-control" name="instructions" [placeholder]="'recipeForm.preparationSteps' | translate" #instructions="ngModel" required></textarea>
+                <textarea [(ngModel)]="recipe.combinedInstructions" class="form-control" name="instructions" [placeholder]="'recipeForm.preparationSteps' | translate" #instructions="ngModel" required></textarea>
               </div>
               <small [hidden]="instructions.valid || instructions.pristine" class="help-block">{{ 'recipeForm.requiredField' | translate }}</small>
             </div>
@@ -94,7 +94,7 @@
             <div class="form-group">
               <label>{{ 'common.source' | translate }}</label>
               <div class="fg-line">
-                <input type="url" [(ngModel)]="recipe.originalUrl" name="image" class="form-control" [placeholder]="'recipeForm.sourceUrl' | translate">
+                <input type="url" [(ngModel)]="recipe.originalUrl" name="source" class="form-control" [placeholder]="'recipeForm.sourceUrl' | translate">
               </div>
             </div>
           </div>
