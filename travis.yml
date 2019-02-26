@@ -1,0 +1,7 @@
+deploy:
+  provider: s3
+  access_key_id: "AKIAJUCXYMUTJV4PRPHQ"
+  secret_access_key: "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"
+  bucket: "test-basil-builds"
+  skip_cleanup: true
+  local_dir: build
